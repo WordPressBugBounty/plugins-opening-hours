@@ -1,0 +1,127 @@
+/* CSS Document */
+
+.opening-hours-conditional.hide {
+	display: none;
+}
+.opening-hours.start .day-name,
+.opening-hours.day-start .day-name,
+.opening-hours.start .hours,
+.opening-hours.hours-start .hours {
+	text-align: start;
+}
+.opening-hours.end .day-name,
+.opening-hours.day-end .day-name,
+.opening-hours.end .hours,
+.opening-hours.hours-end .hours {
+	text-align: end;
+}
+.opening-hours.right .day-name,
+.opening-hours.day-right .day-name,
+.opening-hours.right .hours,
+.opening-hours.hours-right .hours,
+.rtl .opening-hours.left .day-name,
+.rtl .opening-hours.day-left .day-name,
+.rtl .opening-hours.left .hours,
+.rtl .opening-hours.hours-left .hours {
+	text-align: right;
+}
+.opening-hours.left .day-name,
+.opening-hours.day-left .day-name,
+.opening-hours.left .hours,
+.opening-hours.hours-left .hours,
+.rtl .opening-hours.right .day-name,
+.rtl .opening-hours.day-right .day-name,
+.rtl .opening-hours.right .hours,
+.rtl .opening-hours.hours-right .hours {
+	text-align: left;
+}
+.opening-hours.center .day-name,
+.opening-hours.day-center .day-name,
+.opening-hours.center .hours,
+.opening-hours.hours-center .hours {
+	text-align: center;
+}
+.opening-hours.uppercase .day-name,
+.opening-hours.day-uppercase .day-name,
+.opening-hours.uppercase .hours,
+.opening-hours.hours-uppercase .hours {
+	text-transform: uppercase;
+}
+.opening-hours.lowercase .day-name,
+.opening-hours.day-lowercase .day-name,
+.opening-hours.lowercase .hours,
+.opening-hours.hours-lowercase .hours {
+	text-transform: lowercase;
+}
+.opening-hours.capitalize .day-name,
+.opening-hours.day-capitalize .day-name,
+.opening-hours.capitalize .hours,
+.opening-hours.hours-capitalize .hours,
+.opening-hours.titlecase .day-name,
+.opening-hours.day-titlecase .day-name,
+.opening-hours.titlecase .hours,
+.opening-hours.hours-titlecase .hours {
+	text-transform: capitalize;
+}
+.opening-hours.day-normal .day-name {
+	font-weight: 400;
+}
+.we-are-open .day-name,
+.opening-hours .day-name,
+.opening-hours.bold .day-name,
+.opening-hours.day-bold .day-name,
+.opening-hours.bold .hours,
+.opening-hours.hours-bold .hours,
+.opening-hours.closed-bold .closed .hours,
+.opening-hours.closed-bold .closed.hours,
+.opening-hours.hours-24-bold .hours-24 .hours,
+.opening-hours.hours-24-bold .hours-24.hours {
+	font-weight: 700;
+}
+.opening-hours.closed-italic .closed .hours,
+.opening-hours.closed-italic .closed.hours,
+.opening-hours.hours-24-italic .hours-24 .hours,
+.opening-hours.hours-24-italic .hours-24.hours {
+	font-style: italic;
+}
+.opening-hours th,
+.opening-hours.nowrap th,
+.opening-hours.no-wrap th {
+	white-space: nowrap;
+}
+.opening-hours.wrap th {
+	white-space: normal;
+}
+.opening-hours.no-border,
+.opening-hours.no-border tr th,
+.opening-hours.no-border tr td {
+	border: 0 none;
+}
+.opening-hours.outside th:first-child,
+.opening-hours.outside-flush th:first-child,
+.opening-hours.outside td:first-child,
+.opening-hours.outside-flush td:first-child {
+	padding-inline-start: 0;
+}
+.opening-hours.outside th:last-child,
+.opening-hours.outside-flush td:last-child,
+.opening-hours.outside th:last-child,
+.opening-hours.outside-flush td:last-child {
+	padding-inline-end: 0;
+}
+.opening-hours.current-line .today .day-name,
+.opening-hours.current-line .today .hours {
+	box-shadow: 0 2px 0 #000000 inset;
+}
+.opening-hours.dark.current-line .today .day-name,
+.opening-hours.dark.current-line .today .hours {
+	box-shadow: 0 2px 0 #FFFFFF inset;
+}
+.opening-hours.past-fade .past .day-name,
+.opening-hours.past-fade .past .hours {
+	color: rgba(0, 0, 0, 0.5);
+}
+.opening-hours.dark.past-fade .past .day-name,
+.opening-hours.dark.past-fade .past .hours {
+	color: rgba(255, 255, 255, 0.5);
+}
