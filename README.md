@@ -1,0 +1,1 @@
+# plugins-opening-hours
