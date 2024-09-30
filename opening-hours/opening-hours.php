@@ -4,7 +4,7 @@
  * Plugin Name: We’re Open!
  * Plugin URI: https://wordpress.org/plugins/opening-hours/
  * Description: Smart and easy management for your business’ regular and special opening hours with Structured Data plus populate from Google My Business
- * Version: 2.1
+ * Version: 2.2
  * Author: Noah Hearle, Design Extreme
  * Author URI: https://designextreme.com/wordpress/
  * Donate link: https://paypal.me/designextreme

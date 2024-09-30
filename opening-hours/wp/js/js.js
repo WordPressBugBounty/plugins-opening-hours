@@ -183,7 +183,7 @@ function we_are_open(action, index) {
 						else if ((data.open == response.open_now || data.closed == response.closed_now) && (html != null || !data.remove_html)) {
 							if (data.remove_html) {
 								data.html = null;
-								jQuery(this).html(html);
+								jQuery(this).html('');
 							}
 							
 							jQuery(this).data('data', data);
@@ -207,12 +207,12 @@ function we_are_open(action, index) {
 							.data('data', {
 								change: data.seconds_to_change,
 								closed_now: !response.open_now,
-								content: data.content,
+								content: (typeof data.html == 'string') ? data.content.replace(/\\(\')/gi, '$1') : null,
 								parameters: data.parameters,
 								open_now: response.open_now,
 								reload: data.reload
 							})
-							.html(data.html);
+							.html((typeof data.html == 'string') ? data.html.replace(/\\(\')/gi, '$1') : '');
 							
 							if (response.open_now) {
 								jQuery(this).removeClass('closed-now').addClass('open-now');

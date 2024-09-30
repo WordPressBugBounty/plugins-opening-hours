@@ -289,7 +289,7 @@ if (!defined('ABSPATH'))
 <?php if (get_option('we_are_open_place_id') != NULL && get_option('we_are_open_api_key') != NULL && $this->google_data_exists()) : ?>
 				<div id="google-sync-section" class="column">
 					<h2 id="sync-google-my-business"><?php esc_html_e('Google My Business', 'opening-hours'); ?></h2>
-					<p><?php _e('As an alternative to Structured Data, you can update your regular opening hours from your Google My Business listing. Special opening hours and temporary closures are not included in the Places API data.', 'opening-hours'); ?></p>
+					<p><?php _e('As an alternative to Structured Data, you can update your regular opening hours from your Google My Business listing.', 'opening-hours'); ?></p>
 					<table class="form-table google-sync">
 						<tr>
 							<th scope="row"><label for="google-sync"><?php esc_html_e('Synchronize', 'opening-hours'); ?></label></th>
@@ -306,7 +306,7 @@ if (!defined('ABSPATH'))
 									<label for="google-sync-regular"><input type="checkbox" id="google-sync-regular" name="we_are_open_google_sync_regular" value="1"<?php echo (is_bool(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) || (is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) % 2 == 1)) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('Regular', 'opening-hours'); ?></label>
 									<label for="google-sync-special"><input type="checkbox" id="google-sync-special" name="we_are_open_google_sync_special" value="2"<?php echo (is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) >= 2) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('Special', 'opening-hours'); ?></label>
 								</p>
-								<p class="description"<?php echo (!is_numeric(get_option('we_are_open_google_sync', FALSE)) || is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) < 2) ? ' style="display: none"' : ''; ?>>Note: collection of special opening hours requires <em>Places API (New)</em>; data is limited to just today and the subsequent 6 days.</p>
+								<p class="description"<?php echo (!is_numeric(get_option('we_are_open_google_sync', FALSE)) || is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) < 2) ? ' style="display: none"' : ''; ?>>Note: using the Places API (New), special opening hours is limited to just today and the subsequent 6 days.</p>
 							</td>
 						</tr>
 					</table>
@@ -1561,7 +1561,7 @@ if (!defined('ABSPATH'))
 		<h2><?php esc_html_e('Additional', 'opening-hours'); ?></h2>
 		<form method="post" action="options.php" id="open-settings-google-credentials">
 			<h3 id="additional-google-credentials"><?php esc_html_e('Google Credentials', 'opening-hours'); ?></h3>
-			<p><?php _e('Use Google’s Places API to retrieve your current opening hours from Google My Business.', 'opening-hours'); ?></p>
+			<p><?php _e('Use Google’s Places API (New) to retrieve your current opening hours from Google My Business.', 'opening-hours'); ?></p>
 			<table class="form-table google-credentials">
 				<tr>
 					<th scope="row"><label for="api-key"><?php esc_html_e('Google API Key', 'opening-hours'); ?></label></th>
@@ -1570,21 +1570,21 @@ if (!defined('ABSPATH'))
 							<input type="text" id="api-key" class="regular-text code" name="we_are_open_api_key" placeholder="<?php echo esc_attr(str_repeat('x', 40)); ?>" value="<?php echo esc_attr(get_option('we_are_open_api_key')); ?>">
 						</p>
 						<p class="description<?php echo ((get_option('we_are_open_api_key') == NULL) ? ' unset' : ''); ?>"><?php /* translators: 1: URL of Place ID Finder, 2: IP of the web server, 3: Help icon and reveal toggle link */ 
-						echo sprintf(__('To retrieve Google My Business data, you’ll need your <a href="%1$s" class="components-external-link" target="_blank">API Key</a>, with API: <span class="highlight">Places API</span> and restrict to IP: <span class="highlight">%2$s</span> %3$s', 'opening-hours'), 'https://developers.google.com/maps/documentation/javascript/get-api-key', esc_html($this->server_ip()), ' <a id="google-credentials-help" href="#google-credentials-steps"><span class="dashicons dashicons-editor-help"></span></a>'); ?></p>
+						echo sprintf(__('To retrieve Google My Business data, you’ll need your <a href="%1$s" class="components-external-link" target="_blank">API Key</a>, with API: <span class="highlight">Places API (New)</span> and restrict to IP: <span class="highlight">%2$s</span> %3$s', 'opening-hours'), 'https://developers.google.com/maps/documentation/javascript/get-api-key', esc_html($this->server_ip()), ' <a id="google-credentials-help" href="#google-credentials-steps"><span class="dashicons dashicons-editor-help"></span></a>'); ?></p>
 						<ol id="google-credentials-steps">
 							<li>
 						<?php /* translators: 1: URL of Google Developer Console, 2: URL of Place API, 3: URL of Google Developer Console, 4: IP of web server, 5: URL for Google billing account */
 						echo preg_replace('/[\r\n]+/', '</li>' . PHP_EOL . str_repeat("\t", 7) . '<li>', sprintf(__('Create a new project or open an existing project in <a href="%1$s" class="components-external-link" target="_blank">Google Developer’s Console</a>
-Search for <a href="%2$s" class="components-external-link" target="_blank">Places</a> and enable both “Places API” and “Places API (New)” in your account
+Search for <a href="%2$s" class="components-external-link" target="_blank">Places</a> and enable “Places API (New)” in your account
 In <a href="%3$s" class="components-external-link" target="_blank">Credentials</a>, click the button: “+ Create Credentials”
 Select “API Key” from the options
 Once this key is created, click “Close”
 Select your newly created API Key
 Under “Application restrictions”, set this to: “IP addresses” and “Add an item” with your web server’s IP: <span class="highlight">%4$s</span>
-Under “API restrictions”, select “Restrict Key”, select options: “Places API” and “Places API (New)” in the list and click “OK”
+Under “API restrictions”, select “Restrict Key”, select option: “Places API (New)” in the list and click “OK”
 Click “Save” to set the restrictions
 Copy this new API Key to this plugin’s settings
-Finally for regular requests, please <a href="%5$s" class="components-external-link" target="_blank">enable billing</a> for your project to receive your <em>substantial and free</em> API request allocation', 'opening-hours'), 'https://console.developers.google.com/apis/credentials', 'https://console.cloud.google.com/apis/library/places-backend.googleapis.com?q=places', 'https://console.developers.google.com/apis/credentials', esc_html($this->server_ip()), 'https://console.cloud.google.com/projectselector/billing/enable')); ?></li>
+Finally for regular requests, please <a href="%5$s" class="components-external-link" target="_blank">enable billing</a> for your project to receive your <em>substantial and free</em> API request allocation', 'opening-hours'), 'https://console.developers.google.com/apis/credentials', 'https://console.cloud.google.com/apis/library/places.googleapis.com?pli=1', 'https://console.developers.google.com/apis/credentials', esc_html($this->server_ip()), 'https://console.cloud.google.com/projectselector/billing/enable')); ?></li>
 						</ol>
 						<p class="visual-guide"><?php /* translators: %s: a URL for a visual guide */ 
 						echo sprintf(__('Would you follow this better with diagrams? Check out our <a href="%s" class="components-external-link" target="_blank">visual guide</a>.', 'opening-hours'), 'https://designextreme.com/wordpress/we-are-open/#api-key'); ?></p>
@@ -1661,7 +1661,7 @@ Finally for regular requests, please <a href="%5$s" class="components-external-l
 		</nav>
 		<div class="entry-content">
 			<h2 id="about-story"><?php esc_html_e('About', 'opening-hours'); ?></h2>
-			<p class="about-story"><?php _e('This is a second plugin I’ve created for the WordPress community — starting with a simple Places API request to retrieve data from <em>Google My Business</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps.', 'opening-hours'); ?></p>
+			<p class="about-story"><?php _e('This is a second plugin I’ve created for the WordPress community — starting with a simple Places API (New) request to retrieve data from <em>Google My Business</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps.', 'opening-hours'); ?></p>
 			<p class="about-story"><?php _e('As with the Google Reviews and Rating plugin, you can use shortcodes in any post, page or use the widget version. There is an extensive list of parameters, conditions and variables to enclose text and HTML elements. I have kept the style sheet minimal to allow for your customizations — as a developer/designer this is what I’d like for all plugins.', 'opening-hours'); ?></p>
 			<p class="about-story"><?php /* translators: %s: refers to the plugin’s support URL */ 
 			echo sprintf(__('This one is my second published plugin for WordPress so I’d appreciate any feedback. So if you have any comments or feature requests, please feel free to <a href="%s" class="components-external-link" target="_blank">get in touch</a> with me.', 'opening-hours'), 'https://designextreme.com/wordpress/we-are-open/'); ?></p>

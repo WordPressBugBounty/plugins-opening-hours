@@ -4,8 +4,8 @@ Contributors: designextreme
 Donate link: https://paypal.me/designextreme
 Tags: opening hours, open hours, business hours, open times, opening times
 Requires at least: 5.3
-Tested up to: 6.6
-Stable tag: 2.1
+Tested up to: 6.6.2
+Stable tag: 2.2
 Requires PHP: 5.2.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -120,9 +120,9 @@ Yes.
 
 All the details for collecting your Google API Key can be found using our [visual guide](https://designextreme.com/wordpress/we-are-open/#api-key-guide).
 
-Once your *Project* is set, you will need a new *API Key* with access to **Places API** and **Place API (New)**. As a restriction, set your host’s **IP Address** (not your website’s URL). A more detailed guide is available in the Additional tab of Settings→We’re Open!.
+Once your *Project* is set, you will need a new *API Key* with access to **Place API (New)**. As a restriction, set your host’s **IP Address** (not your website’s URL). A more detailed guide is available in the Additional tab of Settings→We’re Open!.
 
-The Google API Key is required for this plugin to load the data from the Google Places API.
+The Google API Key is required for this plugin to load the data from the Google Places API (New).
 
 = How do I find my Place ID? =
 
@@ -144,6 +144,12 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 8. Simple Widget to apply your opening hours to a sidebar or footer section
 
 == Changelog ==
+
+= 2.2 =
+
+* Fixed handling of single quotes in open_text (Thanks to @bmc38119)
+* Updated all API references to have Places API (New)
+* Tested with WordPress 6.6.2
 
 = 2.1 =
 
