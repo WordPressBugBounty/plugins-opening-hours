@@ -1092,6 +1092,22 @@ if (!defined('ABSPATH'))
 					<td class="replacement-code">%if_not_open_tomorrow_3%</td>
 					<td class="description"><?php _e('Conditionally show text if closed, open 24 hours or open tomorrow with anything that is not exactly three sets of opening hours.', 'opening-hours'); ?></td>
 				</tr>
+				<tr id="code-if-note-today">
+					<td class="replacement-code">%if_note_today%</td>
+					<td class="description"><?php _e('Conditionally show text if there is a note set for today.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="code-if-not-note-today">
+					<td class="replacement-code">%if_not_note_today%</td>
+					<td class="description"><?php _e('Conditionally show text if there is a no note available for today.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="code-if-note-tomorrow">
+					<td class="replacement-code">%if_note_tomorrow%</td>
+					<td class="description"><?php _e('Conditionally show text if there is a note set for tomorrow.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="code-if-not-note-tomorrow">
+					<td class="replacement-code">%if_not_note_tomorrow%</td>
+					<td class="description"><?php _e('Conditionally show text if there is a no note available for tomorrow.', 'opening-hours'); ?></td>
+				</tr>
 				<tr id="code-if-regular-today">
 					<td class="replacement-code">%if_regular_today%</td>
 					<td class="description"><?php _e('Conditionally show text if there are regular opening hours today.', 'opening-hours'); ?></td>
@@ -1220,6 +1236,14 @@ if (!defined('ABSPATH'))
 				<tr id="code-tomorrow-3">
 					<td class="replacement-code">%tomorrow_3%</td>
 					<td class="description"><?php _e('Formatted times for the third set of opening hours tomorrow.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="code-note-today">
+					<td class="replacement-code">%note_today%</td>
+					<td class="description"><?php _e('The note for today, available for special opening hours.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="code-note-tomorrow">
+					<td class="replacement-code">%note_tomorrow%</td>
+					<td class="description"><?php _e('The note for tomorrow, available for special opening hours.', 'opening-hours'); ?></td>
 				</tr>
 				<tr id="code-closure-start">
 					<td class="replacement-code">%closure_start%</td>

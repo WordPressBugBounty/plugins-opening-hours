@@ -4,8 +4,8 @@ Contributors: designextreme
 Donate link: https://paypal.me/designextreme
 Tags: opening hours, open hours, business hours, open times, opening times
 Requires at least: 5.3
-Tested up to: 6.6.2
-Stable tag: 2.2
+Tested up to: 6.7.1
+Stable tag: 2.3
 Requires PHP: 5.2.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -139,11 +139,17 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 3. Comprehensive settings to get your opening hours displayed exactly as you want
 4. Customize all separators and text for closed or consolidated days
 5. Shortcodes for opening hours, conditional content for open/closed (with content refresh) and replacement codes in text
-6. Extensive parameters are available to specify your perfect preferences as you desire
+6. Extensive parameters are available to specify you6r perfect preferences as you desire
 7. Set your custom styling and other additional actions
 8. Simple Widget to apply your opening hours to a sidebar or footer section
 
 == Changelog ==
+
+= 2.3 =
+
+* Added text replacement logic and variables for notes (Thanks to @jfinkle)
+* Fixed _load_textdomain_just_in_time warning
+* Tested with WordPress 6.7.1
 
 = 2.2 =
 

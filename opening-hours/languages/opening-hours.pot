@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: We’re Open! 2.2\n"
+"Project-Id-Version: We’re Open! 2.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/opening-hours\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-09-29T16:00:41+00:00\n"
+"POT-Creation-Date: 2024-11-23T23:42:04+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: opening-hours\n"
@@ -369,8 +369,8 @@ msgid "Like our plugin? Please leave a review!"
 msgstr ""
 
 #: index.php:1749
-#: templates/settings.php:1656
-#: templates/settings.php:1698
+#: templates/settings.php:1680
+#: templates/settings.php:1722
 msgid "Support"
 msgstr ""
 
@@ -415,46 +415,46 @@ msgstr ""
 msgid "."
 msgstr ""
 
-#: index.php:6954
-#: index.php:6960
+#: index.php:7054
+#: index.php:7060
 msgid "Remind me later"
 msgstr ""
 
-#: index.php:6961
+#: index.php:7061
 msgid "Dismiss for a year"
 msgstr ""
 
-#: index.php:6962
+#: index.php:7062
 msgid "I’ve already left a review"
 msgstr ""
 
 #. translators: 1: The initial version of this plugin, 2: refers to review URL at wordpress.org, 3: string to handle notification data
-#: index.php:6984
+#: index.php:7084
 msgid "You have used this plugin for quite a while, since version %1$s. We’d love to hear what you think about its design, features, support… So, please consider <a href=\"%2$s\" target=\"_blank\" %3$s>leaving a review</a>!"
 msgstr ""
 
 #. translators: 1: The initial version of this plugin, 2: refers to review URL at wordpress.org, 3: string to handle notification data
-#: index.php:6984
+#: index.php:7084
 msgid "You’ve experienced using this plugin"
 msgstr ""
 
 #. translators: 1: The plugin installation date, 2: refers to review URL at wordpress.org, 3: string to handle notification data
-#: index.php:7078
+#: index.php:7178
 msgid "You have used this plugin for quite a while, since %1$s. We’d love to hear what you think about its design, features, support… So, please consider <a href=\"%2$s\" target=\"_blank\" %3$s>leaving a review</a>!"
 msgstr ""
 
 #. translators: 1: The plugin installation date, 2: refers to review URL at wordpress.org, 3: string to handle notification data
-#: index.php:7078
+#: index.php:7178
 msgid "You’ve experienced this plugin"
 msgstr ""
 
 #. translators: 1: refers to review URL at wordpress.org, 2: string to handle notification data
-#: index.php:7082
+#: index.php:7182
 msgid "We’d love to hear what you think about its design, features, support… So, please consider <a href=\"%1$s\" target=\"_blank\" %2$s>leaving a review</a>!"
 msgstr ""
 
 #. translators: 1: refers to review URL at wordpress.org, 2: string to handle notification data
-#: index.php:7082
+#: index.php:7182
 msgid "Please leave a review for We’re Open!"
 msgstr ""
 
@@ -581,8 +581,8 @@ msgid "Closed for %s days"
 msgstr ""
 
 #: templates/index.php:237
-#: templates/settings.php:1614
-#: templates/settings.php:1625
+#: templates/settings.php:1638
+#: templates/settings.php:1649
 msgid "Save"
 msgstr ""
 
@@ -622,13 +622,13 @@ msgid "Shortcodes"
 msgstr ""
 
 #: templates/settings.php:24
-#: templates/settings.php:1561
+#: templates/settings.php:1585
 msgid "Additional"
 msgstr ""
 
 #: templates/settings.php:26
-#: templates/settings.php:1654
-#: templates/settings.php:1663
+#: templates/settings.php:1678
+#: templates/settings.php:1687
 msgid "About"
 msgstr ""
 
@@ -1074,7 +1074,7 @@ msgid "Replacement Codes"
 msgstr ""
 
 #: templates/settings.php:464
-#: templates/settings.php:1326
+#: templates/settings.php:1350
 msgid "HTML Classes"
 msgstr ""
 
@@ -1151,7 +1151,7 @@ msgstr ""
 
 #: templates/settings.php:533
 #: templates/settings.php:997
-#: templates/settings.php:1332
+#: templates/settings.php:1356
 msgid "Description"
 msgstr ""
 
@@ -1518,445 +1518,469 @@ msgid "Conditionally show text if closed, open 24 hours or open tomorrow with an
 msgstr ""
 
 #: templates/settings.php:1097
-msgid "Conditionally show text if there are regular opening hours today."
+msgid "Conditionally show text if there is a note set for today."
 msgstr ""
 
 #: templates/settings.php:1101
-msgid "Conditionally show text if there are no regular opening hours today."
+msgid "Conditionally show text if there is a no note available for today."
 msgstr ""
 
 #: templates/settings.php:1105
-msgid "Conditionally show text if there are special opening hours today."
+msgid "Conditionally show text if there is a note set for tomorrow."
 msgstr ""
 
 #: templates/settings.php:1109
-msgid "Conditionally show text if there are no special opening hours today."
+msgid "Conditionally show text if there is a no note available for tomorrow."
 msgstr ""
 
 #: templates/settings.php:1113
-msgid "Conditionally show text if there is a temporary closure today."
+msgid "Conditionally show text if there are regular opening hours today."
 msgstr ""
 
 #: templates/settings.php:1117
-msgid "Conditionally show text if there is no temporary closure today."
+msgid "Conditionally show text if there are no regular opening hours today."
 msgstr ""
 
 #: templates/settings.php:1121
-msgid "Conditionally show text if there are regular opening hours tomorrow."
+msgid "Conditionally show text if there are special opening hours today."
 msgstr ""
 
 #: templates/settings.php:1125
-msgid "Conditionally show text if there are no regular opening hours tomorrow."
+msgid "Conditionally show text if there are no special opening hours today."
 msgstr ""
 
 #: templates/settings.php:1129
-msgid "Conditionally show text if there are special opening hours tomorrow."
+msgid "Conditionally show text if there is a temporary closure today."
 msgstr ""
 
 #: templates/settings.php:1133
-msgid "Conditionally show text if there are no special opening hours tomorrow."
+msgid "Conditionally show text if there is no temporary closure today."
 msgstr ""
 
 #: templates/settings.php:1137
-msgid "Conditionally show text if there is a temporary closure tomorrow."
+msgid "Conditionally show text if there are regular opening hours tomorrow."
 msgstr ""
 
 #: templates/settings.php:1141
-msgid "Conditionally show text if there is no temporary closure tomorrow."
+msgid "Conditionally show text if there are no regular opening hours tomorrow."
 msgstr ""
 
 #: templates/settings.php:1145
-msgid "Conditionally show text if there is a temporary closure exists either now or in the future."
+msgid "Conditionally show text if there are special opening hours tomorrow."
 msgstr ""
 
 #: templates/settings.php:1149
+msgid "Conditionally show text if there are no special opening hours tomorrow."
+msgstr ""
+
+#: templates/settings.php:1153
+msgid "Conditionally show text if there is a temporary closure tomorrow."
+msgstr ""
+
+#: templates/settings.php:1157
+msgid "Conditionally show text if there is no temporary closure tomorrow."
+msgstr ""
+
+#: templates/settings.php:1161
+msgid "Conditionally show text if there is a temporary closure exists either now or in the future."
+msgstr ""
+
+#: templates/settings.php:1165
 msgid "Conditionally show text if there is no temporary closure exists either now or in the future."
 msgstr ""
 
 #. translators: Preserve the word if where possible
-#: templates/settings.php:1154
+#: templates/settings.php:1170
 msgid "Conditionally show text if opposite to the previous <em>if</em> statement."
 msgstr ""
 
-#: templates/settings.php:1158
+#: templates/settings.php:1174
 msgid "End of the current logic, required for each opening condition."
 msgstr ""
 
-#: templates/settings.php:1162
+#: templates/settings.php:1178
 msgid "Formatted current time."
 msgstr ""
 
-#: templates/settings.php:1166
+#: templates/settings.php:1182
 msgid "Today’s day name."
 msgstr ""
 
-#: templates/settings.php:1170
+#: templates/settings.php:1186
 msgid "Tomorrow’s day name."
 msgstr ""
 
-#: templates/settings.php:1174
+#: templates/settings.php:1190
 msgid "Formatted list of hours for today."
 msgstr ""
 
-#: templates/settings.php:1178
+#: templates/settings.php:1194
 msgid "Formatted list of hours for tomorrow."
 msgstr ""
 
-#: templates/settings.php:1182
+#: templates/settings.php:1198
 msgid "Formatted first opening time for today."
 msgstr ""
 
-#: templates/settings.php:1186
+#: templates/settings.php:1202
 msgid "Formatted last closing time for today."
 msgstr ""
 
-#: templates/settings.php:1190
+#: templates/settings.php:1206
 msgid "Formatted next opening or closing time today."
 msgstr ""
 
-#: templates/settings.php:1194
+#: templates/settings.php:1210
 msgid "Formatted times for the first set of opening hours today."
 msgstr ""
 
-#: templates/settings.php:1198
+#: templates/settings.php:1214
 msgid "Formatted times for the second set of opening hours today."
 msgstr ""
 
-#: templates/settings.php:1202
+#: templates/settings.php:1218
 msgid "Formatted times for the third set of opening hours today."
 msgstr ""
 
-#: templates/settings.php:1206
+#: templates/settings.php:1222
 msgid "Formatted first opening time for tomorrow."
 msgstr ""
 
-#: templates/settings.php:1210
+#: templates/settings.php:1226
 msgid "Formatted last closing time for tomorrow."
 msgstr ""
 
-#: templates/settings.php:1214
+#: templates/settings.php:1230
 msgid "Formatted times for the first set of opening hours tomorrow."
 msgstr ""
 
-#: templates/settings.php:1218
+#: templates/settings.php:1234
 msgid "Formatted times for the second set of opening hours tomorrow."
 msgstr ""
 
-#: templates/settings.php:1222
+#: templates/settings.php:1238
 msgid "Formatted times for the third set of opening hours tomorrow."
 msgstr ""
 
+#: templates/settings.php:1242
+msgid "The note for today, available for special opening hours."
+msgstr ""
+
+#: templates/settings.php:1246
+msgid "The note for tomorrow, available for special opening hours."
+msgstr ""
+
 #. translators: 1: refers to a parameter within the text replacement code, 2: percent character
-#: templates/settings.php:1227
+#: templates/settings.php:1251
 msgid "Start date of a temporary closure, append <code>%1$s</code>, before the closing %2$s, to apply a PHP date format, overriding the WordPress default."
 msgstr ""
 
 #. translators: 1: refers to a parameter within the text replacement code, 2: percent character
-#: templates/settings.php:1232
+#: templates/settings.php:1256
 msgid "End date of a temporary closure, append <code>%1$s</code>, before the closing %2$s, to apply a PHP date format, overriding the WordPress default."
 msgstr ""
 
-#: templates/settings.php:1236
+#: templates/settings.php:1260
 msgid "Seconds until either change in opening or closing status."
 msgstr ""
 
-#: templates/settings.php:1240
+#: templates/settings.php:1264
 msgid "Seconds with 2-digit padding for remaining time for change in opening or closing status."
 msgstr ""
 
 #. translators: 1: bookmark to another replacement code, 2: name of replacement code
-#: templates/settings.php:1245
+#: templates/settings.php:1269
 msgid "Seconds as a divisor until either change in opening or closing status — useful when displayed with <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
 #. translators: 1: bookmark to another replacement code, 2: name of replacement code
-#: templates/settings.php:1250
+#: templates/settings.php:1274
 msgid "Seconds as a divisor with 2-digit padding for remaining time for change in opening or closing status — useful when displayed with <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
-#: templates/settings.php:1254
+#: templates/settings.php:1278
 msgid "Minutes until either change in opening or closing status."
 msgstr ""
 
-#: templates/settings.php:1258
+#: templates/settings.php:1282
 msgid "Minutes with 2-digit padding for remaining time for change in opening or closing status."
 msgstr ""
 
 #. translators: 1: bookmark to another replacement code, 2: name of replacement code
-#: templates/settings.php:1263
+#: templates/settings.php:1287
 msgid "Minutes as a divisor until either change in opening or closing status — useful when displayed with <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
 #. translators: 1: bookmark to another replacement code, 2: name of replacement code
-#: templates/settings.php:1268
+#: templates/settings.php:1292
 msgid "Minutes as a divisor with 2-digit padding for remaining time for change in opening or closing status — useful when displayed with <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
-#: templates/settings.php:1272
+#: templates/settings.php:1296
 msgid "Hours until either change in opening or closing status."
 msgstr ""
 
-#: templates/settings.php:1276
+#: templates/settings.php:1300
 msgid "Hours with 2-digit padding for remaining time for change in opening or closing status."
 msgstr ""
 
 #. translators: 1: bookmark to another replacement code, 2: name of replacement code
-#: templates/settings.php:1281
+#: templates/settings.php:1305
 msgid "Hours as a divisor until there is a change in opening or closing status — useful when displayed with <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
 #. translators: 1: bookmark to another replacement code, 2: name of replacement code
-#: templates/settings.php:1286
+#: templates/settings.php:1310
 msgid "Hours as a divisor, with 2-digit padding, until there is a change in opening or closing status — useful when displayed with <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
 #. translators: number of days, 7 or higher
-#: templates/settings.php:1291
+#: templates/settings.php:1315
 msgid "Days until change of either opening or closing status; will show no more than %u days."
 msgstr ""
 
-#: templates/settings.php:1295
+#: templates/settings.php:1319
 msgid "Space character."
 msgstr ""
 
-#: templates/settings.php:1299
+#: templates/settings.php:1323
 msgid "Percent character."
 msgstr ""
 
-#: templates/settings.php:1303
+#: templates/settings.php:1327
 msgid "Comma character."
 msgstr ""
 
-#: templates/settings.php:1307
+#: templates/settings.php:1331
 msgid "Colon character."
 msgstr ""
 
-#: templates/settings.php:1311
+#: templates/settings.php:1335
 msgid "Semi-colon character."
 msgstr ""
 
-#: templates/settings.php:1315
+#: templates/settings.php:1339
 msgid "Exclamation mark character."
 msgstr ""
 
-#: templates/settings.php:1319
+#: templates/settings.php:1343
 msgid "Question mark character."
 msgstr ""
 
 #. translators: replace with a different word if better suited - currently only accepted values are: period, fullstop, dot or point enclosed with percent character
-#: templates/settings.php:1322
+#: templates/settings.php:1346
 msgid "&percnt;period&percnt;"
 msgstr ""
 
 #. translators: replace with a different word if better suited - currently only accepted values are: period, fullstop, dot or point enclosed with percent character
-#: templates/settings.php:1323
+#: templates/settings.php:1347
 msgid "Period character."
 msgstr ""
 
 #. translators: 1: bookmark to another HTML class, 2: name of HTML class
-#: templates/settings.php:1328
+#: templates/settings.php:1352
 msgid "Stylistically, you may wish to make changes that are beyond the list of themes. Here is a list of HTML classes that can be used by <a href=\"%1$s\">%2$s</a> parameter to set your design preferences."
 msgstr ""
 
-#: templates/settings.php:1331
+#: templates/settings.php:1355
 msgid "Class"
 msgstr ""
 
-#: templates/settings.php:1333
+#: templates/settings.php:1357
 msgid "Affects Opening Hours Table"
 msgstr ""
 
-#: templates/settings.php:1333
+#: templates/settings.php:1357
 #: widget.php:138
 msgid "Table"
 msgstr ""
 
-#: templates/settings.php:1334
+#: templates/settings.php:1358
 msgid "Affects Opening Hours Text"
 msgstr ""
 
-#: templates/settings.php:1334
+#: templates/settings.php:1358
 msgid "Text"
 msgstr ""
 
-#: templates/settings.php:1338
+#: templates/settings.php:1362
 msgid "Align all text to the left."
 msgstr ""
 
-#: templates/settings.php:1344
+#: templates/settings.php:1368
 msgid "Align all text to the center."
 msgstr ""
 
-#: templates/settings.php:1350
+#: templates/settings.php:1374
 msgid "Align all text to the right."
 msgstr ""
 
-#: templates/settings.php:1356
+#: templates/settings.php:1380
 msgid "Align all text to the start."
 msgstr ""
 
-#: templates/settings.php:1362
+#: templates/settings.php:1386
 msgid "Align all text to the end."
 msgstr ""
 
-#: templates/settings.php:1368
+#: templates/settings.php:1392
 msgid "Align day name text to the left."
 msgstr ""
 
-#: templates/settings.php:1374
+#: templates/settings.php:1398
 msgid "Align day name text to the center."
 msgstr ""
 
-#: templates/settings.php:1380
+#: templates/settings.php:1404
 msgid "Align day name text  to the right."
 msgstr ""
 
-#: templates/settings.php:1386
+#: templates/settings.php:1410
 msgid "Align day name text to the start."
 msgstr ""
 
-#: templates/settings.php:1392
+#: templates/settings.php:1416
 msgid "Align day name text to the end."
 msgstr ""
 
-#: templates/settings.php:1398
+#: templates/settings.php:1422
 msgid "Capitalize text (first letter) for day names."
 msgstr ""
 
-#: templates/settings.php:1404
+#: templates/settings.php:1428
 msgid "Set all text to upper case for day names."
 msgstr ""
 
-#: templates/settings.php:1410
+#: templates/settings.php:1434
 msgid "Set all text to lower case for day names."
 msgstr ""
 
-#: templates/settings.php:1416
+#: templates/settings.php:1440
 msgid "Align opening hours text to the left."
 msgstr ""
 
-#: templates/settings.php:1422
+#: templates/settings.php:1446
 msgid "Align opening hours text to the center."
 msgstr ""
 
-#: templates/settings.php:1428
+#: templates/settings.php:1452
 msgid "Align opening hours text  to the right."
 msgstr ""
 
-#: templates/settings.php:1434
+#: templates/settings.php:1458
 msgid "Align opening hours text to the start."
 msgstr ""
 
-#: templates/settings.php:1440
+#: templates/settings.php:1464
 msgid "Align opening hours text to the end."
 msgstr ""
 
-#: templates/settings.php:1446
+#: templates/settings.php:1470
 msgid "Capitalize text (first letter) of words in opening hours."
 msgstr ""
 
-#: templates/settings.php:1452
+#: templates/settings.php:1476
 msgid "Set all text to upper case for opening hours."
 msgstr ""
 
-#: templates/settings.php:1458
+#: templates/settings.php:1482
 msgid "Set all text to lower case for opening hours."
 msgstr ""
 
-#: templates/settings.php:1464
+#: templates/settings.php:1488
 msgid "Set font weight to normal for hours names (cell headings will often default to bold)."
 msgstr ""
 
-#: templates/settings.php:1470
+#: templates/settings.php:1494
 msgid "Set font weight to bold for day names."
 msgstr ""
 
-#: templates/settings.php:1476
+#: templates/settings.php:1500
 msgid "Set font weight to normal for day names."
 msgstr ""
 
-#: templates/settings.php:1482
+#: templates/settings.php:1506
 msgid "Set closed text to bold."
 msgstr ""
 
-#: templates/settings.php:1488
+#: templates/settings.php:1512
 msgid "Set 24 hour opening text to bold."
 msgstr ""
 
-#: templates/settings.php:1494
+#: templates/settings.php:1518
 msgid "Set closed text to italic."
 msgstr ""
 
-#: templates/settings.php:1500
+#: templates/settings.php:1524
 msgid "Set 24 hour opening text to italic."
 msgstr ""
 
-#: templates/settings.php:1506
+#: templates/settings.php:1530
 msgid "Wrap text for day names and opening hours."
 msgstr ""
 
-#: templates/settings.php:1512
+#: templates/settings.php:1536
 msgid "Do not wrap text for day names and opening hours."
 msgstr ""
 
-#: templates/settings.php:1518
+#: templates/settings.php:1542
 msgid "Remove any table border that may exist in the theme’s style sheet."
 msgstr ""
 
 #. translators: 1: bookmark to another HTML class, 2: name of HTML class 3: bookmark to another HTML class, 4: name of HTML class
-#: templates/settings.php:1525
+#: templates/settings.php:1549
 msgid "Remove padding from outside table cells so text appears flush to the edges when aligned to <a href=\"%1$s\">%2$s</a> and <a href=\"%3$s\">%4$s</a> respectively."
 msgstr ""
 
-#: templates/settings.php:1531
+#: templates/settings.php:1555
 msgid "Added a line between past days and the current day to highlight current opening hours."
 msgstr ""
 
-#: templates/settings.php:1537
+#: templates/settings.php:1561
 msgid "Set past days to a more transparent color."
 msgstr ""
 
 #. translators: 1: bookmark to another HTML class, 2: name of HTML class, 3: bookmark to another HTML class, 4: name of HTML class
-#: templates/settings.php:1544
+#: templates/settings.php:1568
 msgid "For pages or sections with dark backgrounds — currently in use for classes: <a href=\"%1$s\">%2$s</a> and <a href=\"%3$s\">%4$s</a>."
 msgstr ""
 
-#: templates/settings.php:1555
-#: templates/settings.php:1563
+#: templates/settings.php:1579
+#: templates/settings.php:1587
 msgid "Google Credentials"
 msgstr ""
 
-#: templates/settings.php:1556
-#: templates/settings.php:1619
+#: templates/settings.php:1580
+#: templates/settings.php:1643
 msgid "Custom Styles"
 msgstr ""
 
-#: templates/settings.php:1557
-#: templates/settings.php:1630
+#: templates/settings.php:1581
+#: templates/settings.php:1654
 msgid "Cache"
 msgstr ""
 
-#: templates/settings.php:1558
-#: templates/settings.php:1638
-#: templates/settings.php:1646
+#: templates/settings.php:1582
+#: templates/settings.php:1662
+#: templates/settings.php:1670
 msgid "Reset"
 msgstr ""
 
-#: templates/settings.php:1564
+#: templates/settings.php:1588
 msgid "Use Google’s Places API (New) to retrieve your current opening hours from Google My Business."
 msgstr ""
 
-#: templates/settings.php:1567
+#: templates/settings.php:1591
 msgid "Google API Key"
 msgstr ""
 
 #. translators: 1: URL of Place ID Finder, 2: IP of the web server, 3: Help icon and reveal toggle link
-#: templates/settings.php:1573
+#: templates/settings.php:1597
 msgid "To retrieve Google My Business data, you’ll need your <a href=\"%1$s\" class=\"components-external-link\" target=\"_blank\">API Key</a>, with API: <span class=\"highlight\">Places API (New)</span> and restrict to IP: <span class=\"highlight\">%2$s</span> %3$s"
 msgstr ""
 
 #. translators: 1: URL of Google Developer Console, 2: URL of Place API, 3: URL of Google Developer Console, 4: IP of web server, 5: URL for Google billing account
-#: templates/settings.php:1577
+#: templates/settings.php:1601
 msgid ""
 "Create a new project or open an existing project in <a href=\"%1$s\" class=\"components-external-link\" target=\"_blank\">Google Developer’s Console</a>\r\n"
 "Search for <a href=\"%2$s\" class=\"components-external-link\" target=\"_blank\">Places</a> and enable “Places API (New)” in your account\r\n"
@@ -1972,129 +1996,129 @@ msgid ""
 msgstr ""
 
 #. translators: %s: a URL for a visual guide
-#: templates/settings.php:1590
+#: templates/settings.php:1614
 msgid "Would you follow this better with diagrams? Check out our <a href=\"%s\" class=\"components-external-link\" target=\"_blank\">visual guide</a>."
 msgstr ""
 
-#: templates/settings.php:1594
+#: templates/settings.php:1618
 msgid "Google Place ID"
 msgstr ""
 
-#: templates/settings.php:1598
+#: templates/settings.php:1622
 msgid "View Retrieved Data"
 msgstr ""
 
 #. translators: %s: the Google Place Finder URL
-#: templates/settings.php:1601
+#: templates/settings.php:1625
 msgid "You can find your unique Place ID by searching by your business’ name in <a href=\"%s\" class=\"components-external-link\" target=\"_blank\">Google’s Place ID Finder</a>. Single business locations are accepted; coverage areas are not."
 msgstr ""
 
-#: templates/settings.php:1605
+#: templates/settings.php:1629
 msgid "Place Name"
 msgstr ""
 
-#: templates/settings.php:1620
+#: templates/settings.php:1644
 msgid "If you prefer to manage your style sheet outside of your theme, you may add your own customized styles."
 msgstr ""
 
-#: templates/settings.php:1631
+#: templates/settings.php:1655
 msgid "You may wish to clear the cache after a change to the time zone in the General Settings."
 msgstr ""
 
-#: templates/settings.php:1633
+#: templates/settings.php:1657
 msgid "Clear Cache"
 msgstr ""
 
-#: templates/settings.php:1639
+#: templates/settings.php:1663
 msgid "At times you may wish to clear all opening hours, notifications or just start over."
 msgstr ""
 
-#: templates/settings.php:1641
+#: templates/settings.php:1665
 msgid "Reset administrator notifications."
 msgstr ""
 
-#: templates/settings.php:1642
+#: templates/settings.php:1666
 msgid "Clear all opening hours."
 msgstr ""
 
-#: templates/settings.php:1643
+#: templates/settings.php:1667
 msgid "Yes, I confirm I wish to reset everything."
 msgstr ""
 
-#: templates/settings.php:1655
-#: templates/settings.php:1678
+#: templates/settings.php:1679
+#: templates/settings.php:1702
 msgid "Plugins by the Developer"
 msgstr ""
 
-#: templates/settings.php:1657
-#: templates/settings.php:1703
-#: templates/settings.php:1705
+#: templates/settings.php:1681
+#: templates/settings.php:1727
+#: templates/settings.php:1729
 msgid "Follow Us"
 msgstr ""
 
-#: templates/settings.php:1658
-#: templates/settings.php:1708
+#: templates/settings.php:1682
+#: templates/settings.php:1732
 msgid "Rate Us"
 msgstr ""
 
-#: templates/settings.php:1659
-#: templates/settings.php:1713
+#: templates/settings.php:1683
+#: templates/settings.php:1737
 msgid "Donate"
 msgstr ""
 
-#: templates/settings.php:1664
+#: templates/settings.php:1688
 msgid "This is a second plugin I’ve created for the WordPress community — starting with a simple Places API (New) request to retrieve data from <em>Google My Business</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps."
 msgstr ""
 
-#: templates/settings.php:1665
+#: templates/settings.php:1689
 msgid "As with the Google Reviews and Rating plugin, you can use shortcodes in any post, page or use the widget version. There is an extensive list of parameters, conditions and variables to enclose text and HTML elements. I have kept the style sheet minimal to allow for your customizations — as a developer/designer this is what I’d like for all plugins."
 msgstr ""
 
 #. translators: %s: refers to the plugin’s support URL
-#: templates/settings.php:1667
+#: templates/settings.php:1691
 msgid "This one is my second published plugin for WordPress so I’d appreciate any feedback. So if you have any comments or feature requests, please feel free to <a href=\"%s\" class=\"components-external-link\" target=\"_blank\">get in touch</a> with me."
 msgstr ""
 
 #. translators: 1: author’s website, 2: author’s business name
-#: templates/settings.php:1677
+#: templates/settings.php:1701
 msgid "Developer, <a href=\"%1$s\" class=\"components-external-link\" target=\"_blank\">%2$s</a>"
 msgstr ""
 
-#: templates/settings.php:1683
-#: templates/settings.php:1689
+#: templates/settings.php:1707
+#: templates/settings.php:1713
 msgid "More Details"
 msgstr ""
 
-#: templates/settings.php:1684
-#: templates/settings.php:1691
+#: templates/settings.php:1708
+#: templates/settings.php:1715
 msgid "Installed"
 msgstr ""
 
-#: templates/settings.php:1699
+#: templates/settings.php:1723
 msgid "Do you have any general support queries? Please search our forums at WordPress or make your own contribution. You can see that we are always very quick to reply!"
 msgstr ""
 
-#: templates/settings.php:1700
+#: templates/settings.php:1724
 msgid "View support forum"
 msgstr ""
 
-#: templates/settings.php:1704
+#: templates/settings.php:1728
 msgid "Want some easy-to-follow pro tips with examples? We will help you to make your reviews really stand out. Feature requests are welcome too."
 msgstr ""
 
-#: templates/settings.php:1709
+#: templates/settings.php:1733
 msgid "Love this plugin with as much heart as we’ve put into its code? Why not share your feedback to help others with their plugin decision."
 msgstr ""
 
-#: templates/settings.php:1710
+#: templates/settings.php:1734
 msgid "Add my review"
 msgstr ""
 
-#: templates/settings.php:1714
+#: templates/settings.php:1738
 msgid "This plugin is powered by oat flat whites… We welcome any show of support the advancement of this plugin, no matter how small."
 msgstr ""
 
-#: templates/settings.php:1715
+#: templates/settings.php:1739
 msgid "Donate to this plugin"
 msgstr ""
 

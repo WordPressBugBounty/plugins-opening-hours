@@ -593,7 +593,7 @@ class we_are_open
 		add_action('wp_ajax_' . $this->class_name . '_admin_ajax', array($this, 'admin_ajax'));
 		add_action('admin_notices', array($this, 'admin_notices'));
 		add_action('widgets_init', array($this, 'widget'));
-		add_action('plugins_loaded', array($this, 'loaded'));		
+		add_action('init', array($this, 'loaded'));		
 		
 		add_filter('plugin_action_links', array($this->class_name, 'admin_add_action_links'), 10, 5);
 		add_filter('plugin_row_meta', array($this->class_name, 'admin_add_plugin_meta'), 10, 2);
@@ -644,7 +644,7 @@ class we_are_open
 			add_action('wp_head', array($this, 'structured_data'));
 		}
 
-		add_action('plugins_loaded', array($this, 'loaded'));		
+		add_action('init', array($this, 'loaded'));		
 
 		$this->weekdays = get_option($this->prefix . 'weekdays', array());
 		$this->weekend = get_option($this->prefix . 'weekend', array());
@@ -5676,6 +5676,10 @@ class we_are_open
 		$if_not_open_tomorrow_2 = -1;
 		$if_open_tomorrow_3 = -1;
 		$if_not_open_tomorrow_3 = -1;
+		$if_note_today = -1;
+		$if_not_note_today = -1;
+		$if_note_tomorrow = -1;
+		$if_not_note_tomorrow = -1;
 		$if_regular_today = -1;
 		$if_not_regular_today = -1;
 		$if_special_today = -1;
@@ -5703,6 +5707,7 @@ class we_are_open
 		$today_2_text = NULL;
 		$today_3_text = NULL;
 		$today_name = NULL;
+		$today_note = NULL;
 		$today_hours_type = NULL;
 		$tomorrow_closed = NULL;
 		$tomorrow_hours_24 = NULL;
@@ -5715,6 +5720,7 @@ class we_are_open
 		$tomorrow_2_text = NULL;
 		$tomorrow_3_text = NULL;
 		$tomorrow_name = NULL;
+		$tomorrow_note = NULL;
 		$tomorrow_hours_type = NULL;
 		
 		list($open_now, $seconds_to_change) = $this->open_change();
@@ -5744,6 +5750,7 @@ class we_are_open
 				$today_1_text = (!$today_closed && !$today_hours_24 && count($today_hours) >= 1) ? $this->hours_string(array($today_hours[0]), $today_closed, $today_hours_24, NULL, 'text', $time_preferences) : NULL;
 				$today_2_text = (!$today_closed && !$today_hours_24 && count($today_hours) >= 2) ? $this->hours_string(array($today_hours[1]), $today_closed, $today_hours_24, NULL, 'text', $time_preferences) : NULL;
 				$today_3_text = (!$today_closed && !$today_hours_24 && count($today_hours) >= 3) ? $this->hours_string(array($today_hours[2]), $today_closed, $today_hours_24, NULL, 'text', $time_preferences) : NULL;
+				$today_note = ($today_hours_type == 'special' && isset($this->special[$this->today_timestamp]) && isset($this->special[$this->today_timestamp]['note'])) ? $this->special[$this->today_timestamp]['note'] : NULL;
 				continue;
 			}
 
@@ -5759,6 +5766,7 @@ class we_are_open
 			$tomorrow_1_text = (!$tomorrow_closed && !$tomorrow_hours_24 && count($tomorrow_hours) >= 1) ? $this->hours_string(array($tomorrow_hours[0]), $tomorrow_closed, $tomorrow_hours_24, NULL, 'text', $time_preferences) : NULL;
 			$tomorrow_2_text = (!$tomorrow_closed && !$tomorrow_hours_24 && count($tomorrow_hours) >= 2) ? $this->hours_string(array($tomorrow_hours[1]), $tomorrow_closed, $tomorrow_hours_24, NULL, 'text', $time_preferences) : NULL;
 			$tomorrow_3_text = (!$tomorrow_closed && !$tomorrow_hours_24 && count($tomorrow_hours) >= 3) ? $this->hours_string(array($tomorrow_hours[2]), $tomorrow_closed, $tomorrow_hours_24, NULL, 'text', $time_preferences) : NULL;
+			$tomorrow_note = ($tomorrow_hours_type == 'special' && isset($this->special[$this->tomorrow_timestamp]) && isset($this->special[$this->tomorrow_timestamp]['note'])) ? $this->special[$this->tomorrow_timestamp]['note'] : NULL;
 		}
 		
 		foreach ($match[0] as $i => $v)
@@ -5854,6 +5862,10 @@ class we_are_open
 					|| is_numeric($if_not_open_tomorrow_2) && $if_not_open_tomorrow_2 >= 0
 					|| is_numeric($if_open_tomorrow_3) && $if_open_tomorrow_3 >= 0
 					|| is_numeric($if_not_open_tomorrow_3) && $if_not_open_tomorrow_3 >= 0
+					|| is_numeric($if_note_today) && $if_note_today >= 0
+					|| is_numeric($if_not_note_today) && $if_not_note_today >= 0
+					|| is_numeric($if_note_tomorrow) && $if_note_tomorrow >= 0
+					|| is_numeric($if_not_note_tomorrow) && $if_not_note_tomorrow >= 0
 					|| is_numeric($if_regular_today) && $if_regular_today >= 0
 					|| is_numeric($if_not_regular_today) && $if_not_regular_today >= 0
 					|| is_numeric($if_special_today) && $if_special_today >= 0
@@ -5895,6 +5907,10 @@ class we_are_open
 							$if_not_open_tomorrow_2,
 							$if_open_tomorrow_3,
 							$if_not_open_tomorrow_3,
+							$if_note_today,
+							$if_not_note_today,
+							$if_note_tomorrow,
+							$if_not_note_tomorrow,
 							$if_regular_today,
 							$if_not_regular_today,
 							$if_special_today,
@@ -5936,6 +5952,10 @@ class we_are_open
 								$if_not_open_tomorrow_2,
 								$if_open_tomorrow_3,
 								$if_not_open_tomorrow_3,
+								$if_note_today,
+								$if_not_note_today,
+								$if_note_tomorrow,
+								$if_not_note_tomorrow,
 								$if_regular_today,
 								$if_not_regular_today,
 								$if_special_today,
@@ -6166,12 +6186,48 @@ class we_are_open
 					{
 						if ($lv == 'else')
 						{
+							$if_not_note_today = $if_note_today;
+						}
+						
+						$if_note_today = -1;
+					}
+					elseif ($max == 25)
+					{
+						if ($lv == 'else')
+						{
+							$if_note_today = $if_not_note_today;
+						}
+						
+						$if_not_note_today = -1;
+					}
+					elseif ($max == 26)
+					{
+						if ($lv == 'else')
+						{
+							$if_not_note_tomorrow = $if_note_tomorrow;
+						}
+						
+						$if_note_tomorrow = -1;
+					}
+					elseif ($max == 27)
+					{
+						if ($lv == 'else')
+						{
+							$if_note_tomorrow = $if_not_note_tomorrow;
+						}
+						
+						$if_not_note_tomorrow = -1;
+					}
+					elseif ($max == 28)
+					{
+						if ($lv == 'else')
+						{
 							$if_not_regular_today = $if_regular_today;
 						}
 						
 						$if_regular_today = -1;
 					}
-					elseif ($max == 25)
+					elseif ($max == 29)
 					{
 						if ($lv == 'else')
 						{
@@ -6180,7 +6236,7 @@ class we_are_open
 						
 						$if_not_regular_today = -1;
 					}
-					elseif ($max == 26)
+					elseif ($max == 30)
 					{
 						if ($lv == 'else')
 						{
@@ -6189,7 +6245,7 @@ class we_are_open
 						
 						$if_special_today = -1;
 					}
-					elseif ($max == 27)
+					elseif ($max == 31)
 					{
 						if ($lv == 'else')
 						{
@@ -6198,7 +6254,7 @@ class we_are_open
 						
 						$if_not_special_today = -1;
 					}
-					elseif ($max == 28)
+					elseif ($max == 32)
 					{
 						if ($lv == 'else')
 						{
@@ -6207,7 +6263,7 @@ class we_are_open
 						
 						$if_closure_today = -1;
 					}
-					elseif ($max == 29)
+					elseif ($max == 33)
 					{
 						if ($lv == 'else')
 						{
@@ -6216,7 +6272,7 @@ class we_are_open
 						
 						$if_not_closure_today = -1;
 					}
-					elseif ($max == 30)
+					elseif ($max == 34)
 					{
 						if ($lv == 'else')
 						{
@@ -6225,7 +6281,7 @@ class we_are_open
 						
 						$if_regular_tomorrow = -1;
 					}
-					elseif ($max == 31)
+					elseif ($max == 35)
 					{
 						if ($lv == 'else')
 						{
@@ -6234,7 +6290,7 @@ class we_are_open
 						
 						$if_not_regular_tomorrow = -1;
 					}
-					elseif ($max == 32)
+					elseif ($max == 36)
 					{
 						if ($lv == 'else')
 						{
@@ -6243,7 +6299,7 @@ class we_are_open
 						
 						$if_special_tomorrow = -1;
 					}
-					elseif ($max == 33)
+					elseif ($max == 37)
 					{
 						if ($lv == 'else')
 						{
@@ -6252,7 +6308,7 @@ class we_are_open
 						
 						$if_not_special_tomorrow = -1;
 					}
-					elseif ($max == 34)
+					elseif ($max == 38)
 					{
 						if ($lv == 'else')
 						{
@@ -6261,7 +6317,7 @@ class we_are_open
 						
 						$if_closure_tomorrow = -1;
 					}
-					elseif ($max == 35)
+					elseif ($max == 39)
 					{
 						if ($lv == 'else')
 						{
@@ -6270,7 +6326,7 @@ class we_are_open
 						
 						$if_not_closure_tomorrow = -1;
 					}
-					elseif ($max == 36)
+					elseif ($max == 40)
 					{
 						if ($lv == 'else')
 						{
@@ -6279,7 +6335,7 @@ class we_are_open
 						
 						$if_closure_exists = -1;
 					}
-					elseif ($max == 37)
+					elseif ($max == 41)
 					{
 						if ($lv == 'else')
 						{
@@ -6444,6 +6500,30 @@ class we_are_open
 				$if_not_open_tomorrow_3 = $i;
 				continue;
 			}
+
+			if ($lv == 'if_note_today' || $lv == 'if_today_note')
+			{
+				$if_note_today = $i;
+				continue;
+			}
+			
+			if ($lv == 'if_not_note_today' || $lv == 'if_not_today_note')
+			{
+				$if_not_note_today = $i;
+				continue;
+			}
+			
+			if ($lv == 'if_note_tomorrow' || $lv == 'if_tomorrow_note')
+			{
+				$if_note_tomorrow = $i;
+				continue;
+			}
+			
+			if ($lv == 'if_not_note_tomorrow' || $lv == 'if_not_tomorrow_note')
+			{
+				$if_not_note_tomorrow = $i;
+				continue;
+			}
 			
 			if ($lv == 'if_regular_today' || $lv == 'if_regular_today')
 			{
@@ -6559,6 +6639,10 @@ class we_are_open
 				|| is_numeric($if_not_open_tomorrow_2) && $if_not_open_tomorrow_2 >= 0
 				|| is_numeric($if_open_tomorrow_3) && $if_open_tomorrow_3 >= 0
 				|| is_numeric($if_not_open_tomorrow_3) && $if_not_open_tomorrow_3 >= 0
+				|| is_numeric($if_note_today) && $if_note_today >= 0
+				|| is_numeric($if_not_note_today) && $if_not_note_today >= 0
+				|| is_numeric($if_note_tomorrow) && $if_note_tomorrow >= 0
+				|| is_numeric($if_not_note_tomorrow) && $if_not_note_tomorrow >= 0
 				|| is_numeric($if_regular_today) && $if_regular_today >= 0
 				|| is_numeric($if_not_regular_today) && $if_not_regular_today >= 0
 				|| is_numeric($if_special_today) && $if_special_today >= 0
@@ -6597,6 +6681,10 @@ class we_are_open
 				|| is_array($tomorrow_hours) && count($tomorrow_hours) == 2 && is_numeric($if_not_open_tomorrow_2) && $if_not_open_tomorrow_2 >= 0
 				|| (!is_array($tomorrow_hours) || is_array($tomorrow_hours) && count($tomorrow_hours) != 3) && is_numeric($if_open_tomorrow_3) && $if_open_tomorrow_3 >= 0
 				|| is_array($tomorrow_hours) && count($tomorrow_hours) == 3 && is_numeric($if_not_open_tomorrow_3) && $if_not_open_tomorrow_3 >= 0
+				|| $today_note == NULL && is_numeric($if_note_today) && $if_note_today >= 0
+				|| $today_note != NULL && is_numeric($if_not_note_today) && $if_not_note_today >= 0
+				|| $tomorrow_note == NULL && is_numeric($if_note_tomorrow) && $if_note_tomorrow >= 0
+				|| $tomorrow_note != NULL && is_numeric($if_not_note_tomorrow) && $if_not_note_tomorrow >= 0
 				|| $today_hours_type != NULL && is_numeric($if_regular_today) && $if_regular_today >= 0
 				|| $today_hours_type == NULL && is_numeric($if_not_regular_today) && $if_not_regular_today >= 0
 				|| $today_hours_type != 'special' && is_numeric($if_special_today) && $if_special_today >= 0
@@ -6676,6 +6764,12 @@ class we_are_open
 				continue;
 			}
 			
+			if ($lv == 'today_note' || $lv == 'note_today')
+			{
+				$text[$i] = $today_note;
+				continue;
+			}
+			
 			if ($lv == 'tomorrow_start')
 			{
 				$text[$i] = $tomorrow_start_text;
@@ -6703,6 +6797,12 @@ class we_are_open
 			if ($lv == 'tomorrow_3' || $lv == 'tomorrow_set_3' || $lv == 'tomorrow_hour_3' || $lv == 'tomorrow_hours_3')
 			{
 				$text[$i] = $tomorrow_3_text;
+				continue;
+			}
+			
+			if ($lv == 'tomorrow_note' || $lv == 'note_tomorrow')
+			{
+				$text[$i] = $tomorrow_note;
 				continue;
 			}
 
