@@ -810,7 +810,7 @@ if (!defined('ABSPATH'))
 				</tr>
 				<tr id="parameter-count">
 					<td class="parameter">count</td>
-					<td class="description"><?php _e('Overwrite the default seven-day number of days to cover both shorter and longer periods.', 'opening-hours'); ?></td>
+					<td class="description"><?php _e('Overwrite the default seven-day number of days to cover both shorter and longer periods; up to 400 days for special opening hours.', 'opening-hours'); ?></td>
 					<td class="accepted">1, 2, 3, … 31</td>
 					<td class="default">7</td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
@@ -1343,7 +1343,8 @@ if (!defined('ABSPATH'))
 					<td class="description"><?php _e('Question mark character.', 'opening-hours'); ?></td>
 				</tr>
 				<tr id="code-fullstop">
-					<td class="replacement-code"><?php /* translators: replace with a different word if better suited - currently only accepted values are: period, fullstop, dot or point enclosed with percent character */ _e('&percnt;period&percnt;', 'opening-hours'); ?></td>
+					<td class="replacement-code"><?php /* translators: replace with a different word if better suited - currently only accepted values are: period, fullstop, dot or point enclosed with percent character */
+					echo preg_replace('/\s+/', '_', __('&percnt;period&percnt;', 'opening-hours'));?></td>
 					<td class="description"><?php _e('Period character.', 'opening-hours'); ?></td>
 				</tr>
 			</table>
@@ -1685,7 +1686,7 @@ Finally for regular requests, please <a href="%5$s" class="components-external-l
 		</nav>
 		<div class="entry-content">
 			<h2 id="about-story"><?php esc_html_e('About', 'opening-hours'); ?></h2>
-			<p class="about-story"><?php _e('This is a second plugin I’ve created for the WordPress community — starting with a simple Places API (New) request to retrieve data from <em>Google My Business</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps.', 'opening-hours'); ?></p>
+			<p class="about-story"><?php _e('This is a second plugin I’ve created for the WordPress community — starting with a simple Places API request to retrieve data from <em>Google My Business</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps.', 'opening-hours'); ?></p>
 			<p class="about-story"><?php _e('As with the Google Reviews and Rating plugin, you can use shortcodes in any post, page or use the widget version. There is an extensive list of parameters, conditions and variables to enclose text and HTML elements. I have kept the style sheet minimal to allow for your customizations — as a developer/designer this is what I’d like for all plugins.', 'opening-hours'); ?></p>
 			<p class="about-story"><?php /* translators: %s: refers to the plugin’s support URL */ 
 			echo sprintf(__('This one is my second published plugin for WordPress so I’d appreciate any feedback. So if you have any comments or feature requests, please feel free to <a href="%s" class="components-external-link" target="_blank">get in touch</a> with me.', 'opening-hours'), 'https://designextreme.com/wordpress/we-are-open/'); ?></p>
@@ -1726,7 +1727,12 @@ Finally for regular requests, please <a href="%5$s" class="components-external-l
 			<div class="widget plugin-social">
 				<h3 id="about-follow" id="about-follow" class="widget-title"><?php esc_html_e('Follow Us', 'opening-hours'); ?></h3>
 				<p class="aside"><?php esc_html_e('Want some easy-to-follow pro tips with examples? We will help you to make your reviews really stand out. Feature requests are welcome too.', 'opening-hours'); ?></p>
-				<p><a class="button" href="https://twitter.com/designextreme_"><span class="icon icon-x"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 1668.56 1221.19"><path fill="currentColor" d="M336.33 142.25 722.72 658.9l-388.83 420.05h87.51l340.42-367.76 275.05 367.76h297.8l-408.13-545.7 361.92-390.99h-87.51l-313.51 338.7-253.31-338.7h-297.8zm128.69 64.46h136.81l604.13 807.76h-136.81L465.02 206.71z"/></svg></span> <?php esc_html_e('Follow Us', 'opening-hours'); ?></a></p>			
+				<p>
+					<a class="button" href="https://twitter.com/designextreme_" title="<?php esc_attr_e('Follow us on X', 'opening-hours'); ?>"><span class="icon icon-x"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 1668.56 1221.19" fill="currentColor"><path d="M336.33 142.25 722.72 658.9l-388.83 420.05h87.51l340.42-367.76 275.05 367.76h297.8l-408.13-545.7 361.92-390.99h-87.51l-313.51 338.7-253.31-338.7h-297.8zm128.69 64.46h136.81l604.13 807.76h-136.81L465.02 206.71z"/></svg></span> <?php esc_html_e('Follow Us', 'opening-hours'); ?></a>
+					<a class="button" href="https://bsky.app/profile/designextreme.bsky.social" title="<?php esc_attr_e('Follow us on Bluesky', 'opening-hours'); ?>"><span class="icon icon-bluesky"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 530" fill="currentColor">
+  <path d="M135.72 44.03C202.216 93.951 273.74 195.17 300 249.49c26.262-54.316 97.782-155.54 164.28-205.46C512.26 8.009 590-19.862 590 68.825c0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.3797-3.6904-10.832-3.7077-7.8964-.0174-2.9357-1.1937.51669-3.7077 7.8964-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.26 82.697-152.22-67.108 11.421-142.55-7.4491-163.25-81.433-5.9562-21.282-16.111-152.36-16.111-170.07 0-88.687 77.742-60.816 125.72-24.795z"/>
+</svg></span> <?php esc_html_e('Follow Us', 'opening-hours'); ?></a>
+				</p>
 			</div>
 			<div class="widget plugin-ratings">
 				<h3 id="about-rate" class="widget-title"><?php esc_html_e('Rate Us', 'opening-hours'); ?></h3>

@@ -898,6 +898,7 @@ function open_admin(popstate) {
 		});
 			
 		weekdays = (jQuery('#weekdays', '#open-general').val().length) ? jQuery('#weekdays', '#open-general').val().split(',') : [];
+		weekend = (jQuery('#weekend', '#open-general').val().length) ? jQuery('#weekend', '#open-general').val().split(',') : [];
 
 		jQuery(':checkbox', jQuery('#weekdays', '#open-general').closest('td')).each(function() {
 			jQuery(this).prop('checked', (weekdays.indexOf(String(jQuery(this).attr('value'))) >= 0));
@@ -916,11 +917,23 @@ function open_admin(popstate) {
 				jQuery(':checkbox:checked', jQuery('#weekdays', '#open-general').closest('td')).each(function() {
 					weekdays.push(jQuery(this).val());
 				});
+
 				jQuery('#weekdays', '#open-general').val(weekdays.join(','));
+
+				if (weekend.length + weekdays.length < 7) {
+					jQuery(':checkbox', jQuery('#weekend', '#open-general').closest('td')).each(function() {
+						if (jQuery(this).is(':checked') || jQuery(jQuery(this).attr('id').replace(/^[^\d]+(\d+)$/i, '#weekdays-$1')).is(':checked')) {
+							return;
+						}
+
+						jQuery(this).prop('checked', true).attr('checked', true);
+						weekend.push(jQuery(this).val());
+					});
+
+					jQuery('#weekend', '#open-general').val(weekend.join(','));
+				}
 			});
 		});
-		
-		weekend = (jQuery('#weekend', '#open-general').val().length) ? jQuery('#weekend', '#open-general').val().split(',') : [];
 
 		jQuery(':checkbox', jQuery('#weekend', '#open-general').closest('td')).each(function() {
 			jQuery(this).prop('checked', (weekend.indexOf(String(jQuery(this).attr('value'))) >= 0));
@@ -939,7 +952,21 @@ function open_admin(popstate) {
 				jQuery(':checkbox:checked', jQuery('#weekend', '#open-general').closest('td')).each(function() {
 					weekend.push(jQuery(this).val());
 				});
+				
 				jQuery('#weekend', '#open-general').val(weekend.join(','));
+
+				if (weekend.length + weekdays.length < 7) {
+					jQuery(':checkbox', jQuery('#weekdays', '#open-general').closest('td')).each(function() {
+						if (jQuery(this).is(':checked') || jQuery(jQuery(this).attr('id').replace(/^[^\d]+(\d+)$/i, '#weekend-$1')).is(':checked')) {
+							return;
+						}
+
+						jQuery(this).prop('checked', true).attr('checked', true);
+						weekdays.push(jQuery(this).val());
+					});
+					
+					jQuery('#weekdays', '#open-general').val(weekdays.join(','));
+				}
 			});
 		});
 		

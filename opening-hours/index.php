@@ -146,11 +146,11 @@ class we_are_open
 		);
 		
 		$this->consolidation_types = array(
-			NULL => __('None', 'opening-hours'),
-			'weekdays' => __('Weekdays only', 'opening-hours'),
-			'weekend' => __('Weekend only', 'opening-hours'),
-			'separate' => __('Weekdays and weekend, separately', 'opening-hours'),
-			'all' => __('All days', 'opening-hours')
+			NULL => 'None',
+			'weekdays' => 'Weekdays only',
+			'weekend' => 'Weekend only',
+			'separate' => 'Weekdays and weekend, separately',
+			'all' => 'All days'
 		);
 		
 		$this->admin_init();
@@ -831,6 +831,13 @@ class we_are_open
 		
 		$this->set_localized_dates();
 		
+		$this->consolidation_types = array(
+			NULL => __('None', 'opening-hours'),
+			'weekdays' => __('Weekdays only', 'opening-hours'),
+			'weekend' => __('Weekend only', 'opening-hours'),
+			'separate' => __('Weekdays and weekend, separately', 'opening-hours'),
+			'all' => __('All days', 'opening-hours')
+		);
 		$this->business_types = array(
 			'AnimalShelter' => __('Animal Shelter', 'opening-hours'),
 			'ArchiveOrganization' => __('Archive Organization', 'opening-hours'),
@@ -952,16 +959,16 @@ class we_are_open
 			{
 				if (preg_match('/^PERMISSION|[\s_-]?DENIED$/i', $status))
 				{
-					$html = '<div class="notice notice-error visible is-dismissible">
+					$html = '<div class="notice notice-error visible is-dismissible permission-denied">
 	<p>'
 				/* translators: %s refers to a URL to resolve errors and should remain untouched */
-				. sprintf(__('<strong>Google API Error:</strong> Please enable <a href="%s" target="_blank">Places API (New)</a> and add this to the API Key Restrictions.', 'opening-hours'), 'https://console.cloud.google.com/apis/library/places-backend.googleapis.com?q=places+api+(new)') . '</p>
+				. sprintf(__('<strong>Google API Error:</strong> Please enable <a href="%s" target="_blank">Places API (New)</a> and add this to the API Key Restrictions.', 'opening-hours'), 'https://console.cloud.google.com/apis/library/places.googleapis.com?invt=Ab25rQ') . '</p>
 </div>
 ';
 				}
 				else
 				{
-					$html = '<div class="notice notice-error visible is-dismissible">
+					$html = '<div class="notice notice-error visible is-dismissible api-error">
 	<p>' . $this->google_data['error']['message'] . '</p>
 </div>
 ';
@@ -971,7 +978,7 @@ class we_are_open
 			{
 				if (preg_match('/^(?:PERMISSION|REQUEST)[\s_-]?DENIED$/i', $status))
 				{
-					$html = '<div class="notice notice-error visible is-dismissible">
+					$html = '<div class="notice notice-error visible is-dismissible request-denied">
 	<p>'
 				/* translators: %s refers to a URL to resolve errors and should remain untouched */
 				. sprintf(__('<strong>Google API Error:</strong> Your Google API Key is not valid for this request and permission is denied. Please check your Google <a href="%s" target="_blank">API Key</a>.', 'opening-hours'), 'https://developers.google.com/maps/documentation/javascript/get-api-key') . '</p>
@@ -980,7 +987,7 @@ class we_are_open
 				}
 				elseif (preg_match('/^INVALID[\s_-]?REQUEST$/i', $status))
 				{
-					$html = '<div class="notice notice-error visible is-dismissible">
+					$html = '<div class="notice notice-error visible is-dismissible invalid-request">
 	<p>'
 				/* translators: %s refers to a URL to resolve errors and should remain untouched */
 				. sprintf(__('<strong>Google API Error:</strong> Google has returned an invalid request error. Please check your <a href="%s" target="_blank">Place ID</a>.', 'opening-hours'), 'https://developers.google.com/places/place-id') . '</p>
@@ -989,7 +996,7 @@ class we_are_open
 				}
 				elseif (preg_match('/^NOT[\s_-]?FOUND$/i', $status))
 				{
-					$html = '<div class="notice notice-error visible is-dismissible">
+					$html = '<div class="notice notice-error visible is-dismissible not-found">
 	<p>'
 				/* translators: %s refers to a URL to resolve errors and should remain untouched */
 				. sprintf(__('<strong>Google API Error:</strong> Google has not found data for the current Place ID. Please ensure you search for a specific business location; not a region or coordinates using the <a href="%s" target="_blank">Place ID Finder</a>.', 'opening-hours'), 'https://developers.google.com/places/place-id') . '</p>
@@ -998,8 +1005,8 @@ class we_are_open
 				}
 				else
 				{
-					$html = '<div class="notice notice-error visible is-dismissible">
-	<p>' . ((isset($this->google_data['error_message'])) ? preg_replace('/\s+rel="nofollow"/i', ' target="_blank"', '<strong>' . __('Google API Error:', 'opening-hours') . '</strong> ' . $this->google_data['error_message']) : __('<strong>Google API Error:</strong> Unknown error returned by the Google Places API.', 'opening-hours')) . '</p>
+					$html = '<div class="notice notice-error visible is-dismissible general-error">
+	<p>' . ((isset($this->google_data['error_message'])) ? preg_replace('/\s+rel="nofollow"/i', ' target="_blank"', '<strong>' . __('Google API Error:', 'opening-hours') . '</strong> ' . $this->google_data['error_message']) : __('<strong>Google API Error:</strong> Unknown error returned by the API.', 'opening-hours')) . '</p>
 </div>
 ';
 				}
@@ -1142,7 +1149,7 @@ class we_are_open
 			{
 				$google_sync = 0;
 			}
-
+			
 			update_option($this->prefix . 'structured_data', $structured_data, 'yes');
 			update_option($this->prefix . 'google_sync', $google_sync, 'yes');
 			update_option($this->prefix . 'name', $name, 'yes');
@@ -1277,7 +1284,7 @@ class we_are_open
 
 			$places_api = (isset($this->google_data['displayName']) && isset($this->google_data['regularOpeningHours']) && is_array($this->google_data['displayName']) && is_array($this->google_data['regularOpeningHours'])) ? 1 : 0;
 
-			if ($places_api == 1)
+			if ($places_api == 1 && is_array($this->special))
 			{
 				foreach (array_keys($this->special) as $timestamp)
 				{
@@ -1953,13 +1960,39 @@ class we_are_open
 					continue;
 				}
 
-				$weekday = intval($a['open']['day']);
+				$weekday_open = intval($a['open']['day']);
+				$weekday_close = intval($a['close']['day']);
+				$weekday_gaps = array();
+
+				if ($google_sync % 2 == 1 && $weekday_close != $weekday_open)
+				{
+					for ($weekday_gap = $weekday_open; $weekday_gap < 14; $weekday_gap++)
+					{
+						if (array_key_exists($weekday_gap % 7, $opening_hours['regular']) || ($weekday_gap == $weekday_open && intval($a['open']['hour']) > 0 || intval($a['open']['minute']) > 0))
+						{
+							continue;
+						}
+
+						if ($weekday_gap % 7 == $weekday_close)
+						{
+							break;
+						}
+
+						$opening_hours['regular'][$weekday_gap % 7] = array(
+							'closed' => FALSE,
+							'hours_24' => TRUE,
+							'hours' => NULL
+						);
+
+						$weekday_gaps[] = $weekday_gap % 7;
+					}
+				}
 				
-				if (!array_key_exists($weekday, $opening_hours['regular']))
+				if (!array_key_exists($weekday_open, $opening_hours['regular']) || in_array($weekday_open, $weekday_gaps))
 				{
 					if (!array_key_exists('close', $a) || !array_key_exists('day', $a['close']) || (!array_key_exists('hour', $a['close']) || isset($a['close']['hour']) && !is_numeric($a['close']['hour']) || is_numeric($a['close']['hour']) && $a['close']['hour'] < 0 || $a['close']['hour'] > 23) && (!array_key_exists('time', $a['close']) || isset($a['close']['time']) && !preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['close']['time'])))
 					{
-						$opening_hours['regular'][$weekday] = array(
+						$opening_hours['regular'][$weekday_open] = array(
 							'closed' => FALSE,
 							'hours_24' => TRUE,
 							'hours' => NULL
@@ -1968,7 +2001,7 @@ class we_are_open
 						continue;
 					}
 					
-					$opening_hours['regular'][$weekday] = array(
+					$opening_hours['regular'][$weekday_open] = array(
 						'closed' => FALSE,
 						'hours_24' => FALSE,
 						'hours' => array()
@@ -1977,12 +2010,12 @@ class we_are_open
 
 				if (isset($a['close']['hour']))
 				{
-					$opening_hours['regular'][$weekday]['hours'][] = array(str_pad(strval($a['open']['hour']), 2, '0', STR_PAD_LEFT) . ':' . str_pad(strval($a['open']['minute']), 2, '0', STR_PAD_LEFT), str_pad(strval($a['close']['hour']), 2, '0', STR_PAD_LEFT) . ':' . str_pad(strval($a['close']['minute']), 2, '0', STR_PAD_LEFT));
+					$opening_hours['regular'][$weekday_open]['hours'][] = array(str_pad(strval($a['open']['hour']), 2, '0', STR_PAD_LEFT) . ':' . str_pad(strval($a['open']['minute']), 2, '0', STR_PAD_LEFT), str_pad(strval($a['close']['hour']), 2, '0', STR_PAD_LEFT) . ':' . str_pad(strval($a['close']['minute']), 2, '0', STR_PAD_LEFT));
 
 					continue;
 				}
 				
-				$opening_hours['regular'][$weekday]['hours'][] = array(((preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['open']['time'], $m)) ? $m[1] . ':'. $m[2] : NULL), ((preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['close']['time'], $m)) ? $m[1] . ':'. $m[2] : NULL));
+				$opening_hours['regular'][$weekday_open]['hours'][] = array(((preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['open']['time'], $m)) ? $m[1] . ':'. $m[2] : NULL), ((preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['close']['time'], $m)) ? $m[1] . ':'. $m[2] : NULL));
 			}
 
 			if ($google_sync > 1 && is_array($periods['current']) && is_array($periods['special']) && !empty($periods['special']))
@@ -2044,11 +2077,11 @@ class we_are_open
 		
 		if ($google_sync % 2 == 1)
 		{
-			foreach (array_keys($this->days) as $weekday)
+			foreach (array_keys($this->days) as $weekday_open)
 			{
-				if (!array_key_exists($weekday, $opening_hours['regular']))
+				if (!array_key_exists($weekday_open, $opening_hours['regular']))
 				{
-					$opening_hours['regular'][$weekday] = array(
+					$opening_hours['regular'][$weekday_open] = array(
 						'closed' => !$open_always,
 						'hours_24' => $open_always,
 						'hours' => NULL
@@ -2305,8 +2338,8 @@ class we_are_open
 					strtotime($closure[1])
 				);
 				sort($closure_timestrings);
-				$day_start_offset = round(($closure_timestrings[0] - $this->offset - $this->today_timestamp)/DAY_IN_SECONDS);
-				$day_end_display_offset = round(($closure_timestrings[1] - $this->offset - $this->today_timestamp)/DAY_IN_SECONDS);
+				$day_start_offset = round(($closure_timestrings[0] - $this->offset - $this->today_timestamp) / DAY_IN_SECONDS);
+				$day_end_display_offset = round(($closure_timestrings[1] - $this->offset - $this->today_timestamp) / DAY_IN_SECONDS);
 				$day_end_offset = $day_end_display_offset + 1;
 				$closure_date_start = $closure_date_start_display = $this->get_day_timestamp($day_start_offset);
 				$closure_date_end = $this->get_day_timestamp($day_end_offset);
@@ -2871,12 +2904,12 @@ class we_are_open
 				if (is_numeric($start))
 				{
 					$end = ($end - WEEK_IN_SECONDS - $start > YEAR_IN_SECONDS) ? $start + YEAR_IN_SECONDS + WEEK_IN_SECONDS : $end;
-					$count = ceil(($end - $start)/DAY_IN_SECONDS);
+					$count = ceil(($end - $start) / DAY_IN_SECONDS);
 				}
 				else
 				{
 					$end = ($end - WEEK_IN_SECONDS - $this->today_timestamp > YEAR_IN_SECONDS) ? $this->today_timestamp + YEAR_IN_SECONDS + WEEK_IN_SECONDS : $end;
-					$count = ceil(($end - $this->today_timestamp)/DAY_IN_SECONDS);
+					$count = ceil(($end - $this->today_timestamp) / DAY_IN_SECONDS);
 				}
 			}
 			else
@@ -2884,12 +2917,12 @@ class we_are_open
 				if (is_numeric($start))
 				{
 					$end = ($end - $start > 31 * DAY_IN_SECONDS) ? $this->today_timestamp + 31 * DAY_IN_SECONDS : $end;
-					$count = ceil(($end - $start)/DAY_IN_SECONDS);
+					$count = ceil(($end - $start) / DAY_IN_SECONDS);
 				}
 				else
 				{
 					$end = ($end - $this->today_timestamp > 31 * DAY_IN_SECONDS) ? $this->today_timestamp + 31 * DAY_IN_SECONDS : $end;
-					$count = ceil(($end - $this->today_timestamp)/DAY_IN_SECONDS);
+					$count = ceil(($end - $this->today_timestamp) / DAY_IN_SECONDS);
 				}
 			}
 		}
@@ -2902,7 +2935,7 @@ class we_are_open
 		$days = array();
 		$closed_show = (!isset($closed_show) || isset($closed_show) && $closed_show);
 		$week_start = (isset($week_start) && is_numeric($week_start)) ? (($week_start < 0) ? (($week_start == -2) ? $this->yesterday : $this->today) : $week_start) : $this->week_start;
-		$start_modifier = (is_numeric($start) && abs(round(($start - $this->today_timestamp)/DAY_IN_SECONDS)) <= 731) ? round(($start - $this->today_timestamp)/DAY_IN_SECONDS) : 0;
+		$start_modifier = (is_numeric($start) && abs(round(($start - $this->today_timestamp) / DAY_IN_SECONDS)) <= 731) ? round(($start - $this->today_timestamp) / DAY_IN_SECONDS) : 0;
 		
 		for ($i = (($start_modifier != 0 || $this->today == $week_start) ? 0 : -7); $i <= ((!$regular && ($special || $closure)) ? 372 : 31); $i++)
 		{
@@ -4776,7 +4809,7 @@ class we_are_open
 		$week_start = (is_numeric($week_start) && $week_start < 0 || is_string($week_start) && preg_match('/^(?:today|now|yesterday|-\d+)$/i', $week_start)) ? ((is_numeric($week_start) && $week_start == -2 || is_string($week_start) && preg_match('/^(?:yesterday|-2)$/i', $week_start)) ? $this->yesterday : $this->today) : ((is_numeric($week_start) && $week_start >= 0 && $week_start <= 6) ? intval($week_start) : $this->week_start);
 		$start = (is_string($start) && preg_match('#^(\d{4})[ .-/](\d{1,2})[ .-/](\d{1,2})$#', $start, $m)) ? mktime(0, 0, ($this->offset * -1), $m[2], $m[3], $m[1]) : ((is_numeric($start) && $start >= -91 && $start <= 724) ? intval($start) : NULL);
 		$end = (is_string($end) && preg_match('#^(\d{4})[ .-/](\d{1,2})[ .-/](\d{1,2})$#', $end, $m)) ? mktime(0, 0, ($this->offset * -1), $m[2], $m[3] + 1, $m[1]) : ((is_numeric($end) && $end >= -7 && $end <= 731) ? intval($end) : NULL);
-		$count = (is_numeric($count) && $count >= 1 && $count <= ((!$regular && $special) ? 366 : 31)) ? intval($count) : NULL;
+		$count = (is_numeric($count) && $count >= 1 && $count <= ((!$regular && $special) ? 400 : 31)) ? intval($count) : NULL;
 		$update_immediate = (array_key_exists('update', $atts) && is_string($update) && preg_match('/^(?:immediate|instant)(?:ly)?$/i', $update));
 		$update = ($update_immediate || array_key_exists('update', $atts) && (is_bool($update) && $update || is_string($update) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $update)));
 		$reload = ($update && array_key_exists('reload', $atts) && (is_bool($reload) && $reload || is_string($reload) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $reload)));
@@ -5567,7 +5600,7 @@ class we_are_open
 		
 		$start = (is_string($start) && preg_match('#^(\d{4})[ .-/](\d{1,2})[ .-/](\d{1,2})$#', $start, $m)) ? mktime(0, 0, ($this->offset * -1), $m[2], $m[3], $m[1]) : ((is_numeric($start) && $start >= -91 && $start <= 724) ? intval($start) : NULL);
 		$end = (is_string($end) && preg_match('#^(\d{4})[ .-/](\d{1,2})[ .-/](\d{1,2})$#', $end, $m)) ? mktime(0, 0, ($this->offset * -1), $m[2], $m[3] + 1, $m[1]) : ((is_numeric($end) && $end >= -7 && $end <= 731) ? intval($end) : NULL);
-		$count = (is_numeric($count) && $count >= 1 && $count <= 366) ? intval($count) : NULL;
+		$count = (is_numeric($count) && $count >= 1 && $count <= 400) ? intval($count) : NULL;
 		$week_start = (is_numeric($week_start) && $week_start < 0 || is_string($week_start) && preg_match('/^(?:today|now|yesterday|-\d+)$/i', $week_start)) ? ((is_numeric($week_start) && $week_start == -2 || is_string($week_start) && preg_match('/^(?:yesterday|-2)$/i', $week_start)) ? $this->yesterday : $this->today) : ((is_numeric($week_start) && $week_start >= 0 && $week_start <= 6) ? intval($week_start) : $this->week_start);		
 		$empty = (is_bool($empty) && $empty || is_string($empty) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $empty));
 		$tag = (array_key_exists('tag', $atts) && is_string($tag) && preg_match('/^(?:span|div|p|section|aside|em|strong|abbr|label|h[123456]|li)$/', trim(strtolower($tag)))) ? preg_replace('/[^0-9a-z]/', '', trim(strtolower($tag))) : ((!array_key_exists('tag', $atts) && (!array_key_exists('update', $atts) || array_key_exists('update', $atts) && $update)) ? (($this->phrasing_content($content)) ? 'span' : 'div') : NULL);
@@ -5649,79 +5682,88 @@ class we_are_open
 
 		$this->set_localized_dates();
 		
-		$text = array();
+		$additional_day_count = 1;
+		$now = NULL;
+		$output = array();
 		$logic_variables = array();
 		$logic_parameters = array();
-		$if_open_now = -1;
-		$if_closed_now = -1;
-		$if_open_today = -1;
-		$if_closed_today = -1;
-		$if_open_later = -1;
-		$if_not_open_later = -1;
-		$if_open_tomorrow = -1;
-		$if_closed_tomorrow = -1;
-		$if_hours_24_today = -1;
-		$if_not_hours_24_today = -1;
-		$if_hours_24_tomorrow = -1;
-		$if_not_hours_24_tomorrow = -1;
-		$if_open_today_1 = -1;
-		$if_not_open_today_1 = -1;
-		$if_open_today_2 = -1;
-		$if_not_open_today_2 = -1;
-		$if_open_today_3 = -1;
-		$if_not_open_today_3 = -1;
-		$if_open_tomorrow_1 = -1;
-		$if_not_open_tomorrow_1 = -1;
-		$if_open_tomorrow_2 = -1;
-		$if_not_open_tomorrow_2 = -1;
-		$if_open_tomorrow_3 = -1;
-		$if_not_open_tomorrow_3 = -1;
-		$if_note_today = -1;
-		$if_not_note_today = -1;
-		$if_note_tomorrow = -1;
-		$if_not_note_tomorrow = -1;
-		$if_regular_today = -1;
-		$if_not_regular_today = -1;
-		$if_special_today = -1;
-		$if_not_special_today = -1;
-		$if_closure_today = -1;
-		$if_not_closure_today = -1;
-		$if_regular_tomorrow = -1;
-		$if_not_regular_tomorrow = -1;
-		$if_special_tomorrow = -1;
-		$if_not_special_tomorrow = -1;
-		$if_closure_tomorrow = -1;
-		$if_not_closure_tomorrow = -1;
-		$if_closure_exists = -1;
-		$if_not_closure_exists = -1;
-		$now = $this->hours_string(array(array(wp_date("H:i", $this->current_timestamp), '00:00')), FALSE, FALSE, NULL, 'start', $time_preferences);
-		$today_closed = NULL;
-		$today_hours_24 = NULL;
-		$today_hours = NULL;
-		$today_end = NULL;
-		$today_text = NULL;
-		$today_start_text = NULL;
-		$today_end_text = NULL;
-		$today_next_text = NULL;
-		$today_1_text = NULL;
-		$today_2_text = NULL;
-		$today_3_text = NULL;
-		$today_name = NULL;
-		$today_note = NULL;
-		$today_hours_type = NULL;
-		$tomorrow_closed = NULL;
-		$tomorrow_hours_24 = NULL;
-		$tomorrow_hours = NULL;
-		$tomorrow_start = NULL;
-		$tomorrow_text = NULL;
-		$tomorrow_start_text = NULL;
-		$tomorrow_end_text = NULL;
-		$tomorrow_1_text = NULL;
-		$tomorrow_2_text = NULL;
-		$tomorrow_3_text = NULL;
-		$tomorrow_name = NULL;
-		$tomorrow_note = NULL;
-		$tomorrow_hours_type = NULL;
+		$additional_days = array();
+		$strings = array();
+		$logic_aliases = array(
+			'open_now',
+			'closed_now',
+			'open_today',
+			'closed_today',
+			'open_later',
+			'not_open_later',
+			'open_tomorrow',
+			'closed_tomorrow',
+			'hours_24_today',
+			'not_hours_24_today',
+			'hours_24_tomorrow',
+			'not_hours_24_tomorrow',
+			'open_today_1',
+			'not_open_today_1',
+			'open_today_2',
+			'not_open_today_2',
+			'open_today_3',
+			'not_open_today_3',
+			'open_tomorrow_1',
+			'not_open_tomorrow_1',
+			'open_tomorrow_2',
+			'not_open_tomorrow_2',
+			'open_tomorrow_3',
+			'not_open_tomorrow_3',
+			'note_today',
+			'not_note_today',
+			'note_tomorrow',
+			'not_note_tomorrow',
+			'regular_today',
+			'not_regular_today',
+			'special_today',
+			'not_special_today',
+			'closure_today',
+			'not_closure_today',
+			'regular_tomorrow',
+			'not_regular_tomorrow',
+			'special_tomorrow',
+			'not_special_tomorrow',
+			'closure_tomorrow',
+			'not_closure_tomorrow',
+			'closure_exists',
+			'not_closure_exists',
+		);
+		$logic = array_fill_keys($logic_aliases, -1);
+
+		for ($di = 0; $di < $additional_day_count + 2; $di++)
+		{
+			$strings[$di] = array(
+				'hours_type' => NULL,
+				'closed' => NULL,
+				'hours_24' => NULL,
+				'hours' => NULL,
+				'end' => NULL,
+				'text' => NULL,
+				'start_text' => NULL,
+				'end_text' => NULL,
+				'text_1' => NULL,
+				'text_2' => NULL,
+				'text_3' => NULL,
+				'name' => NULL,
+				'note' => NULL,
+			);
+
+			if ($di < 2)
+			{
+				continue;
+			}
+
+			$timestamp = $this->get_day_timestamp($di);
+			$additional_days[$di] = array(
+				'timestamp' => $timestamp,
+				'day' => wp_date("w", $timestamp),
+			);
+		}
 		
 		list($open_now, $seconds_to_change) = $this->open_change();
 		$closed_now = !$open_now;
@@ -5729,44 +5771,66 @@ class we_are_open
 		
 		foreach (array_keys($this->days) as $d)
 		{
-			if ($this->today != $d && $this->tomorrow != $d)
+			if ($this->today != $d && $this->tomorrow != $d && !in_array($d, array_column($additional_days, 'day')))
 			{
 				continue;
 			}
+
+			$di = NULL;
 
 			if ($this->today == $d)
 			{
-				$today_hours_type = (!empty($this->closure) && $this->today_timestamp >= $this->closure['start'] && $this->today_timestamp < $this->closure['end']) ? 'closure' : ((is_array($this->special) && array_key_exists($this->today_timestamp, $this->special)) ? 'special' : NULL);
-				$a = ($today_hours_type == 'closure') ? array('closed' => TRUE) : (($today_hours_type == 'special') ? $this->special[$this->today_timestamp] : ((isset($this->regular[$d])) ? $this->regular[$d] : array()));
-				$today_closed = (empty($a) || !empty($a) && isset($a['closed']) && $a['closed']);
-				$today_hours_24 = (!$today_closed && isset($a['hours_24']) && $a['hours_24']);
-				$today_hours = (!$today_closed && isset($a['hours']) && is_array($a['hours'])) ? $a['hours'] : array();
-				$today_text = $this->hours_string($today_hours, $today_closed, $today_hours_24, NULL, 'text', $time_preferences);
-				$today_start_text = $this->hours_string($today_hours, $today_closed, $today_hours_24, NULL, 'start', $time_preferences);
-				$today_end_text = $this->hours_string($today_hours, $today_closed, $today_hours_24, NULL, 'end', $time_preferences);
-				$today_name = $this->days[$d];
-				$open_later = (!$today_closed && !$open_now && $this->current_timestamp + $seconds_to_change < $this->tomorrow_timestamp);
-				$today_next_text = $this->hours_string($today_hours, (!$open_now && ($today_closed || !$open_later)), $today_hours_24, NULL, 'next', $time_preferences);
-				$today_1_text = (!$today_closed && !$today_hours_24 && count($today_hours) >= 1) ? $this->hours_string(array($today_hours[0]), $today_closed, $today_hours_24, NULL, 'text', $time_preferences) : NULL;
-				$today_2_text = (!$today_closed && !$today_hours_24 && count($today_hours) >= 2) ? $this->hours_string(array($today_hours[1]), $today_closed, $today_hours_24, NULL, 'text', $time_preferences) : NULL;
-				$today_3_text = (!$today_closed && !$today_hours_24 && count($today_hours) >= 3) ? $this->hours_string(array($today_hours[2]), $today_closed, $today_hours_24, NULL, 'text', $time_preferences) : NULL;
-				$today_note = ($today_hours_type == 'special' && isset($this->special[$this->today_timestamp]) && isset($this->special[$this->today_timestamp]['note'])) ? $this->special[$this->today_timestamp]['note'] : NULL;
-				continue;
+				$di = 0;
+				$strings[$di]['hours_type'] = (!empty($this->closure) && $this->today_timestamp >= $this->closure['start'] && $this->today_timestamp < $this->closure['end']) ? 'closure' : ((is_array($this->special) && array_key_exists($this->today_timestamp, $this->special)) ? 'special' : NULL);
+				$a = ($strings[$di]['hours_type'] == 'closure') ? array('closed' => TRUE) : (($strings[$di]['hours_type'] == 'special') ? $this->special[$this->today_timestamp] : ((isset($this->regular[$d])) ? $this->regular[$d] : array()));
+				$strings[$di]['closed'] = (empty($a) || !empty($a) && isset($a['closed']) && $a['closed']);
+				$strings[$di]['hours'] = (!$strings[$di]['closed'] && isset($a['hours']) && is_array($a['hours'])) ? $a['hours'] : array();
+				$strings[$di]['hours_24'] = (!$strings[$di]['closed'] && isset($a['hours_24']) && $a['hours_24']);
+				$open_later = (!$strings[$di]['closed'] && !$open_now && $this->current_timestamp + $seconds_to_change < $this->tomorrow_timestamp);
+				$strings[$di]['next_text'] = $this->hours_string($strings[$di]['hours'], (!$open_now && ($strings[$di]['closed'] || !$open_later)), $strings[$di]['hours_24'], NULL, 'next', $time_preferences);
+				$strings[$di]['note'] = ($strings[$di]['hours_type'] == 'special' && isset($this->special[$this->today_timestamp]) && isset($this->special[$this->today_timestamp]['note'])) ? $this->special[$this->today_timestamp]['note'] : NULL;
+			}
+			else
+			{
+				if ($this->tomorrow == $d)
+				{
+					$di = 1;
+					$timestamp = $this->tomorrow_timestamp;
+				}
+				else
+				{
+					foreach ($additional_days as $di => $a)
+					{
+						if ($a['day'] != $d)
+						{
+							continue;
+						}
+
+						$timestamp = $a['timestamp'];
+						break;
+					}
+				}
+
+				if (!is_numeric($di))
+				{
+					continue;
+				}
+
+				$strings[$di]['hours_type'] = (!empty($this->closure) && $timestamp >= $this->closure['start'] && $timestamp < $this->closure['end']) ? 'closure' : ((is_array($this->special) && array_key_exists($timestamp, $this->special)) ? 'special' : NULL);
+				$a = ($strings[$di]['hours_type'] == 'closure') ? array('closed' => TRUE) : (($strings[$di]['hours_type'] == 'special') ? $this->special[$timestamp] : ((isset($this->regular[$d])) ? $this->regular[$d] : array()));
+				$strings[$di]['closed'] = (empty($a) || !empty($a) && isset($a['closed']) && $a['closed']);
+				$strings[$di]['hours'] = (!$strings[$di]['closed'] && isset($a['hours']) && is_array($a['hours'])) ? $a['hours'] : array();
+				$strings[$di]['hours_24'] = (!$strings[$di]['closed'] && isset($a['hours_24']) && $a['hours_24']);
+				$strings[$di]['note'] = ($strings[$di]['hours_type'] == 'special' && isset($this->special[$timestamp]) && isset($this->special[$timestamp]['note'])) ? $this->special[$timestamp]['note'] : NULL;
 			}
 
-			$tomorrow_hours_type = (!empty($this->closure) && $this->tomorrow_timestamp >= $this->closure['start'] && $this->tomorrow_timestamp < $this->closure['end']) ? 'closure' : ((is_array($this->special) && array_key_exists($this->tomorrow_timestamp, $this->special)) ? 'special' : NULL);
-			$a = ($tomorrow_hours_type == 'closure') ? array('closed' => TRUE) : (($tomorrow_hours_type == 'special') ? $this->special[$this->tomorrow_timestamp] : ((isset($this->regular[$d])) ? $this->regular[$d] : array()));
-			$tomorrow_closed = (empty($a) || !empty($a) && isset($a['closed']) && $a['closed']);
-			$tomorrow_hours_24 = (!$tomorrow_closed && isset($a['hours_24']) && $a['hours_24']);
-			$tomorrow_hours = (!$tomorrow_closed && isset($a['hours']) && is_array($a['hours'])) ? $a['hours'] : array();
-			$tomorrow_text = $this->hours_string($tomorrow_hours, $tomorrow_closed, $tomorrow_hours_24, NULL, 'text', $time_preferences);
-			$tomorrow_start_text = $this->hours_string($tomorrow_hours, $tomorrow_closed, $tomorrow_hours_24, NULL, 'start', $time_preferences);
-			$tomorrow_end_text = $this->hours_string($tomorrow_hours, $tomorrow_closed, $tomorrow_hours_24, NULL, 'end', $time_preferences);
-			$tomorrow_name = $this->days[$d];
-			$tomorrow_1_text = (!$tomorrow_closed && !$tomorrow_hours_24 && count($tomorrow_hours) >= 1) ? $this->hours_string(array($tomorrow_hours[0]), $tomorrow_closed, $tomorrow_hours_24, NULL, 'text', $time_preferences) : NULL;
-			$tomorrow_2_text = (!$tomorrow_closed && !$tomorrow_hours_24 && count($tomorrow_hours) >= 2) ? $this->hours_string(array($tomorrow_hours[1]), $tomorrow_closed, $tomorrow_hours_24, NULL, 'text', $time_preferences) : NULL;
-			$tomorrow_3_text = (!$tomorrow_closed && !$tomorrow_hours_24 && count($tomorrow_hours) >= 3) ? $this->hours_string(array($tomorrow_hours[2]), $tomorrow_closed, $tomorrow_hours_24, NULL, 'text', $time_preferences) : NULL;
-			$tomorrow_note = ($tomorrow_hours_type == 'special' && isset($this->special[$this->tomorrow_timestamp]) && isset($this->special[$this->tomorrow_timestamp]['note'])) ? $this->special[$this->tomorrow_timestamp]['note'] : NULL;
+			$strings[$di]['text'] = $this->hours_string($strings[$di]['hours'], $strings[$di]['closed'], $strings[$di]['hours_24'], NULL, 'text', $time_preferences);
+			$strings[$di]['start_text'] = $this->hours_string($strings[$di]['hours'], $strings[$di]['closed'], $strings[$di]['hours_24'], NULL, 'start', $time_preferences);
+			$strings[$di]['end_text'] = $this->hours_string($strings[$di]['hours'], $strings[$di]['closed'], $strings[$di]['hours_24'], NULL, 'end', $time_preferences);
+			$strings[$di]['name'] = $this->days[$d];
+			$strings[$di]['text_1'] = (!$strings[$di]['closed'] && !$strings[$di]['hours_24'] && count($strings[$di]['hours']) >= 1) ? $this->hours_string(array($strings[$di]['hours'][0]), $strings[$di]['closed'], $strings[$di]['hours_24'], NULL, 'text', $time_preferences) : NULL;
+			$strings[$di]['text_2'] = (!$strings[$di]['closed'] && !$strings[$di]['hours_24'] && count($strings[$di]['hours']) >= 2) ? $this->hours_string(array($strings[$di]['hours'][1]), $strings[$di]['closed'], $strings[$di]['hours_24'], NULL, 'text', $time_preferences) : NULL;
+			$strings[$di]['text_3'] = (!$strings[$di]['closed'] && !$strings[$di]['hours_24'] && count($strings[$di]['hours']) >= 3) ? $this->hours_string(array($strings[$di]['hours'][2]), $strings[$di]['closed'], $strings[$di]['hours_24'], NULL, 'text', $time_preferences) : NULL;
 		}
 		
 		foreach ($match[0] as $i => $v)
@@ -5816,21 +5880,21 @@ class we_are_open
 				$logic_variables[$i] = strtolower(preg_replace('/[^1-3a-z_]/', '_', preg_replace('/^%\s*([1-3a-z _]+)\s*%$/i', '$1', $match[1][$i])));
 			}
 			
-			$text[$i] = ($match[2][$i] != NULL) ? $match[2][$i] : NULL;
+			$output[$i] = ($match[2][$i] != NULL) ? $match[2][$i] : NULL;
 			
-			if ($logic_variables[$i] == NULL && $text[$i] == NULL)
+			if ($logic_variables[$i] == NULL && $output[$i] == NULL)
 			{
 				continue;
 			}
 		
 			if ($i == 0 || ($i > 0 && isset($logic_variables[($i - 1)]) && preg_match('/^(?:if_.+|else|end(?:if)?)$/i', $logic_variables[($i - 1)])))
 			{
-				$text[$i] = (is_string($text[$i])) ? preg_replace('/\s*([^\s].+)$/', '$1', $text[$i]) : NULL;
+				$output[$i] = (is_string($output[$i])) ? preg_replace('/\s*([^\s].+)$/', '$1', $output[$i]) : NULL;
 			}
 			
 			if ($i == (count($match[0]) - 1) || ($i < (count($match[0]) - 2) && isset($match[1][($i + 1)]) && preg_match('/^%\s*(?:if_.+|else|end(?:if)?)\s*%$/i', $match[1][($i + 1)])))
 			{
-				$text[$i] = (is_string($text[$i])) ? preg_replace('/(.+[^\s])\s*$/', '$1', $text[$i]) : NULL;
+				$output[$i] = (is_string($output[$i])) ? preg_replace('/(.+[^\s])\s*$/', '$1', $output[$i]) : NULL;
 			}
 		}
 		
@@ -5838,971 +5902,415 @@ class we_are_open
 		{
 			if ($lv == 'end' || $lv == 'endif' || $lv == 'else')
 			{
-				if (is_numeric($if_open_now) && $if_open_now >= 0
-					|| is_numeric($if_closed_now) && $if_closed_now >= 0
-					|| is_numeric($if_open_today) && $if_open_today >= 0
-					|| is_numeric($if_closed_today) && $if_closed_today >= 0
-					|| is_numeric($if_open_later) && $if_open_later >= 0
-					|| is_numeric($if_not_open_later) && $if_not_open_later >= 0
-					|| is_numeric($if_open_tomorrow) && $if_open_tomorrow >= 0
-					|| is_numeric($if_closed_tomorrow) && $if_closed_tomorrow >= 0
-					|| is_numeric($if_hours_24_today) && $if_hours_24_today >= 0
-					|| is_numeric($if_not_hours_24_today) && $if_not_hours_24_today >= 0
-					|| is_numeric($if_hours_24_tomorrow) && $if_hours_24_tomorrow >= 0
-					|| is_numeric($if_not_hours_24_tomorrow) && $if_not_hours_24_tomorrow >= 0
-					|| is_numeric($if_open_today_1) && $if_open_today_1 >= 0
-					|| is_numeric($if_not_open_today_1) && $if_not_open_today_1 >= 0
-					|| is_numeric($if_open_today_2) && $if_open_today_2 >= 0
-					|| is_numeric($if_not_open_today_2) && $if_not_open_today_2 >= 0
-					|| is_numeric($if_open_today_3) && $if_open_today_3 >= 0
-					|| is_numeric($if_not_open_today_3) && $if_not_open_today_3 >= 0
-					|| is_numeric($if_open_tomorrow_1) && $if_open_tomorrow_1 >= 0
-					|| is_numeric($if_not_open_tomorrow_1) && $if_not_open_tomorrow_1 >= 0
-					|| is_numeric($if_open_tomorrow_2) && $if_open_tomorrow_2 >= 0
-					|| is_numeric($if_not_open_tomorrow_2) && $if_not_open_tomorrow_2 >= 0
-					|| is_numeric($if_open_tomorrow_3) && $if_open_tomorrow_3 >= 0
-					|| is_numeric($if_not_open_tomorrow_3) && $if_not_open_tomorrow_3 >= 0
-					|| is_numeric($if_note_today) && $if_note_today >= 0
-					|| is_numeric($if_not_note_today) && $if_not_note_today >= 0
-					|| is_numeric($if_note_tomorrow) && $if_note_tomorrow >= 0
-					|| is_numeric($if_not_note_tomorrow) && $if_not_note_tomorrow >= 0
-					|| is_numeric($if_regular_today) && $if_regular_today >= 0
-					|| is_numeric($if_not_regular_today) && $if_not_regular_today >= 0
-					|| is_numeric($if_special_today) && $if_special_today >= 0
-					|| is_numeric($if_not_special_today) && $if_not_special_today >= 0
-					|| is_numeric($if_closure_today) && $if_closure_today >= 0
-					|| is_numeric($if_not_closure_today) && $if_not_closure_today >= 0
-					|| is_numeric($if_regular_tomorrow) && $if_regular_tomorrow >= 0
-					|| is_numeric($if_not_regular_tomorrow) && $if_not_regular_tomorrow >= 0
-					|| is_numeric($if_special_tomorrow) && $if_special_tomorrow >= 0
-					|| is_numeric($if_not_special_tomorrow) && $if_not_special_tomorrow >= 0
-					|| is_numeric($if_closure_tomorrow) && $if_closure_tomorrow >= 0
-					|| is_numeric($if_not_closure_tomorrow) && $if_not_closure_tomorrow >= 0
-					|| is_numeric($if_closure_exists) && $if_closure_exists >= 0
-					|| is_numeric($if_not_closure_exists) && $if_not_closure_exists >= 0)
+				if (empty(array_filter($logic, function ($lvn) { return (is_numeric($lvn) && $lvn >= 0); })))
 				{
-					$maxes = array_keys(
-						array(
-							$if_open_now,
-							$if_closed_now,
-							$if_open_today,
-							$if_closed_today,
-							$if_open_later,
-							$if_not_open_later,
-							$if_open_tomorrow,
-							$if_closed_tomorrow,
-							$if_hours_24_today,
-							$if_not_hours_24_today,
-							$if_hours_24_tomorrow,
-							$if_not_hours_24_tomorrow,
-							$if_open_today_1,
-							$if_not_open_today_1,
-							$if_open_today_2,
-							$if_not_open_today_2,
-							$if_open_today_3,
-							$if_not_open_today_3,
-							$if_open_tomorrow_1,
-							$if_not_open_tomorrow_1,
-							$if_open_tomorrow_2,
-							$if_not_open_tomorrow_2,
-							$if_open_tomorrow_3,
-							$if_not_open_tomorrow_3,
-							$if_note_today,
-							$if_not_note_today,
-							$if_note_tomorrow,
-							$if_not_note_tomorrow,
-							$if_regular_today,
-							$if_not_regular_today,
-							$if_special_today,
-							$if_not_special_today,
-							$if_closure_today,
-							$if_not_closure_today,
-							$if_regular_tomorrow,
-							$if_not_regular_tomorrow,
-							$if_special_tomorrow,
-							$if_not_special_tomorrow,
-							$if_closure_tomorrow,
-							$if_not_closure_tomorrow,
-							$if_closure_exists,
-							$if_not_closure_exists
-						),
-						max(
-							array(
-								$if_open_now,
-								$if_closed_now,
-								$if_open_today,
-								$if_closed_today,
-								$if_open_later,
-								$if_not_open_later,
-								$if_open_tomorrow,
-								$if_closed_tomorrow,
-								$if_hours_24_today,
-								$if_not_hours_24_today,
-								$if_hours_24_tomorrow,
-								$if_not_hours_24_tomorrow,
-								$if_open_today_1,
-								$if_not_open_today_1,
-								$if_open_today_2,
-								$if_not_open_today_2,
-								$if_open_today_3,
-								$if_not_open_today_3,
-								$if_open_tomorrow_1,
-								$if_not_open_tomorrow_1,
-								$if_open_tomorrow_2,
-								$if_not_open_tomorrow_2,
-								$if_open_tomorrow_3,
-								$if_not_open_tomorrow_3,
-								$if_note_today,
-								$if_not_note_today,
-								$if_note_tomorrow,
-								$if_not_note_tomorrow,
-								$if_regular_today,
-								$if_not_regular_today,
-								$if_special_today,
-								$if_not_special_today,
-								$if_closure_today,
-								$if_not_closure_today,
-								$if_regular_tomorrow,
-								$if_not_regular_tomorrow,
-								$if_special_tomorrow,
-								$if_not_special_tomorrow,
-								$if_closure_tomorrow,
-								$if_not_closure_tomorrow,
-								$if_closure_exists,
-								$if_not_closure_exists
-							)
-						)
-					);
-					$max = $maxes[0];
-					
-					if ($max == 1)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_now = $if_closed_now;
-						}
-						
-						$if_closed_now = -1;
-					}
-					elseif ($max == 2)
-					{
-						if ($lv == 'else')
-						{
-							$if_closed_today = $if_open_today;
-						}
-						
-						$if_open_today = -1;
-					}
-					elseif ($max == 3)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_today = $if_closed_today;
-						}
-						
-						$if_closed_today = -1;
-					}
-					elseif ($max == 4)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_open_later = $if_open_later;
-						}
-						
-						$if_open_later = -1;
-					}
-					elseif ($max == 5)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_later = $if_not_open_later;
-						}
-						
-						$if_not_open_later = -1;
-					}
-					elseif ($max == 6)
-					{
-						if ($lv == 'else')
-						{
-							$if_closed_tomorrow = $if_open_tomorrow;
-						}
-						
-						$if_open_tomorrow = -1;
-					}
-					elseif ($max == 7)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_tomorrow = $if_closed_tomorrow;
-						}
-						
-						$if_closed_tomorrow = -1;
-					}
-					elseif ($max == 8)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_hours_24_today = $if_hours_24_today;
-						}
-						
-						$if_hours_24_today = -1;
-					}
-					elseif ($max == 9)
-					{
-						if ($lv == 'else')
-						{
-							$if_hours_24_today = $if_not_hours_24_today;
-						}
-						
-						$if_not_hours_24_today = -1;
-					}
-					elseif ($max == 10)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_hours_24_tomorrow = $if_hours_24_tomorrow;
-						}
-						
-						$if_hours_24_tomorrow = -1;
-					}
-					elseif ($max == 11)
-					{
-						if ($lv == 'else')
-						{
-							$if_hours_24_tomorrow = $if_not_hours_24_tomorrow;
-						}
-						
-						$if_not_hours_24_tomorrow = -1;
-					}
-					elseif ($max == 12)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_open_today_1 = $if_open_today_1;
-						}
-						
-						$if_open_today_1 = -1;
-					}
-					elseif ($max == 13)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_today_1 = $if_not_open_today_1;
-						}
-						
-						$if_not_open_today_1 = -1;
-					}
-					elseif ($max == 14)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_open_today_2 = $if_open_today_2;
-						}
-						
-						$if_open_today_2 = -1;
-					}
-					elseif ($max == 15)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_today_2 = $if_not_open_today_2;
-						}
-						
-						$if_not_open_today_2 = -1;
-					}
-					elseif ($max == 16)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_open_today_3 = $if_open_today_3;
-						}
-						
-						$if_open_today_3 = -1;
-					}
-					elseif ($max == 17)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_today_3 = $if_not_open_today_3;
-						}
-						
-						$if_not_open_today_3 = -1;
-					}
-					elseif ($max == 18)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_open_tomorrow_1 = $if_open_tomorrow_1;
-						}
-						
-						$if_open_tomorrow_1 = -1;
-					}
-					elseif ($max == 19)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_tomorrow_1 = $if_not_open_tomorrow_1;
-						}
-						
-						$if_not_open_tomorrow_1 = -1;
-					}
-					elseif ($max == 20)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_open_tomorrow_2 = $if_open_tomorrow_2;
-						}
-						
-						$if_open_tomorrow_2 = -1;
-					}
-					elseif ($max == 21)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_tomorrow_2 = $if_not_open_tomorrow_2;
-						}
-						
-						$if_not_open_tomorrow_2 = -1;
-					}
-					elseif ($max == 22)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_open_tomorrow_3 = $if_open_tomorrow_3;
-						}
-						
-						$if_open_tomorrow_3 = -1;
-					}
-					elseif ($max == 23)
-					{
-						if ($lv == 'else')
-						{
-							$if_open_tomorrow_3 = $if_not_open_tomorrow_3;
-						}
-						
-						$if_not_open_tomorrow_3 = -1;
-					}
-					elseif ($max == 24)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_note_today = $if_note_today;
-						}
-						
-						$if_note_today = -1;
-					}
-					elseif ($max == 25)
-					{
-						if ($lv == 'else')
-						{
-							$if_note_today = $if_not_note_today;
-						}
-						
-						$if_not_note_today = -1;
-					}
-					elseif ($max == 26)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_note_tomorrow = $if_note_tomorrow;
-						}
-						
-						$if_note_tomorrow = -1;
-					}
-					elseif ($max == 27)
-					{
-						if ($lv == 'else')
-						{
-							$if_note_tomorrow = $if_not_note_tomorrow;
-						}
-						
-						$if_not_note_tomorrow = -1;
-					}
-					elseif ($max == 28)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_regular_today = $if_regular_today;
-						}
-						
-						$if_regular_today = -1;
-					}
-					elseif ($max == 29)
-					{
-						if ($lv == 'else')
-						{
-							$if_regular_today = $if_not_regular_today;
-						}
-						
-						$if_not_regular_today = -1;
-					}
-					elseif ($max == 30)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_special_today = $if_special_today;
-						}
-						
-						$if_special_today = -1;
-					}
-					elseif ($max == 31)
-					{
-						if ($lv == 'else')
-						{
-							$if_special_today = $if_not_special_today;
-						}
-						
-						$if_not_special_today = -1;
-					}
-					elseif ($max == 32)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_closure_today = $if_closure_today;
-						}
-						
-						$if_closure_today = -1;
-					}
-					elseif ($max == 33)
-					{
-						if ($lv == 'else')
-						{
-							$if_closure_today = $if_not_closure_today;
-						}
-						
-						$if_not_closure_today = -1;
-					}
-					elseif ($max == 34)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_regular_tomorrow = $if_regular_tomorrow;
-						}
-						
-						$if_regular_tomorrow = -1;
-					}
-					elseif ($max == 35)
-					{
-						if ($lv == 'else')
-						{
-							$if_regular_tomorrow = $if_not_regular_tomorrow;
-						}
-						
-						$if_not_regular_tomorrow = -1;
-					}
-					elseif ($max == 36)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_special_tomorrow = $if_special_tomorrow;
-						}
-						
-						$if_special_tomorrow = -1;
-					}
-					elseif ($max == 37)
-					{
-						if ($lv == 'else')
-						{
-							$if_special_tomorrow = $if_not_special_tomorrow;
-						}
-						
-						$if_not_special_tomorrow = -1;
-					}
-					elseif ($max == 38)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_closure_tomorrow = $if_closure_tomorrow;
-						}
-						
-						$if_closure_tomorrow = -1;
-					}
-					elseif ($max == 39)
-					{
-						if ($lv == 'else')
-						{
-							$if_closure_tomorrow = $if_not_closure_tomorrow;
-						}
-						
-						$if_not_closure_tomorrow = -1;
-					}
-					elseif ($max == 40)
-					{
-						if ($lv == 'else')
-						{
-							$if_not_closure_exists = $if_closure_exists;
-						}
-						
-						$if_closure_exists = -1;
-					}
-					elseif ($max == 41)
-					{
-						if ($lv == 'else')
-						{
-							$if_closure_exists = $if_not_closure_exists;
-						}
-						
-						$if_not_closure_exists = -1;
-					}
-					else
-					{
-						if ($lv == 'else')
-						{
-							$if_closed_now = $if_open_now;
-						}
-						
-						$if_open_now = -1;
-					}
+					continue;
 				}
+
+				$maxes = array_keys(array_values($logic), max(array_values($logic)));
+				$max = $maxes[0];
+
+				if (!array_key_exists($max, $logic_aliases))
+				{
+					continue;
+				}
+				
+				if ($lv == 'else')
+				{
+					$logic[$logic_aliases[$max + (($max % 2 > 0) ? -1 : 1)]] = $logic[$logic_aliases[$max]];
+				}
+
+				$logic[$logic_aliases[$max]] = -1;
+				
 				continue;
 			}
 
-			if ($lv == 'if_open' || $lv == 'if_open_now' || $lv == 'if_not_closed' || $lv == 'if_not_closed_now')
+			if (preg_match('/^if_([\w_]+)$/i', $lv, $m) && array_key_exists($m[1], $logic))
 			{
-				$if_open_now = $i;
+				$logic[$m[1]] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_open' || $lv == 'if_not_closed' || $lv == 'if_not_closed_now')
+			{
+				$logic['open_now'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_closed' || $lv == 'if_closed_now' || $lv == 'if_not_open' || $lv == 'if_not_open_now')
+			if ($lv == 'if_closed' || $lv == 'if_not_open' || $lv == 'if_not_open_now')
 			{
-				$if_closed_now = $i;
+				$logic['closed_now'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_open_today' || $lv == 'if_not_closed_today')
+			if ($lv == 'if_not_closed_today')
 			{
-				$if_open_today = $i;
+				$logic['open_today'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_closed_today' || $lv == 'if_not_open_today')
+			if ($lv == 'if_not_open_today')
 			{
-				$if_closed_today = $i;
+				$logic['closed_today'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_open_later' || $lv == 'if_open_later_today')
+			if ($lv == 'if_open_later_today')
 			{
-				$if_open_later = $i;
+				$logic['open_later'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_not_open_later' || $lv == 'if_not_open_later_today')
+			if ($lv == 'if_not_open_later_today')
 			{
-				$if_not_open_later = $i;
+				$logic['not_open_later'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_open_tomorrow' || $lv == 'if_not_closed_tomorrow')
+			if ($lv == 'if_not_closed_tomorrow')
 			{
-				$if_open_tomorrow = $i;
+				$logic['open_tomorrow'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_closed_tomorrow' || $lv == 'if_not_open_tomorrow')
+			if ($lv == 'if_not_open_tomorrow')
 			{
-				$if_closed_tomorrow = $i;
+				$logic['closed_tomorrow'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_24_hours_today' || $lv == 'if_hours_24_today' || $lv == 'if_24_hours' || $lv == 'if_hours_24')
+			if ($lv == 'if_24_hours_today' || $lv == 'if_24_hours' || $lv == 'if_hours_24')
 			{
-				$if_hours_24_today = $i;
+				$logic['hours_24_today'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_not_24_hours_today' || $lv == 'if_not_hours_24_today' || $lv == 'if_not_24_hours' || $lv == 'if_not_hours_24')
+			if ($lv == 'if_not_24_hours_today' || $lv == 'if_not_24_hours' || $lv == 'if_not_hours_24')
 			{
-				$if_not_hours_24_today = $i;
+				$logic['not_hours_24_today'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_24_hours_tomorrow' || $lv == 'if_hours_24_tomorrow')
+			if ($lv == 'if_24_hours_tomorrow')
 			{
-				$if_hours_24_tomorrow = $i;
+				$logic['hours_24_tomorrow'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_not_24_hours_tomorrow' || $lv == 'if_not_hours_24_tomorrow')
+			if ($lv == 'if_not_24_hours_tomorrow')
 			{
-				$if_not_hours_24_tomorrow = $i;
+				$logic['not_hours_24_tomorrow'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_open_today_1' || $lv == 'if_open_today_1_set' || $lv == 'if_open_today_1_sets')
+			if ($lv == 'if_open_today_1_set' || $lv == 'if_open_today_1_sets')
 			{
-				$if_open_today_1 = $i;
+				$logic['open_today_1'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_not_open_today_1' || $lv == 'if_not_open_today_1_set' || $lv == 'if_not_open_today_1_sets')
+			if ($lv == 'if_not_open_today_1_set' || $lv == 'if_not_open_today_1_sets')
 			{
-				$if_not_open_today_1 = $i;
+				$logic['not_open_today_1'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_open_today_2' || $lv == 'if_open_today_2_set' || $lv == 'if_open_today_2_sets')
+			if ($lv == 'if_open_today_2_set' || $lv == 'if_open_today_2_sets')
 			{
-				$if_open_today_2 = $i;
+				$logic['open_today_2'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_not_open_today_2' || $lv == 'if_not_open_today_2_set' || $lv == 'if_not_open_today_2_sets')
+			if ($lv == 'if_not_open_today_2_set' || $lv == 'if_not_open_today_2_sets')
 			{
-				$if_not_open_today_2 = $i;
+				$logic['not_open_today_2'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_open_today_3' || $lv == 'if_open_today_3_set' || $lv == 'if_open_today_3_sets')
+			if ($lv == 'if_open_today_3_set' || $lv == 'if_open_today_3_sets')
 			{
-				$if_open_today_3 = $i;
+				$logic['open_today_3'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_not_open_today_3' || $lv == 'if_not_open_today_3_set' || $lv == 'if_not_open_today_3_sets')
+			if ($lv == 'if_not_open_today_3_set' || $lv == 'if_not_open_today_3_sets')
 			{
-				$if_not_open_today_3 = $i;
+				$logic['not_open_today_3'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_open_tomorrow_1' || $lv == 'if_open_tomorrow_1_set' || $lv == 'if_open_tomorrow_1_sets')
+			if ($lv == 'if_open_tomorrow_1_set' || $lv == 'if_open_tomorrow_1_sets')
 			{
-				$if_open_tomorrow_1 = $i;
+				$logic['open_tomorrow_1'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_not_open_tomorrow_1' || $lv == 'if_not_open_tomorrow_1_set' || $lv == 'if_not_open_tomorrow_1_sets')
+			if ($lv == 'if_not_open_tomorrow_1_set' || $lv == 'if_not_open_tomorrow_1_sets')
 			{
-				$if_not_open_tomorrow_1 = $i;
+				$logic['not_open_tomorrow_1'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_open_tomorrow_2' || $lv == 'if_open_tomorrow_2_set' || $lv == 'if_open_tomorrow_2_sets')
+			if ($lv == 'if_open_tomorrow_2_set' || $lv == 'if_open_tomorrow_2_sets')
 			{
-				$if_open_tomorrow_2 = $i;
+				$logic['open_tomorrow_2'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_not_open_tomorrow_2' || $lv == 'if_not_open_tomorrow_2_set' || $lv == 'if_not_open_tomorrow_2_sets')
+			if ($lv == 'if_not_open_tomorrow_2_set' || $lv == 'if_not_open_tomorrow_2_sets')
 			{
-				$if_not_open_tomorrow_2 = $i;
+				$logic['not_open_tomorrow_2'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_open_tomorrow_3' || $lv == 'if_open_tomorrow_3_set' || $lv == 'if_open_tomorrow_3_sets')
+			if ($lv == 'if_open_tomorrow_3_set' || $lv == 'if_open_tomorrow_3_sets')
 			{
-				$if_open_tomorrow_3 = $i;
+				$logic['open_tomorrow_3'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_not_open_tomorrow_3' || $lv == 'if_not_open_tomorrow_3_set' || $lv == 'if_not_open_tomorrow_3_sets')
+			if ($lv == 'if_not_open_tomorrow_3_set' || $lv == 'if_not_open_tomorrow_3_sets')
 			{
-				$if_not_open_tomorrow_3 = $i;
+				$logic['not_open_tomorrow_3'] = $i;
 				continue;
 			}
 
-			if ($lv == 'if_note_today' || $lv == 'if_today_note')
+			if ($lv == 'if_today_note')
 			{
-				$if_note_today = $i;
+				$logic['note_today'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_not_note_today' || $lv == 'if_not_today_note')
+			if ($lv == 'if_not_today_note')
 			{
-				$if_not_note_today = $i;
+				$logic['not_note_today'] = $i;
 				continue;
 			}
 			
 			if ($lv == 'if_note_tomorrow' || $lv == 'if_tomorrow_note')
 			{
-				$if_note_tomorrow = $i;
+				$logic['note_tomorrow'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_not_note_tomorrow' || $lv == 'if_not_tomorrow_note')
+			if ($lv == 'if_not_tomorrow_note')
 			{
-				$if_not_note_tomorrow = $i;
+				$logic['not_note_tomorrow'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_regular')
+			{
+				$logic['regular_today'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_not_regular')
+			{
+				$logic['not_regular_today'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_special')
+			{
+				$logic['special_today'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_not_special')
+			{
+				$logic['not_special_today'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_closure' || $lv == 'if_temporary_closure' || $lv == 'if_temporary_closure_today')
+			{
+				$logic['closure_today'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_not_closure' || $lv == 'if_not_temporary_closure' || $lv == 'if_not_temporary_closure_today')
+			{
+				$logic['not_closure_today'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_temporary_closure_tomorrow')
+			{
+				$logic['closure_tomorrow'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_not_temporary_closure_tomorrow')
+			{
+				$logic['not_closure_tomorrow'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_temporary_closure_exists')
+			{
+				$logic['closure_exists'] = $i;
+				continue;
+			}
+
+			if ($lv == 'if_not_temporary_closure_exists')
+			{
+				$logic['not_closure_exists'] = $i;
 				continue;
 			}
 			
-			if ($lv == 'if_regular_today' || $lv == 'if_regular_today')
+			if (!empty(array_filter($logic, function ($lvn) { return (is_numeric($lvn) && $lvn >= 0); }))
+				&& (is_bool($closed_now) && $closed_now && is_numeric($logic['open_now']) && $logic['open_now'] >= 0
+				|| is_bool($open_now) && $open_now && is_numeric($logic['closed_now']) && $logic['closed_now'] >= 0
+				|| is_bool($strings[0]['closed']) && $strings[0]['closed'] && is_numeric($logic['open_today']) && $logic['open_today'] >= 0
+				|| is_bool($strings[1]['closed']) && $strings[1]['closed'] && is_numeric($logic['open_tomorrow']) && $logic['open_tomorrow'] >= 0
+				|| is_bool($strings[0]['closed']) && !$strings[0]['closed'] && is_numeric($logic['closed_today']) && $logic['closed_today'] >= 0
+				|| is_bool($strings[1]['closed']) && !$strings[1]['closed'] && is_numeric($logic['closed_tomorrow']) && $logic['closed_tomorrow'] >= 0
+				|| is_bool($strings[0]['hours_24']) && !$strings[0]['hours_24'] && is_numeric($logic['hours_24_today']) && $logic['hours_24_today'] >= 0
+				|| is_bool($strings[0]['hours_24']) && $strings[0]['hours_24'] && is_numeric($logic['not_hours_24_today']) && $logic['not_hours_24_today'] >= 0
+				|| is_bool($strings[1]['hours_24']) && !$strings[1]['hours_24'] && is_numeric($logic['hours_24_tomorrow']) && $logic['hours_24_tomorrow'] >= 0
+				|| is_bool($strings[1]['hours_24']) && $strings[1]['hours_24'] && is_numeric($logic['not_hours_24_tomorrow']) && $logic['not_hours_24_tomorrow'] >= 0
+				|| is_bool($open_later) && !$open_later && is_numeric($logic['open_later']) && $logic['open_later'] >= 0
+				|| (is_bool($open_now) && $open_now || is_bool($open_later) && $open_later) && is_numeric($logic['not_open_later']) && $logic['not_open_later'] >= 0
+				|| (!is_array($strings[0]['hours']) || is_array($strings[0]['hours']) && count($strings[0]['hours']) != 1) && is_numeric($logic['open_today_1']) && $logic['open_today_1'] >= 0
+				|| is_array($strings[0]['hours']) && count($strings[0]['hours']) == 1 && is_numeric($logic['not_open_today_1']) && $logic['not_open_today_1'] >= 0
+				|| (!is_array($strings[0]['hours']) || is_array($strings[0]['hours']) && count($strings[0]['hours']) != 2) && is_numeric($logic['open_today_2']) && $logic['open_today_2'] >= 0
+				|| is_array($strings[0]['hours']) && count($strings[0]['hours']) == 2 && is_numeric($logic['not_open_today_2']) && $logic['not_open_today_2'] >= 0
+				|| (!is_array($strings[0]['hours']) || is_array($strings[0]['hours']) && count($strings[0]['hours']) != 3) && is_numeric($logic['open_today_3']) && $logic['open_today_3'] >= 0
+				|| is_array($strings[0]['hours']) && count($strings[0]['hours']) == 3 && is_numeric($logic['not_open_today_3']) && $logic['not_open_today_3'] >= 0
+				|| (!is_array($strings[1]['hours']) || is_array($strings[1]['hours']) && count($strings[1]['hours']) != 1) && is_numeric($logic['open_tomorrow_1']) && $logic['open_tomorrow_1'] >= 0
+				|| is_array($strings[1]['hours']) && count($strings[1]['hours']) == 1 && is_numeric($logic['not_open_tomorrow_1']) && $logic['not_open_tomorrow_1'] >= 0
+				|| (!is_array($strings[1]['hours']) || is_array($strings[1]['hours']) && count($strings[1]['hours']) != 2) && is_numeric($logic['open_tomorrow_2']) && $logic['open_tomorrow_2'] >= 0
+				|| is_array($strings[1]['hours']) && count($strings[1]['hours']) == 2 && is_numeric($logic['not_open_tomorrow_2']) && $logic['not_open_tomorrow_2'] >= 0
+				|| (!is_array($strings[1]['hours']) || is_array($strings[1]['hours']) && count($strings[1]['hours']) != 3) && is_numeric($logic['open_tomorrow_3']) && $logic['open_tomorrow_3'] >= 0
+				|| is_array($strings[1]['hours']) && count($strings[1]['hours']) == 3 && is_numeric($logic['not_open_tomorrow_3']) && $logic['not_open_tomorrow_3'] >= 0
+				|| $strings[0]['note'] == NULL && is_numeric($logic['note_today']) && $logic['note_today'] >= 0
+				|| $strings[0]['note'] != NULL && is_numeric($logic['not_note_today']) && $logic['not_note_today'] >= 0
+				|| $strings[1]['note'] == NULL && is_numeric($logic['note_tomorrow']) && $logic['note_tomorrow'] >= 0
+				|| $strings[1]['note'] != NULL && is_numeric($logic['not_note_tomorrow']) && $logic['not_note_tomorrow'] >= 0
+				|| $strings[0]['hours_type'] != NULL && is_numeric($logic['regular_today']) && $logic['regular_today'] >= 0
+				|| $strings[0]['hours_type'] == NULL && is_numeric($logic['not_regular_today']) && $logic['not_regular_today'] >= 0
+				|| $strings[0]['hours_type'] != 'special' && is_numeric($logic['special_today']) && $logic['special_today'] >= 0
+				|| $strings[0]['hours_type'] == 'special' && is_numeric($logic['not_special_today']) && $logic['not_special_today'] >= 0
+				|| $strings[0]['hours_type'] != 'closure' && is_numeric($logic['closure_today']) && $logic['closure_today'] >= 0
+				|| $strings[0]['hours_type'] == 'closure' && is_numeric($logic['not_closure_today']) && $logic['not_closure_today'] >= 0
+				|| $strings[1]['hours_type'] != NULL && is_numeric($logic['regular_tomorrow']) && $logic['regular_tomorrow'] >= 0
+				|| $strings[1]['hours_type'] == NULL && is_numeric($logic['not_regular_tomorrow']) && $logic['not_regular_tomorrow'] >= 0
+				|| $strings[1]['hours_type'] != 'special' && is_numeric($logic['special_tomorrow']) && $logic['special_tomorrow'] >= 0
+				|| $strings[1]['hours_type'] == 'special' && is_numeric($logic['not_special_tomorrow']) && $logic['not_special_tomorrow'] >= 0
+				|| $strings[1]['hours_type'] != 'closure' && is_numeric($logic['closure_tomorrow']) && $logic['closure_tomorrow'] >= 0
+				|| $strings[1]['hours_type'] == 'closure' && is_numeric($logic['not_closure_tomorrow']) && $logic['not_closure_tomorrow'] >= 0
+				|| (!is_array($this->closure) || is_array($this->closure) && empty($this->closure) || is_array($this->closure) && (!isset($this->closure['end_display']) || $this->closure['end_display'] == NULL) || isset($this->closure['end_display']) && $this->closure['end_display'] < $this->today_timestamp) && is_numeric($logic['closure_exists']) && $logic['closure_exists'] >= 0
+				|| (is_array($this->closure) && !empty($this->closure) && isset($this->closure['end_display']) && $this->closure['end_display'] != NULL && $this->closure['end_display'] >= $this->today_timestamp) && is_numeric($logic['not_closure_exists']) && $logic['not_closure_exists'] >= 0))
 			{
-				$if_regular_today = $i;
-				continue;
-			}
-			
-			if ($lv == 'if_regular' || $lv == 'if_regular_today')
-			{
-				$if_regular_today = $i;
-				continue;
-			}
-
-			if ($lv == 'if_not_regular' || $lv == 'if_not_regular_today')
-			{
-				$if_not_regular_today = $i;
-				continue;
-			}
-
-			if ($lv == 'if_special' || $lv == 'if_special_today')
-			{
-				$if_special_today = $i;
-				continue;
-			}
-
-			if ($lv == 'if_not_special' || $lv == 'if_not_special_today')
-			{
-				$if_not_special_today = $i;
-				continue;
-			}
-
-			if ($lv == 'if_closure' || $lv == 'if_temporary_closure' || $lv == 'if_closure_today' || $lv == 'if_temporary_closure_today')
-			{
-				$if_closure_today = $i;
-				continue;
-			}
-
-			if ($lv == 'if_not_closure' || $lv == 'if_not_temporary_closure' || $lv == 'if_not_closure_today' || $lv == 'if_not_temporary_closure_today')
-			{
-				$if_not_closure_today = $i;
-				continue;
-			}
-
-			if ($lv == 'if_regular_tomorrow')
-			{
-				$if_regular_tomorrow = $i;
-				continue;
-			}
-
-			if ($lv == 'if_not_regular_tomorrow')
-			{
-				$if_not_regular_tomorrow = $i;
-				continue;
-			}
-
-			if ($lv == 'if_special_tomorrow')
-			{
-				$if_special_tomorrow = $i;
-				continue;
-			}
-
-			if ($lv == 'if_not_special_tomorrow')
-			{
-				$if_not_special_tomorrow = $i;
-				continue;
-			}
-
-			if ($lv == 'if_closure_tomorrow' || $lv == 'if_temporary_closure_tomorrow')
-			{
-				$if_closure_tomorrow = $i;
-				continue;
-			}
-
-			if ($lv == 'if_not_closure_tomorrow' || $lv == 'if_not_temporary_closure_tomorrow')
-			{
-				$if_not_closure_tomorrow = $i;
-				continue;
-			}
-
-			if ($lv == 'if_closure_exists' || $lv == 'if_temporary_closure_exists')
-			{
-				$if_closure_exists = $i;
-				continue;
-			}
-
-			if ($lv == 'if_not_closure_exists' || $lv == 'if_not_temporary_closure_exists')
-			{
-				$if_not_closure_exists = $i;
-				continue;
-			}
-
-			if ((is_numeric($if_open_now) && $if_open_now >= 0
-				|| is_numeric($if_closed_now) && $if_closed_now >= 0
-				|| is_numeric($if_open_today) && $if_open_today >= 0
-				|| is_numeric($if_closed_today) && $if_closed_today >= 0
-				|| is_numeric($if_open_later) && $if_open_later >= 0
-				|| is_numeric($if_not_open_later) && $if_not_open_later >= 0
-				|| is_numeric($if_open_tomorrow) && $if_open_tomorrow >= 0
-				|| is_numeric($if_closed_tomorrow) && $if_closed_tomorrow >= 0
-				|| is_numeric($if_hours_24_today) && $if_hours_24_today >= 0
-				|| is_numeric($if_not_hours_24_today) && $if_not_hours_24_today >= 0
-				|| is_numeric($if_hours_24_tomorrow) && $if_hours_24_tomorrow >= 0
-				|| is_numeric($if_not_hours_24_tomorrow) && $if_not_hours_24_tomorrow >= 0
-				|| is_numeric($if_open_today_1) && $if_open_today_1 >= 0
-				|| is_numeric($if_not_open_today_1) && $if_not_open_today_1 >= 0
-				|| is_numeric($if_open_today_2) && $if_open_today_2 >= 0
-				|| is_numeric($if_not_open_today_2) && $if_not_open_today_2 >= 0
-				|| is_numeric($if_open_today_3) && $if_open_today_3 >= 0
-				|| is_numeric($if_not_open_today_3) && $if_not_open_today_3 >= 0
-				|| is_numeric($if_open_tomorrow_1) && $if_open_tomorrow_1 >= 0
-				|| is_numeric($if_not_open_tomorrow_1) && $if_not_open_tomorrow_1 >= 0
-				|| is_numeric($if_open_tomorrow_2) && $if_open_tomorrow_2 >= 0
-				|| is_numeric($if_not_open_tomorrow_2) && $if_not_open_tomorrow_2 >= 0
-				|| is_numeric($if_open_tomorrow_3) && $if_open_tomorrow_3 >= 0
-				|| is_numeric($if_not_open_tomorrow_3) && $if_not_open_tomorrow_3 >= 0
-				|| is_numeric($if_note_today) && $if_note_today >= 0
-				|| is_numeric($if_not_note_today) && $if_not_note_today >= 0
-				|| is_numeric($if_note_tomorrow) && $if_note_tomorrow >= 0
-				|| is_numeric($if_not_note_tomorrow) && $if_not_note_tomorrow >= 0
-				|| is_numeric($if_regular_today) && $if_regular_today >= 0
-				|| is_numeric($if_not_regular_today) && $if_not_regular_today >= 0
-				|| is_numeric($if_special_today) && $if_special_today >= 0
-				|| is_numeric($if_not_special_today) && $if_not_special_today >= 0
-				|| is_numeric($if_closure_today) && $if_closure_today >= 0
-				|| is_numeric($if_not_closure_today) && $if_not_closure_today >= 0
-				|| is_numeric($if_regular_tomorrow) && $if_regular_tomorrow >= 0
-				|| is_numeric($if_not_regular_tomorrow) && $if_not_regular_tomorrow >= 0
-				|| is_numeric($if_special_tomorrow) && $if_special_tomorrow >= 0
-				|| is_numeric($if_not_special_tomorrow) && $if_not_special_tomorrow >= 0
-				|| is_numeric($if_closure_tomorrow) && $if_closure_tomorrow >= 0
-				|| is_numeric($if_not_closure_tomorrow) && $if_not_closure_tomorrow >= 0
-				|| is_numeric($if_closure_exists) && $if_closure_exists >= 0
-				|| is_numeric($if_not_closure_exists) && $if_not_closure_exists >= 0)
-				&& (is_bool($closed_now) && $closed_now && is_numeric($if_open_now) && $if_open_now >= 0
-				|| is_bool($open_now) && $open_now && is_numeric($if_closed_now) && $if_closed_now >= 0
-				|| is_bool($today_closed) && $today_closed && is_numeric($if_open_today) && $if_open_today >= 0
-				|| is_bool($tomorrow_closed) && $tomorrow_closed && is_numeric($if_open_tomorrow) && $if_open_tomorrow >= 0
-				|| is_bool($today_closed) && !$today_closed && is_numeric($if_closed_today) && $if_closed_today >= 0
-				|| is_bool($tomorrow_closed) && !$tomorrow_closed && is_numeric($if_closed_tomorrow) && $if_closed_tomorrow >= 0
-				|| is_bool($today_hours_24) && !$today_hours_24 && is_numeric($if_hours_24_today) && $if_hours_24_today >= 0
-				|| is_bool($today_hours_24) && $today_hours_24 && is_numeric($if_not_hours_24_today) && $if_not_hours_24_today >= 0
-				|| is_bool($tomorrow_hours_24) && !$tomorrow_hours_24 && is_numeric($if_hours_24_tomorrow) && $if_hours_24_tomorrow >= 0
-				|| is_bool($tomorrow_hours_24) && $tomorrow_hours_24 && is_numeric($if_not_hours_24_tomorrow) && $if_not_hours_24_tomorrow >= 0
-				|| is_bool($open_later) && !$open_later && is_numeric($if_open_later) && $if_open_later >= 0
-				|| (is_bool($open_now) && $open_now || is_bool($open_later) && $open_later) && is_numeric($if_not_open_later) && $if_not_open_later >= 0
-				|| (!is_array($today_hours) || is_array($today_hours) && count($today_hours) != 1) && is_numeric($if_open_today_1) && $if_open_today_1 >= 0
-				|| is_array($today_hours) && count($today_hours) == 1 && is_numeric($if_not_open_today_1) && $if_not_open_today_1 >= 0
-				|| (!is_array($today_hours) || is_array($today_hours) && count($today_hours) != 2) && is_numeric($if_open_today_2) && $if_open_today_2 >= 0
-				|| is_array($today_hours) && count($today_hours) == 2 && is_numeric($if_not_open_today_2) && $if_not_open_today_2 >= 0
-				|| (!is_array($today_hours) || is_array($today_hours) && count($today_hours) != 3) && is_numeric($if_open_today_3) && $if_open_today_3 >= 0
-				|| is_array($today_hours) && count($today_hours) == 3 && is_numeric($if_not_open_today_3) && $if_not_open_today_3 >= 0
-				|| (!is_array($tomorrow_hours) || is_array($tomorrow_hours) && count($tomorrow_hours) != 1) && is_numeric($if_open_tomorrow_1) && $if_open_tomorrow_1 >= 0
-				|| is_array($tomorrow_hours) && count($tomorrow_hours) == 1 && is_numeric($if_not_open_tomorrow_1) && $if_not_open_tomorrow_1 >= 0
-				|| (!is_array($tomorrow_hours) || is_array($tomorrow_hours) && count($tomorrow_hours) != 2) && is_numeric($if_open_tomorrow_2) && $if_open_tomorrow_2 >= 0
-				|| is_array($tomorrow_hours) && count($tomorrow_hours) == 2 && is_numeric($if_not_open_tomorrow_2) && $if_not_open_tomorrow_2 >= 0
-				|| (!is_array($tomorrow_hours) || is_array($tomorrow_hours) && count($tomorrow_hours) != 3) && is_numeric($if_open_tomorrow_3) && $if_open_tomorrow_3 >= 0
-				|| is_array($tomorrow_hours) && count($tomorrow_hours) == 3 && is_numeric($if_not_open_tomorrow_3) && $if_not_open_tomorrow_3 >= 0
-				|| $today_note == NULL && is_numeric($if_note_today) && $if_note_today >= 0
-				|| $today_note != NULL && is_numeric($if_not_note_today) && $if_not_note_today >= 0
-				|| $tomorrow_note == NULL && is_numeric($if_note_tomorrow) && $if_note_tomorrow >= 0
-				|| $tomorrow_note != NULL && is_numeric($if_not_note_tomorrow) && $if_not_note_tomorrow >= 0
-				|| $today_hours_type != NULL && is_numeric($if_regular_today) && $if_regular_today >= 0
-				|| $today_hours_type == NULL && is_numeric($if_not_regular_today) && $if_not_regular_today >= 0
-				|| $today_hours_type != 'special' && is_numeric($if_special_today) && $if_special_today >= 0
-				|| $today_hours_type == 'special' && is_numeric($if_not_special_today) && $if_not_special_today >= 0
-				|| $today_hours_type != 'closure' && is_numeric($if_closure_today) && $if_closure_today >= 0
-				|| $today_hours_type == 'closure' && is_numeric($if_not_closure_today) && $if_not_closure_today >= 0
-				|| $tomorrow_hours_type != NULL && is_numeric($if_regular_tomorrow) && $if_regular_tomorrow >= 0
-				|| $tomorrow_hours_type == NULL && is_numeric($if_not_regular_tomorrow) && $if_not_regular_tomorrow >= 0
-				|| $tomorrow_hours_type != 'special' && is_numeric($if_special_tomorrow) && $if_special_tomorrow >= 0
-				|| $tomorrow_hours_type == 'special' && is_numeric($if_not_special_tomorrow) && $if_not_special_tomorrow >= 0
-				|| $tomorrow_hours_type != 'closure' && is_numeric($if_closure_tomorrow) && $if_closure_tomorrow >= 0
-				|| $tomorrow_hours_type == 'closure' && is_numeric($if_not_closure_tomorrow) && $if_not_closure_tomorrow >= 0
-				|| (!is_array($this->closure) || is_array($this->closure) && empty($this->closure) || is_array($this->closure) && (!isset($this->closure['end_display']) || $this->closure['end_display'] == NULL) || isset($this->closure['end_display']) && $this->closure['end_display'] < $this->today_timestamp) && is_numeric($if_closure_exists) && $if_closure_exists >= 0
-				|| (is_array($this->closure) && !empty($this->closure) && isset($this->closure['end_display']) && $this->closure['end_display'] != NULL && $this->closure['end_display'] >= $this->today_timestamp) && is_numeric($if_not_closure_exists) && $if_not_closure_exists >= 0))
-			{
-				$text[$i] = NULL;
+				$output[$i] = NULL;
 				continue;
 			}
 			
 			if ($lv == 'now' || $lv == 'current' || $lv == 'current_time' || $lv == 'currenttime')
 			{
-				$text[$i] = $now;
+				if ($now == NULL)
+				{
+					$now = $this->hours_string(array(array(wp_date("H:i", $this->current_timestamp), '00:00')), FALSE, FALSE, NULL, 'start', $time_preferences);
+				}
+				
+				$output[$i] = $now;
 				continue;
 			}
 			
 			if ($lv == 'today' || $lv == 'today_name' || $lv == 'today_day_name')
 			{
-				$text[$i] = $today_name;
+				$output[$i] = $strings[0]['name'];
 				continue;
 			}
 			
 			if ($lv == 'tomorrow' || $lv == 'tomorrow_name' || $lv == 'tomorrow_day_name')
 			{
-				$text[$i] = $tomorrow_name;
+				$output[$i] = $strings[1]['name'];
 				continue;
 			}
 			
 			if ($lv == 'hours_today' || $lv == 'today_hours' || $lv == 'hours_tomorrow' || $lv == 'tomorrow_hours')
 			{
-				$text[$i] = ($lv == 'hours_tomorrow' || $lv == 'tomorrow_hours') ? $tomorrow_text : $today_text;
+				$output[$i] = ($lv == 'hours_tomorrow' || $lv == 'tomorrow_hours') ? $strings[1]['text'] : $strings[0]['text'];
 				continue;
 			}
 			
 			if ($lv == 'today_start')
 			{
-				$text[$i] = $today_start_text;
+				$output[$i] = $strings[0]['start_text'];
 				continue;
 			}
 			
 			if ($lv == 'today_end')
 			{
-				$text[$i] = $today_end_text;
+				$output[$i] = $strings[0]['end_text'];
 				continue;
 			}
 			
 			if ($lv == 'today_next')
 			{
-				$text[$i] = $today_next_text;
+				$output[$i] = $strings[0]['next_text'];
 				continue;
 			}
 			
 			if ($lv == 'today_1' || $lv == 'today_set_1' || $lv == 'today_hour_1' || $lv == 'today_hours_1')
 			{
-				$text[$i] = $today_1_text;
+				$output[$i] = $strings[0]['text_1'];
 				continue;
 			}
 			
 			if ($lv == 'today_2' || $lv == 'today_set_2' || $lv == 'today_hour_2' || $lv == 'today_hours_2')
 			{
-				$text[$i] = $today_2_text;
+				$output[$i] = $strings[0]['text_2'];
 				continue;
 			}
 			
 			if ($lv == 'today_3' || $lv == 'today_set_3' || $lv == 'today_hour_3' || $lv == 'today_hours_3')
 			{
-				$text[$i] = $today_3_text;
+				$output[$i] = $strings[0]['text_3'];
 				continue;
 			}
 			
 			if ($lv == 'today_note' || $lv == 'note_today')
 			{
-				$text[$i] = $today_note;
+				$output[$i] = $strings[0]['note'];
 				continue;
 			}
 			
 			if ($lv == 'tomorrow_start')
 			{
-				$text[$i] = $tomorrow_start_text;
+				$output[$i] = $strings[1]['start_text'];
 				continue;
 			}
 			
 			if ($lv == 'tomorrow_end')
 			{
-				$text[$i] = $tomorrow_end_text;
+				$output[$i] = $strings[1]['end_text'];
 				continue;
 			}
 			
 			if ($lv == 'tomorrow_1' || $lv == 'tomorrow_set_1' || $lv == 'tomorrow_hour_1' || $lv == 'tomorrow_hours_1')
 			{
-				$text[$i] = $tomorrow_1_text;
+				$output[$i] = $strings[1]['text_1'];
 				continue;
 			}
 			
 			if ($lv == 'tomorrow_2' || $lv == 'tomorrow_set_2' || $lv == 'tomorrow_hour_2' || $lv == 'tomorrow_hours_2')
 			{
-				$text[$i] = $tomorrow_2_text;
+				$output[$i] = $strings[1]['text_2'];
 				continue;
 			}
 			
 			if ($lv == 'tomorrow_3' || $lv == 'tomorrow_set_3' || $lv == 'tomorrow_hour_3' || $lv == 'tomorrow_hours_3')
 			{
-				$text[$i] = $tomorrow_3_text;
+				$output[$i] = $strings[1]['text_3'];
 				continue;
 			}
 			
 			if ($lv == 'tomorrow_note' || $lv == 'note_tomorrow')
 			{
-				$text[$i] = $tomorrow_note;
+				$output[$i] = $strings[1]['note'];
 				continue;
 			}
 
@@ -6810,121 +6318,121 @@ class we_are_open
 			{
 				if (!is_array($this->closure) || is_array($this->closure) && empty($this->closure) || is_array($this->closure) && (!isset($this->closure['end_display']) || $this->closure['end_display'] == NULL) || isset($this->closure['end_display']) && $this->closure['end_display'] < $this->today_timestamp)
 				{
-					$text[$i] = NULL;
+					$output[$i] = NULL;
 					continue;
 				}
 				
-				$text[$i] = wp_date((isset($logic_parameters[$i]['format']) && $logic_parameters[$i]['format'] != NULL) ? $logic_parameters[$i]['format'] : get_option('date_format'), ($lv == 'closure_start' || $lv == 'temporary_closure_start') ? $this->closure['start_display'] : $this->closure['end_display']); 
+				$output[$i] = wp_date((isset($logic_parameters[$i]['format']) && $logic_parameters[$i]['format'] != NULL) ? $logic_parameters[$i]['format'] : get_option('date_format'), ($lv == 'closure_start' || $lv == 'temporary_closure_start') ? $this->closure['start_display'] : $this->closure['end_display']); 
 				continue;
 			}
 			
 			if ($lv == 'days_status' || $lv == 'days_status_padded' || $lv == 'days_change' || $lv == 'days_change_padded' || $lv == 'days' || $lv == 'days_padded')
 			{
-				$text[$i] = ($lv == 'days_padded' || $lv == 'days_status_padded' || $lv == 'days_change_padded') ? str_pad(floor($seconds_to_change / DAY_IN_SECONDS), 2, '0', STR_PAD_LEFT) : floor($seconds_to_change / DAY_IN_SECONDS);
+				$output[$i] = ($lv == 'days_padded' || $lv == 'days_status_padded' || $lv == 'days_change_padded') ? str_pad(floor($seconds_to_change / DAY_IN_SECONDS), 2, '0', STR_PAD_LEFT) : floor($seconds_to_change / DAY_IN_SECONDS);
 				continue;
 			}
 			
 			if ($lv == 'hours' || $lv == 'hours_padded')
 			{
-				$text[$i] = ($lv == 'hours_padded') ? str_pad(floor($seconds_to_change / HOUR_IN_SECONDS), 2, '0', STR_PAD_LEFT) : floor($seconds_to_change / HOUR_IN_SECONDS);
+				$output[$i] = ($lv == 'hours_padded') ? str_pad(floor($seconds_to_change / HOUR_IN_SECONDS), 2, '0', STR_PAD_LEFT) : floor($seconds_to_change / HOUR_IN_SECONDS);
 				continue;
 			}
 			
 			if ($lv == 'hours_divisor' || $lv == 'hours_divisor_padded')
 			{
-				$text[$i] = ($lv == 'hours_divisor_padded') ? str_pad((floor($seconds_to_change / HOUR_IN_SECONDS) % HOUR_IN_SECONDS), 2, '0', STR_PAD_LEFT) : (floor($seconds_to_change / HOUR_IN_SECONDS) % HOUR_IN_SECONDS);
+				$output[$i] = ($lv == 'hours_divisor_padded') ? str_pad((floor($seconds_to_change / HOUR_IN_SECONDS) % HOUR_IN_SECONDS), 2, '0', STR_PAD_LEFT) : (floor($seconds_to_change / HOUR_IN_SECONDS) % HOUR_IN_SECONDS);
 				continue;
 			}
 			
 			if ($lv == 'minutes' || $lv == 'minutes_padded')
 			{
-				$text[$i] = ($lv == 'minutes_padded') ? str_pad(floor($seconds_to_change / MINUTE_IN_SECONDS), 2, '0', STR_PAD_LEFT) : floor($seconds_to_change / MINUTE_IN_SECONDS);
+				$output[$i] = ($lv == 'minutes_padded') ? str_pad(floor($seconds_to_change / MINUTE_IN_SECONDS), 2, '0', STR_PAD_LEFT) : floor($seconds_to_change / MINUTE_IN_SECONDS);
 				continue;
 			}
 			
 			if ($lv == 'minutes_divisor' || $lv == 'minutes_divisor_padded')
 			{
-				$text[$i] = ($lv == 'minutes_divisor_padded') ? str_pad((floor($seconds_to_change / MINUTE_IN_SECONDS) % MINUTE_IN_SECONDS), 2, '0', STR_PAD_LEFT) : (floor($seconds_to_change / MINUTE_IN_SECONDS) % MINUTE_IN_SECONDS);
+				$output[$i] = ($lv == 'minutes_divisor_padded') ? str_pad((floor($seconds_to_change / MINUTE_IN_SECONDS) % MINUTE_IN_SECONDS), 2, '0', STR_PAD_LEFT) : (floor($seconds_to_change / MINUTE_IN_SECONDS) % MINUTE_IN_SECONDS);
 				continue;
 			}
 			
 			if ($lv == 'seconds' || $lv == 'seconds_padded')
 			{
-				$text[$i] = ($lv == 'seconds_padded') ? str_pad($seconds_to_change, 2, '0', STR_PAD_LEFT) : $seconds_to_change;
+				$output[$i] = ($lv == 'seconds_padded') ? str_pad($seconds_to_change, 2, '0', STR_PAD_LEFT) : $seconds_to_change;
 				continue;
 			}
 			
 			if ($lv == 'seconds_divisor' || $lv == 'seconds_divisor_padded')
 			{
-				$text[$i] = ($lv == 'seconds_divisor_padded') ? str_pad(($seconds_to_change % MINUTE_IN_SECONDS), 2, '0', STR_PAD_LEFT) : ($seconds_to_change % MINUTE_IN_SECONDS);
+				$output[$i] = ($lv == 'seconds_divisor_padded') ? str_pad(($seconds_to_change % MINUTE_IN_SECONDS), 2, '0', STR_PAD_LEFT) : ($seconds_to_change % MINUTE_IN_SECONDS);
 				continue;
 			}
 			
 			if ($lv == 'space' || $lv == 'nbsp')
 			{
-				$text[$i] = ' ';
+				$output[$i] = ' ';
 				continue;
 			}
 			
 			if ($lv == 'comma')
 			{
-				$text[$i] = ',';
+				$output[$i] = ',';
 				continue;
 			}
 			
 			if ($lv == 'semicolon' || $lv == 'semi_colon')
 			{
-				$text[$i] = ';';
+				$output[$i] = ';';
 				continue;
 			}
 
 			if ($lv == 'colon')
 			{
-				$text[$i] = ':';
+				$output[$i] = ':';
 				continue;
 			}
 
 			if ($lv == 'query' || $lv == 'question' || $lv == 'querymark' || $lv == 'questionmark' || $lv == 'question_mark' || $lv == 'query_mark')
 			{
-				$text[$i] = '?';
+				$output[$i] = '?';
 				continue;
 			}
 
 			if ($lv == 'exclamation' || $lv == 'exclamationmark' || $lv == 'exclamation_mark')
 			{
-				$text[$i] = '!';
+				$output[$i] = '!';
 				continue;
 			}
 
 			if ($lv == 'fullstop' || $lv == 'full_stop' || $lv == 'stop' || $lv == 'period' || $lv == 'dot' || $lv == 'point')
 			{
-				$text[$i] = '.';
+				$output[$i] = '.';
 				continue;
 			}
 			
 			if ($lv == 'percent' || $lv == 'percentage')
 			{
-				$text[$i] = '%';
+				$output[$i] = '%';
 				continue;
 			}
 			
 			if ($lv != NULL)
 			{
-				$text[$i] = '%' . $lv . '%';
+				$output[$i] = '%' . $lv . '%';
 				continue;
 			}
 		}
 		
-		$text = array_filter($text,
+		$output = array_filter($output,
 			function($v)
 			{
 				return !in_array($v, array(FALSE, NULL, ''), TRUE);
 			}
 		);
 		
-		$text = implode('', $text);
+		$output = implode('', $output);
 
-		return $text;
+		return $output;
 	}
 
 	public function sanitize_input($data)

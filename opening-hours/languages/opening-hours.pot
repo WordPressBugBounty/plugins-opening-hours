@@ -1,20 +1,21 @@
-# Copyright (C) 2024 Noah Hearle, Design Extreme
+# Copyright (C) 2026 Noah Hearle, Design Extreme
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: We’re Open! 2.3\n"
+"Project-Id-Version: We’re Open! 2.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/opening-hours\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-23T23:42:04+00:00\n"
+"POT-Creation-Date: 2026-01-04T15:32:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.6.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: opening-hours\n"
 
 #. Plugin Name of the plugin
+#: opening-hours.php
 #: index.php:717
 #: index.php:722
 #: templates/index.php:13
@@ -24,47 +25,23 @@ msgid "We’re Open!"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: opening-hours.php
 msgid "https://wordpress.org/plugins/opening-hours/"
 msgstr ""
 
 #. Description of the plugin
+#: opening-hours.php
 msgid "Smart and easy management for your business’ regular and special opening hours with Structured Data plus populate from Google My Business"
 msgstr ""
 
 #. Author of the plugin
+#: opening-hours.php
 msgid "Noah Hearle, Design Extreme"
 msgstr ""
 
 #. Author URI of the plugin
+#: opening-hours.php
 msgid "https://designextreme.com/wordpress/"
-msgstr ""
-
-#: index.php:149
-#: templates/index.php:113
-#: templates/index.php:156
-#: templates/settings.php:39
-#: widget.php:158
-msgid "None"
-msgstr ""
-
-#: index.php:150
-#: widget.php:159
-msgid "Weekdays only"
-msgstr ""
-
-#: index.php:151
-#: widget.php:160
-msgid "Weekend only"
-msgstr ""
-
-#: index.php:152
-#: widget.php:161
-msgid "Weekdays and weekend, separately"
-msgstr ""
-
-#: index.php:153
-#: widget.php:162
-msgid "All days"
 msgstr ""
 
 #: index.php:172
@@ -106,355 +83,383 @@ msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
 #: index.php:835
-msgid "Animal Shelter"
+#: templates/index.php:113
+#: templates/index.php:156
+#: templates/settings.php:39
+#: widget.php:158
+msgid "None"
 msgstr ""
 
 #: index.php:836
-msgid "Archive Organization"
+#: widget.php:159
+msgid "Weekdays only"
 msgstr ""
 
 #: index.php:837
-msgid "Automotive Business"
+#: widget.php:160
+msgid "Weekend only"
 msgstr ""
 
 #: index.php:838
-msgid "Child Care"
+#: widget.php:161
+msgid "Weekdays and weekend, separately"
 msgstr ""
 
 #: index.php:839
-msgid "Dentist"
-msgstr ""
-
-#: index.php:840
-msgid "Dry Cleaning or Laundry"
-msgstr ""
-
-#: index.php:841
-msgid "Emergency Service"
+#: widget.php:162
+msgid "All days"
 msgstr ""
 
 #: index.php:842
-msgid "Employment Agency"
+msgid "Animal Shelter"
 msgstr ""
 
 #: index.php:843
-msgid "Entertainment Business"
+msgid "Archive Organization"
 msgstr ""
 
 #: index.php:844
-msgid "Financial Service"
+msgid "Automotive Business"
 msgstr ""
 
 #: index.php:845
-msgid "Food Establishment"
+msgid "Child Care"
 msgstr ""
 
 #: index.php:846
-msgid "Government Office"
+msgid "Dentist"
 msgstr ""
 
 #: index.php:847
-msgid "Health and Beauty Business"
+msgid "Dry Cleaning or Laundry"
 msgstr ""
 
 #: index.php:848
-msgid "Home and Construction Business"
+msgid "Emergency Service"
 msgstr ""
 
 #: index.php:849
-msgid "Internet Café"
+msgid "Employment Agency"
 msgstr ""
 
 #: index.php:850
-msgid "Legal Service"
+msgid "Entertainment Business"
 msgstr ""
 
 #: index.php:851
-msgid "Library"
+msgid "Financial Service"
 msgstr ""
 
 #: index.php:852
-msgid "Lodging Business"
+msgid "Food Establishment"
 msgstr ""
 
 #: index.php:853
-msgid "Medical Business"
+msgid "Government Office"
 msgstr ""
 
 #: index.php:854
-msgid "Professional Service"
+msgid "Health and Beauty Business"
 msgstr ""
 
 #: index.php:855
-msgid "Radio Station"
+msgid "Home and Construction Business"
 msgstr ""
 
 #: index.php:856
-msgid "Real Estate Agent"
+msgid "Internet Café"
 msgstr ""
 
 #: index.php:857
-msgid "Recycling Center"
+msgid "Legal Service"
 msgstr ""
 
 #: index.php:858
-msgid "Self Storage"
+msgid "Library"
 msgstr ""
 
 #: index.php:859
-msgid "Shopping Center"
+msgid "Lodging Business"
 msgstr ""
 
 #: index.php:860
-msgid "Sports Activity Location"
+msgid "Medical Business"
 msgstr ""
 
 #: index.php:861
-msgid "Store"
+msgid "Professional Service"
 msgstr ""
 
 #: index.php:862
-msgid "Television Station"
+msgid "Radio Station"
 msgstr ""
 
 #: index.php:863
-msgid "Tourist Information Center"
+msgid "Real Estate Agent"
 msgstr ""
 
 #: index.php:864
-msgid "Travel Agency"
+msgid "Recycling Center"
+msgstr ""
+
+#: index.php:865
+msgid "Self Storage"
+msgstr ""
+
+#: index.php:866
+msgid "Shopping Center"
+msgstr ""
+
+#: index.php:867
+msgid "Sports Activity Location"
 msgstr ""
 
 #: index.php:868
+msgid "Store"
+msgstr ""
+
+#: index.php:869
+msgid "Television Station"
+msgstr ""
+
+#: index.php:870
+msgid "Tourist Information Center"
+msgstr ""
+
+#: index.php:871
+msgid "Travel Agency"
+msgstr ""
+
+#: index.php:875
 msgid "Inexpensive $"
 msgstr ""
 
-#: index.php:872
+#: index.php:879
 msgid "Moderate $$"
 msgstr ""
 
-#: index.php:876
+#: index.php:883
 msgid "Expensive $$$"
 msgstr ""
 
-#: index.php:880
+#: index.php:887
 msgid "Very Expensive $$$$"
 msgstr ""
 
 #. translators: %s refers to a URL to resolve errors and should remain untouched
-#: index.php:958
+#: index.php:965
 msgid "<strong>Google API Error:</strong> Please enable <a href=\"%s\" target=\"_blank\">Places API (New)</a> and add this to the API Key Restrictions."
 msgstr ""
 
 #. translators: %s refers to a URL to resolve errors and should remain untouched
-#: index.php:977
+#: index.php:984
 msgid "<strong>Google API Error:</strong> Your Google API Key is not valid for this request and permission is denied. Please check your Google <a href=\"%s\" target=\"_blank\">API Key</a>."
 msgstr ""
 
 #. translators: %s refers to a URL to resolve errors and should remain untouched
-#: index.php:986
+#: index.php:993
 msgid "<strong>Google API Error:</strong> Google has returned an invalid request error. Please check your <a href=\"%s\" target=\"_blank\">Place ID</a>."
 msgstr ""
 
 #. translators: %s refers to a URL to resolve errors and should remain untouched
-#: index.php:995
+#: index.php:1002
 msgid "<strong>Google API Error:</strong> Google has not found data for the current Place ID. Please ensure you search for a specific business location; not a region or coordinates using the <a href=\"%s\" target=\"_blank\">Place ID Finder</a>."
 msgstr ""
 
-#: index.php:1002
+#: index.php:1009
 msgid "Google API Error:"
 msgstr ""
 
-#: index.php:1002
-msgid "<strong>Google API Error:</strong> Unknown error returned by the Google Places API."
+#: index.php:1009
+msgid "<strong>Google API Error:</strong> Unknown error returned by the API."
 msgstr ""
 
-#: index.php:1077
-#: index.php:1098
-#: index.php:1135
-#: index.php:1174
-#: index.php:1239
-#: index.php:1309
-#: index.php:1382
-#: index.php:1408
-#: index.php:1460
-#: index.php:1492
-#: index.php:1527
-#: index.php:1631
-#: index.php:1681
+#: index.php:1084
+#: index.php:1105
+#: index.php:1142
+#: index.php:1181
+#: index.php:1246
+#: index.php:1316
+#: index.php:1389
+#: index.php:1415
+#: index.php:1467
+#: index.php:1499
+#: index.php:1534
+#: index.php:1638
+#: index.php:1688
 msgid "Your session has expired, please refresh this page"
 msgstr ""
 
-#: index.php:1089
+#: index.php:1096
 msgid "Successfully saved opening hours"
 msgstr ""
 
-#: index.php:1118
+#: index.php:1125
 msgid "Successfully removed special opening hours"
 msgstr ""
 
-#: index.php:1158
+#: index.php:1165
 msgid "Successfully set synchronization preference"
 msgstr ""
 
-#: index.php:1197
+#: index.php:1204
 msgid "Successfully cleared Google My Business credentials"
 msgstr ""
 
-#: index.php:1208
+#: index.php:1215
 msgid "Successfully set API Key for Google My Business"
 msgstr ""
 
-#: index.php:1219
+#: index.php:1226
 msgid "Successfully set Place ID for Google My Business"
 msgstr ""
 
-#: index.php:1228
+#: index.php:1235
 msgid "Successfully set Google My Business credentials"
 msgstr ""
 
-#: index.php:1262
+#: index.php:1269
 msgid "Failed to set data from Google My Business because opening hours do not exist for this place"
 msgstr ""
 
-#: index.php:1272
+#: index.php:1279
 msgid "Failed to set data from Google My Business"
 msgstr ""
 
-#: index.php:1293
+#: index.php:1300
 msgid "Successfully set data from Google My Business"
 msgstr ""
 
-#: index.php:1332
+#: index.php:1339
 msgid "Failed to update — text for “closed” is required."
 msgstr ""
 
-#: index.php:1341
+#: index.php:1348
 msgid "Failed to update — separators cannot be empty."
 msgstr ""
 
-#: index.php:1362
+#: index.php:1369
 msgid "Settings Saved."
 msgstr ""
 
 #. translators: %s: file directory, this should remain untouched
-#: index.php:1552
+#: index.php:1559
 msgid "Cannot create a new file in plugin directory: %s"
 msgstr ""
 
 #. translators: %s: file name, this should remain untouched
-#: index.php:1569
+#: index.php:1576
 msgid "Cannot create a new file: %s"
 msgstr ""
 
 #. translators: %s: file name, this should remain untouched
-#: index.php:1580
+#: index.php:1587
 msgid "File at: %s is not writable."
 msgstr ""
 
 #. translators: %s: file name, this should remain untouched
-#: index.php:1595
+#: index.php:1602
 msgid "Cannot write new data to file at: %s"
 msgstr ""
 
-#: index.php:1732
+#: index.php:1739
 #: templates/index.php:239
 #: templates/widget.php:72
 #: widget.php:1418
 msgid "Settings"
 msgstr ""
 
-#: index.php:1748
+#: index.php:1755
 msgid "Like our plugin? Please leave a review!"
 msgstr ""
 
-#: index.php:1749
-#: templates/settings.php:1680
-#: templates/settings.php:1722
+#: index.php:1756
+#: templates/settings.php:1681
+#: templates/settings.php:1723
 msgid "Support"
 msgstr ""
 
 #. translators: %s: URL of remote data, this should remain untouched
-#: index.php:2438
+#: index.php:2471
 msgid "Error: Unable to collect remote data from URL: <em>%s</em>"
 msgstr ""
 
-#: index.php:2484
+#: index.php:2517
 msgid "Error: Place ID and Google API Key are required."
 msgstr ""
 
-#: index.php:2488
-#: index.php:2517
+#: index.php:2521
+#: index.php:2550
 msgid "Error: Place ID is required."
 msgstr ""
 
-#: index.php:2492
-#: index.php:2523
+#: index.php:2525
+#: index.php:2556
 msgid "Error: Google API Key is required."
 msgstr ""
 
-#: index.php:2511
+#: index.php:2544
 msgid "Place ID and Google API Key are required."
 msgstr ""
 
-#: index.php:4792
+#: index.php:4825
 msgid "Error: Please set <em>We’re Open!</em> preferences in Dashboard→Settings"
 msgstr ""
 
-#: index.php:4965
+#: index.php:4998
 msgid "Error: No opening hours are available to display"
 msgstr ""
 
 #. translators: The characters used to separate each days and their opening hours in a list (sometimes these items contain a comma), so usually a semi-colon with a space
-#: index.php:5078
+#: index.php:5111
 msgid "; "
 msgstr ""
 
 #. translators: The character to use at the end of a sentence, usually just a period/full-stop
-#: index.php:5081
+#: index.php:5114
 msgid "."
 msgstr ""
 
-#: index.php:7054
-#: index.php:7060
+#: index.php:6562
+#: index.php:6568
 msgid "Remind me later"
 msgstr ""
 
-#: index.php:7061
+#: index.php:6569
 msgid "Dismiss for a year"
 msgstr ""
 
-#: index.php:7062
+#: index.php:6570
 msgid "I’ve already left a review"
 msgstr ""
 
 #. translators: 1: The initial version of this plugin, 2: refers to review URL at wordpress.org, 3: string to handle notification data
-#: index.php:7084
+#: index.php:6592
 msgid "You have used this plugin for quite a while, since version %1$s. We’d love to hear what you think about its design, features, support… So, please consider <a href=\"%2$s\" target=\"_blank\" %3$s>leaving a review</a>!"
 msgstr ""
 
 #. translators: 1: The initial version of this plugin, 2: refers to review URL at wordpress.org, 3: string to handle notification data
-#: index.php:7084
+#: index.php:6592
 msgid "You’ve experienced using this plugin"
 msgstr ""
 
 #. translators: 1: The plugin installation date, 2: refers to review URL at wordpress.org, 3: string to handle notification data
-#: index.php:7178
+#: index.php:6686
 msgid "You have used this plugin for quite a while, since %1$s. We’d love to hear what you think about its design, features, support… So, please consider <a href=\"%2$s\" target=\"_blank\" %3$s>leaving a review</a>!"
 msgstr ""
 
 #. translators: 1: The plugin installation date, 2: refers to review URL at wordpress.org, 3: string to handle notification data
-#: index.php:7178
+#: index.php:6686
 msgid "You’ve experienced this plugin"
 msgstr ""
 
 #. translators: 1: refers to review URL at wordpress.org, 2: string to handle notification data
-#: index.php:7182
+#: index.php:6690
 msgid "We’d love to hear what you think about its design, features, support… So, please consider <a href=\"%1$s\" target=\"_blank\" %2$s>leaving a review</a>!"
 msgstr ""
 
 #. translators: 1: refers to review URL at wordpress.org, 2: string to handle notification data
-#: index.php:7182
+#: index.php:6690
 msgid "Please leave a review for We’re Open!"
 msgstr ""
 
@@ -581,8 +586,8 @@ msgid "Closed for %s days"
 msgstr ""
 
 #: templates/index.php:237
-#: templates/settings.php:1638
-#: templates/settings.php:1649
+#: templates/settings.php:1639
+#: templates/settings.php:1650
 msgid "Save"
 msgstr ""
 
@@ -622,13 +627,13 @@ msgid "Shortcodes"
 msgstr ""
 
 #: templates/settings.php:24
-#: templates/settings.php:1585
+#: templates/settings.php:1586
 msgid "Additional"
 msgstr ""
 
 #: templates/settings.php:26
-#: templates/settings.php:1678
-#: templates/settings.php:1687
+#: templates/settings.php:1679
+#: templates/settings.php:1688
 msgid "About"
 msgstr ""
 
@@ -1074,7 +1079,7 @@ msgid "Replacement Codes"
 msgstr ""
 
 #: templates/settings.php:464
-#: templates/settings.php:1350
+#: templates/settings.php:1351
 msgid "HTML Classes"
 msgstr ""
 
@@ -1151,7 +1156,7 @@ msgstr ""
 
 #: templates/settings.php:533
 #: templates/settings.php:997
-#: templates/settings.php:1356
+#: templates/settings.php:1357
 msgid "Description"
 msgstr ""
 
@@ -1312,7 +1317,7 @@ msgid "Only available for %s"
 msgstr ""
 
 #: templates/settings.php:813
-msgid "Overwrite the default seven-day number of days to cover both shorter and longer periods."
+msgid "Overwrite the default seven-day number of days to cover both shorter and longer periods; up to 400 days for special opening hours."
 msgstr ""
 
 #: templates/settings.php:823
@@ -1768,219 +1773,218 @@ msgid "Question mark character."
 msgstr ""
 
 #. translators: replace with a different word if better suited - currently only accepted values are: period, fullstop, dot or point enclosed with percent character
-#: templates/settings.php:1346
+#: templates/settings.php:1347
 msgid "&percnt;period&percnt;"
 msgstr ""
 
-#. translators: replace with a different word if better suited - currently only accepted values are: period, fullstop, dot or point enclosed with percent character
-#: templates/settings.php:1347
+#: templates/settings.php:1348
 msgid "Period character."
 msgstr ""
 
 #. translators: 1: bookmark to another HTML class, 2: name of HTML class
-#: templates/settings.php:1352
+#: templates/settings.php:1353
 msgid "Stylistically, you may wish to make changes that are beyond the list of themes. Here is a list of HTML classes that can be used by <a href=\"%1$s\">%2$s</a> parameter to set your design preferences."
 msgstr ""
 
-#: templates/settings.php:1355
+#: templates/settings.php:1356
 msgid "Class"
 msgstr ""
 
-#: templates/settings.php:1357
+#: templates/settings.php:1358
 msgid "Affects Opening Hours Table"
 msgstr ""
 
-#: templates/settings.php:1357
+#: templates/settings.php:1358
 #: widget.php:138
 msgid "Table"
 msgstr ""
 
-#: templates/settings.php:1358
+#: templates/settings.php:1359
 msgid "Affects Opening Hours Text"
 msgstr ""
 
-#: templates/settings.php:1358
+#: templates/settings.php:1359
 msgid "Text"
 msgstr ""
 
-#: templates/settings.php:1362
+#: templates/settings.php:1363
 msgid "Align all text to the left."
 msgstr ""
 
-#: templates/settings.php:1368
+#: templates/settings.php:1369
 msgid "Align all text to the center."
 msgstr ""
 
-#: templates/settings.php:1374
+#: templates/settings.php:1375
 msgid "Align all text to the right."
 msgstr ""
 
-#: templates/settings.php:1380
+#: templates/settings.php:1381
 msgid "Align all text to the start."
 msgstr ""
 
-#: templates/settings.php:1386
+#: templates/settings.php:1387
 msgid "Align all text to the end."
 msgstr ""
 
-#: templates/settings.php:1392
+#: templates/settings.php:1393
 msgid "Align day name text to the left."
 msgstr ""
 
-#: templates/settings.php:1398
+#: templates/settings.php:1399
 msgid "Align day name text to the center."
 msgstr ""
 
-#: templates/settings.php:1404
+#: templates/settings.php:1405
 msgid "Align day name text  to the right."
 msgstr ""
 
-#: templates/settings.php:1410
+#: templates/settings.php:1411
 msgid "Align day name text to the start."
 msgstr ""
 
-#: templates/settings.php:1416
+#: templates/settings.php:1417
 msgid "Align day name text to the end."
 msgstr ""
 
-#: templates/settings.php:1422
+#: templates/settings.php:1423
 msgid "Capitalize text (first letter) for day names."
 msgstr ""
 
-#: templates/settings.php:1428
+#: templates/settings.php:1429
 msgid "Set all text to upper case for day names."
 msgstr ""
 
-#: templates/settings.php:1434
+#: templates/settings.php:1435
 msgid "Set all text to lower case for day names."
 msgstr ""
 
-#: templates/settings.php:1440
+#: templates/settings.php:1441
 msgid "Align opening hours text to the left."
 msgstr ""
 
-#: templates/settings.php:1446
+#: templates/settings.php:1447
 msgid "Align opening hours text to the center."
 msgstr ""
 
-#: templates/settings.php:1452
+#: templates/settings.php:1453
 msgid "Align opening hours text  to the right."
 msgstr ""
 
-#: templates/settings.php:1458
+#: templates/settings.php:1459
 msgid "Align opening hours text to the start."
 msgstr ""
 
-#: templates/settings.php:1464
+#: templates/settings.php:1465
 msgid "Align opening hours text to the end."
 msgstr ""
 
-#: templates/settings.php:1470
+#: templates/settings.php:1471
 msgid "Capitalize text (first letter) of words in opening hours."
 msgstr ""
 
-#: templates/settings.php:1476
+#: templates/settings.php:1477
 msgid "Set all text to upper case for opening hours."
 msgstr ""
 
-#: templates/settings.php:1482
+#: templates/settings.php:1483
 msgid "Set all text to lower case for opening hours."
 msgstr ""
 
-#: templates/settings.php:1488
+#: templates/settings.php:1489
 msgid "Set font weight to normal for hours names (cell headings will often default to bold)."
 msgstr ""
 
-#: templates/settings.php:1494
+#: templates/settings.php:1495
 msgid "Set font weight to bold for day names."
 msgstr ""
 
-#: templates/settings.php:1500
+#: templates/settings.php:1501
 msgid "Set font weight to normal for day names."
 msgstr ""
 
-#: templates/settings.php:1506
+#: templates/settings.php:1507
 msgid "Set closed text to bold."
 msgstr ""
 
-#: templates/settings.php:1512
+#: templates/settings.php:1513
 msgid "Set 24 hour opening text to bold."
 msgstr ""
 
-#: templates/settings.php:1518
+#: templates/settings.php:1519
 msgid "Set closed text to italic."
 msgstr ""
 
-#: templates/settings.php:1524
+#: templates/settings.php:1525
 msgid "Set 24 hour opening text to italic."
 msgstr ""
 
-#: templates/settings.php:1530
+#: templates/settings.php:1531
 msgid "Wrap text for day names and opening hours."
 msgstr ""
 
-#: templates/settings.php:1536
+#: templates/settings.php:1537
 msgid "Do not wrap text for day names and opening hours."
 msgstr ""
 
-#: templates/settings.php:1542
+#: templates/settings.php:1543
 msgid "Remove any table border that may exist in the theme’s style sheet."
 msgstr ""
 
 #. translators: 1: bookmark to another HTML class, 2: name of HTML class 3: bookmark to another HTML class, 4: name of HTML class
-#: templates/settings.php:1549
+#: templates/settings.php:1550
 msgid "Remove padding from outside table cells so text appears flush to the edges when aligned to <a href=\"%1$s\">%2$s</a> and <a href=\"%3$s\">%4$s</a> respectively."
 msgstr ""
 
-#: templates/settings.php:1555
+#: templates/settings.php:1556
 msgid "Added a line between past days and the current day to highlight current opening hours."
 msgstr ""
 
-#: templates/settings.php:1561
+#: templates/settings.php:1562
 msgid "Set past days to a more transparent color."
 msgstr ""
 
 #. translators: 1: bookmark to another HTML class, 2: name of HTML class, 3: bookmark to another HTML class, 4: name of HTML class
-#: templates/settings.php:1568
+#: templates/settings.php:1569
 msgid "For pages or sections with dark backgrounds — currently in use for classes: <a href=\"%1$s\">%2$s</a> and <a href=\"%3$s\">%4$s</a>."
 msgstr ""
 
-#: templates/settings.php:1579
-#: templates/settings.php:1587
+#: templates/settings.php:1580
+#: templates/settings.php:1588
 msgid "Google Credentials"
 msgstr ""
 
-#: templates/settings.php:1580
-#: templates/settings.php:1643
+#: templates/settings.php:1581
+#: templates/settings.php:1644
 msgid "Custom Styles"
 msgstr ""
 
-#: templates/settings.php:1581
-#: templates/settings.php:1654
+#: templates/settings.php:1582
+#: templates/settings.php:1655
 msgid "Cache"
 msgstr ""
 
-#: templates/settings.php:1582
-#: templates/settings.php:1662
-#: templates/settings.php:1670
+#: templates/settings.php:1583
+#: templates/settings.php:1663
+#: templates/settings.php:1671
 msgid "Reset"
 msgstr ""
 
-#: templates/settings.php:1588
+#: templates/settings.php:1589
 msgid "Use Google’s Places API (New) to retrieve your current opening hours from Google My Business."
 msgstr ""
 
-#: templates/settings.php:1591
+#: templates/settings.php:1592
 msgid "Google API Key"
 msgstr ""
 
 #. translators: 1: URL of Place ID Finder, 2: IP of the web server, 3: Help icon and reveal toggle link
-#: templates/settings.php:1597
+#: templates/settings.php:1598
 msgid "To retrieve Google My Business data, you’ll need your <a href=\"%1$s\" class=\"components-external-link\" target=\"_blank\">API Key</a>, with API: <span class=\"highlight\">Places API (New)</span> and restrict to IP: <span class=\"highlight\">%2$s</span> %3$s"
 msgstr ""
 
 #. translators: 1: URL of Google Developer Console, 2: URL of Place API, 3: URL of Google Developer Console, 4: IP of web server, 5: URL for Google billing account
-#: templates/settings.php:1601
+#: templates/settings.php:1602
 msgid ""
 "Create a new project or open an existing project in <a href=\"%1$s\" class=\"components-external-link\" target=\"_blank\">Google Developer’s Console</a>\r\n"
 "Search for <a href=\"%2$s\" class=\"components-external-link\" target=\"_blank\">Places</a> and enable “Places API (New)” in your account\r\n"
@@ -1996,129 +2000,138 @@ msgid ""
 msgstr ""
 
 #. translators: %s: a URL for a visual guide
-#: templates/settings.php:1614
+#: templates/settings.php:1615
 msgid "Would you follow this better with diagrams? Check out our <a href=\"%s\" class=\"components-external-link\" target=\"_blank\">visual guide</a>."
 msgstr ""
 
-#: templates/settings.php:1618
+#: templates/settings.php:1619
 msgid "Google Place ID"
 msgstr ""
 
-#: templates/settings.php:1622
+#: templates/settings.php:1623
 msgid "View Retrieved Data"
 msgstr ""
 
 #. translators: %s: the Google Place Finder URL
-#: templates/settings.php:1625
+#: templates/settings.php:1626
 msgid "You can find your unique Place ID by searching by your business’ name in <a href=\"%s\" class=\"components-external-link\" target=\"_blank\">Google’s Place ID Finder</a>. Single business locations are accepted; coverage areas are not."
 msgstr ""
 
-#: templates/settings.php:1629
+#: templates/settings.php:1630
 msgid "Place Name"
 msgstr ""
 
-#: templates/settings.php:1644
+#: templates/settings.php:1645
 msgid "If you prefer to manage your style sheet outside of your theme, you may add your own customized styles."
 msgstr ""
 
-#: templates/settings.php:1655
+#: templates/settings.php:1656
 msgid "You may wish to clear the cache after a change to the time zone in the General Settings."
 msgstr ""
 
-#: templates/settings.php:1657
+#: templates/settings.php:1658
 msgid "Clear Cache"
 msgstr ""
 
-#: templates/settings.php:1663
+#: templates/settings.php:1664
 msgid "At times you may wish to clear all opening hours, notifications or just start over."
 msgstr ""
 
-#: templates/settings.php:1665
+#: templates/settings.php:1666
 msgid "Reset administrator notifications."
 msgstr ""
 
-#: templates/settings.php:1666
+#: templates/settings.php:1667
 msgid "Clear all opening hours."
 msgstr ""
 
-#: templates/settings.php:1667
+#: templates/settings.php:1668
 msgid "Yes, I confirm I wish to reset everything."
 msgstr ""
 
-#: templates/settings.php:1679
-#: templates/settings.php:1702
+#: templates/settings.php:1680
+#: templates/settings.php:1703
 msgid "Plugins by the Developer"
 msgstr ""
 
-#: templates/settings.php:1681
-#: templates/settings.php:1727
-#: templates/settings.php:1729
+#: templates/settings.php:1682
+#: templates/settings.php:1728
+#: templates/settings.php:1731
+#: templates/settings.php:1734
 msgid "Follow Us"
 msgstr ""
 
-#: templates/settings.php:1682
-#: templates/settings.php:1732
+#: templates/settings.php:1683
+#: templates/settings.php:1738
 msgid "Rate Us"
 msgstr ""
 
-#: templates/settings.php:1683
-#: templates/settings.php:1737
+#: templates/settings.php:1684
+#: templates/settings.php:1743
 msgid "Donate"
 msgstr ""
 
-#: templates/settings.php:1688
-msgid "This is a second plugin I’ve created for the WordPress community — starting with a simple Places API (New) request to retrieve data from <em>Google My Business</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps."
+#: templates/settings.php:1689
+msgid "This is a second plugin I’ve created for the WordPress community — starting with a simple Places API request to retrieve data from <em>Google My Business</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps."
 msgstr ""
 
-#: templates/settings.php:1689
+#: templates/settings.php:1690
 msgid "As with the Google Reviews and Rating plugin, you can use shortcodes in any post, page or use the widget version. There is an extensive list of parameters, conditions and variables to enclose text and HTML elements. I have kept the style sheet minimal to allow for your customizations — as a developer/designer this is what I’d like for all plugins."
 msgstr ""
 
 #. translators: %s: refers to the plugin’s support URL
-#: templates/settings.php:1691
+#: templates/settings.php:1692
 msgid "This one is my second published plugin for WordPress so I’d appreciate any feedback. So if you have any comments or feature requests, please feel free to <a href=\"%s\" class=\"components-external-link\" target=\"_blank\">get in touch</a> with me."
 msgstr ""
 
 #. translators: 1: author’s website, 2: author’s business name
-#: templates/settings.php:1701
+#: templates/settings.php:1702
 msgid "Developer, <a href=\"%1$s\" class=\"components-external-link\" target=\"_blank\">%2$s</a>"
 msgstr ""
 
-#: templates/settings.php:1707
-#: templates/settings.php:1713
+#: templates/settings.php:1708
+#: templates/settings.php:1714
 msgid "More Details"
 msgstr ""
 
-#: templates/settings.php:1708
-#: templates/settings.php:1715
+#: templates/settings.php:1709
+#: templates/settings.php:1716
 msgid "Installed"
 msgstr ""
 
-#: templates/settings.php:1723
+#: templates/settings.php:1724
 msgid "Do you have any general support queries? Please search our forums at WordPress or make your own contribution. You can see that we are always very quick to reply!"
 msgstr ""
 
-#: templates/settings.php:1724
+#: templates/settings.php:1725
 msgid "View support forum"
 msgstr ""
 
-#: templates/settings.php:1728
+#: templates/settings.php:1729
 msgid "Want some easy-to-follow pro tips with examples? We will help you to make your reviews really stand out. Feature requests are welcome too."
 msgstr ""
 
-#: templates/settings.php:1733
-msgid "Love this plugin with as much heart as we’ve put into its code? Why not share your feedback to help others with their plugin decision."
+#: templates/settings.php:1731
+msgid "Follow us on X"
 msgstr ""
 
-#: templates/settings.php:1734
-msgid "Add my review"
-msgstr ""
-
-#: templates/settings.php:1738
-msgid "This plugin is powered by oat flat whites… We welcome any show of support the advancement of this plugin, no matter how small."
+#: templates/settings.php:1732
+msgid "Follow us on Bluesky"
 msgstr ""
 
 #: templates/settings.php:1739
+msgid "Love this plugin with as much heart as we’ve put into its code? Why not share your feedback to help others with their plugin decision."
+msgstr ""
+
+#: templates/settings.php:1740
+msgid "Add my review"
+msgstr ""
+
+#: templates/settings.php:1744
+msgid "This plugin is powered by oat flat whites… We welcome any show of support the advancement of this plugin, no matter how small."
+msgstr ""
+
+#: templates/settings.php:1745
 msgid "Donate to this plugin"
 msgstr ""
 

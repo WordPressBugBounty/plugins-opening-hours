@@ -4,8 +4,8 @@ Contributors: designextreme
 Donate link: https://paypal.me/designextreme
 Tags: opening hours, open hours, business hours, open times, opening times
 Requires at least: 5.3
-Tested up to: 6.7.1
-Stable tag: 2.3
+Tested up to: 6.9
+Stable tag: 2.6
 Requires PHP: 5.2.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -144,6 +144,24 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 8. Simple Widget to apply your opening hours to a sidebar or footer section
 
 == Changelog ==
+
+= 2.6 =
+
+* Updated count parameter limit to 400 days for special opening hours
+* Tested with WordPress 6.9
+
+= 2.5 =
+
+* Fixed missing variables in open_text Shortcode
+
+= 2.4 =
+
+* Added Bluesky link in About
+* Fixed _load_textdomain_just_in_time warning caused by consolidation types
+* Fixed handling of 24-hours covering multiple days
+* Improved weekdays and weekend selection
+* Improved wp_display_text method
+* Tested with WordPress 6.8.3
 
 = 2.3 =
 
