@@ -4,9 +4,9 @@ Contributors: designextreme
 Donate link: https://paypal.me/designextreme
 Tags: opening hours, open hours, business hours, open times, opening times
 Requires at least: 5.3
-Tested up to: 6.9
-Stable tag: 2.6
-Requires PHP: 5.2.4
+Tested up to: 7.1
+Stable tag: 2.7
+Requires PHP: 5.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -47,8 +47,8 @@ Control all aspects of your business’ opening hours with this very easy manage
 	* Automatic data refreshing or page reload occurring with a change of open or closed status
 	* Conditionally show HTML containing special opening hours – only when this is available
 *   **Conditional text** with variables (e.g. show text or HTML relevant to current open status)
-*   **Structured Data** ([Schema.org](http://schema.org)) support to give accurate information about opening hours to search engines and services such as Google My Business and it assists with SEO
-*   Populate and synchronize opening hours from Google My Business (Google API Key, Place ID, Google Billing Account are required)
+*   **Structured Data** ([Schema.org](http://schema.org)) support to give accurate information about opening hours to search engines and services such as Google Business Profile (formerly Google Business Profile) and it assists with SEO
+*   Populate and synchronize opening hours from Google Business Profile (Google API Key, Place ID, Google Billing Account are required)
 *   A comprehensive and *free* plugin with no upgrades for additional functionality
 
 = Demo: =
@@ -70,7 +70,7 @@ We have a comprehensive showcase of the shortcode’s design and functionality o
 *   If populating from Google, I would recommend [setting your business in Google](https://business.google.com) and finding your [Place ID](https://developers.google.com/places/place-id).
 *   And if used more than once, create a [Google Billing Account](https://console.cloud.google.com/billing) to receive your substantial free API Request allocation.
 
-*This is just my second public plugin and [all comments](https://designextreme.com/wordpress/we-are-open/) are very welcome. It is a sister plugin to [Reviews and Rating – Google My Business](https://wordpress.org/plugins/g-business-reviews-rating).*
+*This is just my second public plugin and [all comments](https://designextreme.com/wordpress/we-are-open/) are very welcome. It is a sister plugin to [Reviews and Rating – Google Reviews](https://wordpress.org/plugins/g-business-reviews-rating).*
 
 == Installation ==
 
@@ -98,29 +98,54 @@ You can refresh content using the shortcode parameter: *update="immediate"* to f
 
 A common mistake is to set the time zone in WordPress using hours from GMT when it’s more reliable to use your geographic location (e.g. Europe/Paris). Using the geographic location option considers daylight saving time.
 
-= How can I keep the opening hours with Google My Business current? =
+= How can I keep the opening hours with Google Business Profile current? =
 
-Enable **Structured Data**. It works very well to inform Google My Business of your complete opening hours, including special opening hours and temporary closures.
+Enable **Structured Data**. It works very well to inform Google Business Profile of your complete opening hours, including special opening hours and temporary closures.
 
-Alternatively, you may wish to update your opening hours from Google My Business using the Places API (New). This method requires a Google API Key and Place ID (single location) and doesn’t consider special opening hours or temporary closures.
+Alternatively, you may wish to update your opening hours from Google Business Profile using the Places API (New). This method requires a Google API Key and Place ID (single location) and doesn’t consider special opening hours or temporary closures.
 
 = Can I use my own words for “closed”, “today”, “tomorrow”, “midday”, “midnight” or label the actual holidays? =
 
 Yes, you can set most of these words in the settings or all of these using a shortcode parameter. Labels to replace the day names or dates in special opening hours are available in the Dashboard.
 
+= Can I write my own sentence, such as “Closed until 9am”? =
+
+Yes. Use the text type and put your wording in the content, with tokens wrapped in percent signs:
+
+`[open type="text"]%if_closed%Closed until %today_next%%endif%[/open]`
+
+The most useful tokens:
+
+* `%today_start%`, `%today_end%`, `%today_next%`, `%today_hours%` — today’s times, with `%tomorrow_start%` and so on for tomorrow
+* `%today_name%`, `%tomorrow_name%` — the name of the day
+* `%today_note%`, `%tomorrow_note%` — the note you set against that day
+* `%days%`, `%hours%`, `%minutes%`, `%seconds%` — a countdown to the next change, each with a `%days_padded%` style variant
+
+Wrap any wording so it only appears when it applies: `%if_open%`, `%if_closed%`, `%if_closure%`, `%if_special%`, `%if_24_hours%` and `%if_today_note%`, each with an `%if_not_…%` form. Close with `%endif%`, and use `%else%` where you need both.
+
+Where a literal character would be trimmed or mistaken for a token, use `%space%`, `%nbsp%`, `%comma%`, `%colon%` or `%percent%`.
+
 = Can I have my holiday opening hours appear only when relevant? =
 
 Yes, this is possible by using the [`[open_special]`](https://demo.designextreme.com/were-open/#open-special) shortcode. Enclose your special opening times, and any HTML such as a heading, to have this appear only when it’s needed.
+
+= How long are past special opening hours kept? =
+
+They are removed automatically once they are 14 days old, so the list stays tidy. To change that, set the `we_are_open_special_cut_off` option or use the filter of the same name. Any value from 365 down to -2 is accepted: 365 keeps a year of history, 0 removes a date as it becomes current and -2 removes it two days beforehand.
+
+= Can I set shortcode parameters site-wide? =
+
+Yes, with the `we_are_open_parameters` filter. Return an array of the parameters you want to set and they apply to every shortcode, so you don’t have to repeat them. A parameter written on a shortcode always wins, and an empty one clears the filter value for that shortcode.
 
 = Is this plugin fully GDPR compliant? =
 
 Yes.
 
-= How do I get a Google API Key if I want to populate or synchronize from my Google My Business listing? =
+= How do I get a Google API Key if I want to populate or synchronize from my Google Business Profile listing? =
 
 All the details for collecting your Google API Key can be found using our [visual guide](https://designextreme.com/wordpress/we-are-open/#api-key-guide).
 
-Once your *Project* is set, you will need a new *API Key* with access to **Place API (New)**. As a restriction, set your host’s **IP Address** (not your website’s URL). A more detailed guide is available in the Additional tab of Settings→We’re Open!.
+Once your *Project* is set, you will need a new *API Key* with access to **Places API (New)**. As a restriction, set your host’s **IP Address** (not your website’s URL). A more detailed guide is available in the Additional tab of Settings→We’re Open!.
 
 The Google API Key is required for this plugin to load the data from the Google Places API (New).
 
@@ -139,11 +164,33 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 3. Comprehensive settings to get your opening hours displayed exactly as you want
 4. Customize all separators and text for closed or consolidated days
 5. Shortcodes for opening hours, conditional content for open/closed (with content refresh) and replacement codes in text
-6. Extensive parameters are available to specify you6r perfect preferences as you desire
+6. Extensive parameters are available to specify your perfect preferences as you desire
 7. Set your custom styling and other additional actions
 8. Simple Widget to apply your opening hours to a sidebar or footer section
 
 == Changelog ==
+
+= 2.7 =
+
+* Added error reporting to the browser console
+* Added filters for parameters, Structured Data and Google settings
+* Added time_prefix, time_suffix and label_format parameters
+* Added missing parameters to the documentation
+* Added a minified option for the style sheet and JavaScript
+* Fixed a cross-site scripting vulnerability (Thanks to Mor Golan, Patchstack)
+* Fixed the count and end parameter limits for special opening hours
+* Fixed Dashboard icon alignment in Firefox
+* Fixed PHP 8.5 deprecation notices
+* Fixed a closed day shown as 24 hours (Thanks to @adrianotornaghi)
+* Fixed handling of days spanning midnight
+* Fixed live updating stopping after a refresh
+* Fixed syncing of businesses open 24 hours
+* Fixed the day_separator_last parameter
+* Removed the jQuery dependency; now vanilla JavaScript
+* Updated and corrected time formats
+* Updated the special opening hours cut-off range
+* Updated the Settings tab to save per user
+* Tested with WordPress 7.1
 
 = 2.6 =
 
@@ -158,7 +205,7 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 
 * Added Bluesky link in About
 * Fixed _load_textdomain_just_in_time warning caused by consolidation types
-* Fixed handling of 24-hours covering multiple days
+* Fixed handling of 24 hours covering multiple days
 * Improved weekdays and weekend selection
 * Improved wp_display_text method
 * Tested with WordPress 6.8.3
@@ -181,7 +228,7 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 
 = 2.0 =
 
-* Added support for Place API (New) (Thanks to @bodarax)
+* Added support for Places API (New) (Thanks to @bodarax)
 * Added Google synchronization support for special opening hours
 * Added file selection support for WEBP images
 * Update to allow new special opening hours for today
@@ -281,8 +328,8 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 
 = 1.51 =
 
-* Added hidden option to set frequency of synchronization from Google My Business (Thanks to Jarrod)
-* Daily Synchronization from Google My Business set to after midnight
+* Added hidden option to set frequency of synchronization from Google Business Profile (Thanks to Jarrod)
+* Daily Synchronization from Google Business Profile set to after midnight
 
 = 1.50 =
 
@@ -304,7 +351,7 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 
 = 1.47 =
 
-* Added daily synchronization from Google My Business
+* Added daily synchronization from Google Business Profile
 * Added additional sanitization to text strings (Thanks to TaeEun Lee)
 * Fixed postal address sanitization for Structured Data
 
@@ -360,7 +407,7 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 
 * Tested with WordPress 6.1
 * Added copy and paste to opening hours management
-* Fixed logic for applying 24 hours from Google My Business
+* Fixed logic for applying 24 hours from Google Business Profile
 * Improved styling in Dashboard
 
 = 1.36 =
@@ -569,7 +616,7 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 * Clarified source error messages for Google Places API
 * Fixed Structured Data appearances
 * Improved information provided in Shortcodes tab
-* Improved handing of 24 hour and 12 hour time input display
+* Improved handling of 24 hour and 12 hour time input display
 * Improved initial 24 hour or 12 hour time format
 * Removed Google Places API notices from Dashboard→We’re Open! management page
 
@@ -649,11 +696,14 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 
 == Upgrade Notice ==
 
+= 2.7 =
+
+Security release. Please update.
 
 
-== Getting started with Google Places API ==
+== Getting started with Google Places API (New) ==
 
-In order to retrieve your opening hours from Google My Business, you will need a Google API Key, locate your Place ID and set your billing information. With the Billing details, you’ll receive a substantial *free* allocation, ample enough to use this feature for free.
+In order to retrieve your opening hours from Google Business Profile, you will need a Google API Key, locate your Place ID and set your billing information. With the Billing details, you’ll receive a substantial *free* allocation, ample enough to use this feature for free.
 
 * [Google API Key Guidelines](https://developers.google.com/maps/documentation/javascript/get-api-key)
 * [Place ID Finder](https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder)

@@ -281,10 +281,9 @@
 }
 #opening-hours .buttons .dashicons {
 	font-size: 1.8rem;
-	margin-block: 0;
+	margin-block: -0.15lh 0;
 	margin-inline: 0;
-	inset-block-start: 0.15em;
-	inset-inline-end: 0.05em;
+	inset: auto;
 }
 #opening-hours .buttons,
 #opening-hours-settings .submit {
@@ -429,7 +428,7 @@
 	inset-block-start: 2px;
 }
 #opening-hours #closure-toggle .dashicons::before {
-	inset-block-start: 0;
+	inset: -0.25lh auto auto;
 }
 #open-google-data,
 #open-structured-data {
@@ -798,6 +797,12 @@
 #opening-hours-settings #shortcode-9 {
 	min-height: 5.3em;
 }
+#opening-hours-settings #filter-example {
+	box-sizing: border-box;
+	margin-block: 1lh 2lh;
+	padding-inline: 0.9ch;
+	overflow-x: auto;
+}
 #logo-image-row p {
 	min-height: 5em;
 }
@@ -867,7 +872,6 @@
 #opening-hours-settings button .dashicons,
 #opening-hours-settings .button .dashicons {
 	position: relative;
-	inset-block-start: 0.35rem;
 	margin-block: 0 0;
 	margin-inline: 0 0.2em;
 	font-size: 1.6rem;
@@ -928,6 +932,14 @@
 #opening-hours-settings .parameters .default {
 	inline-size: 17%;
 }
+#opening-hours-settings .filters .hook {
+	inline-size: 30%;
+	font-weight: 600;
+}
+#opening-hours-settings .filters .description {
+	inline-size: 70%;
+}
+
 #opening-hours-settings .parameters .boolean, 
 #opening-hours-settings .classes .boolean {
 	text-align: center;
@@ -975,8 +987,8 @@
 	margin-block-start: 1.8em;
 }
 #opening-hours-settings #about .entry-meta .button .dashicons {
-	inset-block-start: 0.6em;
 	font-size: 1.1rem;
+	margin-block-start: -0.1lh;
 }
 #opening-hours-settings #about .button + .button {
 	margin-inline-start: 0.5em;
@@ -1429,7 +1441,6 @@
 	}
 	#opening-hours-settings .button .dashicons {
 		font-size: 1rem;
-		inset-block-start: 0.4rem;
 	}
 	#opening-hours .regular-special li a {
 		vertical-align: baseline;
@@ -1507,7 +1518,7 @@
 		margin-inline: 1em 0;
 	}
 	#opening-hours .buttons .dashicons {
-		inset-block-start: 0.2em;
+		inset: 0.15lh auto auto -0.3ex;
 	}
 	#opening-hours #closure-toggle {
 		line-height: 140%;
@@ -1561,7 +1572,8 @@
 		color: #ffffff;
 	}
 	#opening-hours-settings #about .entry-meta .button .dashicons {
-		inset-block-start: 0.3rem;
+		inset-block-start: auto;
+		margin-block-start: 0.1lh;
 	}
 	#opening-hours-settings .separators-text td {
 		vertical-align: top;

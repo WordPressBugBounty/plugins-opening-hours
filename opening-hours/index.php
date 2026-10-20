@@ -70,7 +70,7 @@ class we_are_open
 		$this->google_result_valid = NULL;
 		$this->day_range_min = 3;
 		$this->days = array();
-		$this->offset = round(floatval(get_option('gmt_offset')) * HOUR_IN_SECONDS);
+		$this->offset = round(floatval(get_option('gmt_offset', '')) * HOUR_IN_SECONDS);
 		$this->offset_changes = NULL;
 		$this->logo_image_id = NULL;
 		$this->image_url = NULL;
@@ -86,7 +86,7 @@ class we_are_open
 		$this->today = wp_date("w", $this->today_timestamp);
 		$this->yesterday = wp_date("w", $this->yesterday_timestamp);
 		$this->tomorrow = wp_date("w", $this->tomorrow_timestamp);
-		$this->week_start = (intval(get_option($this->prefix . 'week_start')) < 0) ? ((intval(get_option($this->prefix . 'week_start')) == -2) ? wp_date("w", $this->yesterday_timestamp) : wp_date("w", $this->today_timestamp)) : get_option($this->prefix . 'week_start');
+		$this->week_start = (intval(get_option($this->prefix . 'week_start', '')) < 0) ? ((intval(get_option($this->prefix . 'week_start', '')) == -2) ? wp_date("w", $this->yesterday_timestamp) : wp_date("w", $this->today_timestamp)) : get_option($this->prefix . 'week_start', '');
 		
 		for ($i = 0; $i < 7; $i++)
 		{
@@ -123,30 +123,33 @@ class we_are_open
 			'12_dot_uc_trim' => array('9.30AM – 5PM', 'g.iA', TRUE),
 			'24_none' => array('0930 – 1700', 'Hi', FALSE),
 			'24_colon' => array('09:30 – 17:00', 'H:i', FALSE),
-			'24_dot_single_digit' => array('9.30 – 17:00', 'G:i', FALSE),
+			'24_colon_single_digit' => array('9:30 – 17:00', 'G:i', FALSE),
 			'24_colon_trim' => array('09:30 – 17', 'H:i', TRUE),
 			'24_colon_dash' => array('09:30 – 17:–', 'H:i', '–'),
 			'24_colon_mdash' => array('09:30 – 17:—', 'H:i', '—'),
-			'24_dot_single_digit_dash' => array('9.30 – 17:–', 'G:i', '–'),
-			'24_dot_single_digit_mdash' => array('9.30 – 17:—', 'G:i', '—'),
+			'24_colon_single_digit_dash' => array('9:30 – 17:–', 'G:i', '–'),
+			'24_colon_single_digit_mdash' => array('9:30 – 17:—', 'G:i', '—'),
 			'24_dot' => array('09.30 – 17.00', 'H.i', FALSE),
 			'24_dot_single_digit' => array('9.30 – 17.00', 'G.i', FALSE),
-			'24_dot_trim' => array('09.30 – 17', 'H.i', FALSE),
+			'24_dot_trim' => array('09.30 – 17', 'H.i', TRUE),
 			'24_dot_dash' => array('09.30 – 17.–', 'H.i', '–'),
 			'24_dot_mdash' => array('09.30 – 17.—', 'H.i', '—'),
 			'24_dot_single_digit_dash' => array('9.30 – 17.–', 'G.i', '–'),
 			'24_dot_single_digit_mdash' => array('9.30 – 17.—', 'G.i', '—'),
 			'24_h' => array('09h30 – 17h00', 'H\\hi', FALSE),
 			'24_h_single_digit' => array('9h30 – 17h00', 'G\\hi', FALSE),
-			'24_h_trim' => array('09h30 – 17h', 'H\\hi', FALSE),
+			'24_h_trim' => array('09h30 – 17h', 'H\\hi', TRUE),
 			'24_h_dash' => array('09h30 – 17h–', 'H\\hi', '–'),
 			'24_h_mdash' => array('09h30 – 17h—', 'H\\hi', '—'),
 			'24_h_single_digit_dash' => array('9h30 – 17h–', 'G\\hi', '–'),
-			'24_h_single_digit_mdash' => array('9h30 – 17h—', 'G\\hi', '—')
+			'24_h_single_digit_mdash' => array('9h30 – 17h—', 'G\\hi', '—'),
+			'24_ja' => array('9時30分 – 17時00分', 'G時i分', FALSE),
+			'24_ko' => array('9시 30분 – 17시 00분', 'G시 i분', FALSE),
+			'24_zh' => array('9时30分 – 17时00分', 'G时i分', FALSE)
 		);
 		
 		$this->consolidation_types = array(
-			NULL => 'None',
+			'' => 'None',
 			'weekdays' => 'Weekdays only',
 			'weekend' => 'Weekend only',
 			'separate' => 'Weekdays and weekend, separately',
@@ -257,19 +260,19 @@ class we_are_open
 			'zu'
 		);
 
-		if (is_string(get_option('WPLANG')))
+		if (is_string(get_option('WPLANG', '')))
 		{
-			if (preg_match('/^[^_]+$/', get_option('WPLANG')) && in_array(get_option('WPLANG'), $google_api_languages))
+			if (preg_match('/^[^_]+$/', get_option('WPLANG', '')) && in_array(get_option('WPLANG', ''), $google_api_languages))
 			{
-				$language = get_option('WPLANG');
+				$language = get_option('WPLANG', '');
 			}
-			elseif (preg_match('/^([^_]+)_([^_]+)$/', get_option('WPLANG'), $m) && in_array($m[1] . '-' . $m[2], $google_api_languages))
+			elseif (preg_match('/^([^_]+)_([^_]+)$/', get_option('WPLANG', ''), $m) && in_array($m[1] . '-' . $m[2], $google_api_languages))
 			{
 				$language = $m[1] . '-' . $m[2];
 			}
 		}
 		
-		if (!is_string(get_option(__CLASS__ . '_time_format')))
+		if (get_option(__CLASS__ . '_time_format', '') == NULL)
 		{
 			$regular = array();
 
@@ -285,7 +288,7 @@ class we_are_open
 
 			$plugin_data = (function_exists('get_file_data')) ? get_file_data(plugin_dir_path(__FILE__) . 'opening-hours.php', array('Version' => 'Version'), FALSE) : array();
 			$version = (array_key_exists('Version', $plugin_data)) ? $plugin_data['Version'] : NULL;
-			$week_start = get_option('start_of_week');
+			$week_start = get_option('start_of_week', '');
 	
 			update_option(__CLASS__ . '_24_hours_text', __('Open 24 Hours', 'opening-hours'), 'yes');
 			update_option(__CLASS__ . '_address', NULL, 'no');
@@ -317,7 +320,6 @@ class we_are_open
 			update_option(__CLASS__ . '_price_range', NULL, 'no');
 			update_option(__CLASS__ . '_regular', $regular, 'no');
 			update_option(__CLASS__ . '_retrieval', NULL, 'no');
-			update_option(__CLASS__ . '_section', NULL, 'no');
 			update_option(__CLASS__ . '_special', NULL, 'no');
 			update_option(__CLASS__ . '_special_cut_off', 14, 'yes');
 			update_option(__CLASS__ . '_structured_data', FALSE, 'yes');
@@ -427,6 +429,7 @@ class we_are_open
 		delete_option(__CLASS__ . '_result');
 		delete_option(__CLASS__ . '_retrieval');
 		delete_option(__CLASS__ . '_section');
+		delete_metadata('user', 0, __CLASS__ . '_section', '', TRUE);
 		delete_option(__CLASS__ . '_special');
 		delete_option(__CLASS__ . '_special_cut_off');
 		delete_option(__CLASS__ . '_structured_data');
@@ -475,7 +478,7 @@ class we_are_open
 			$plugin_data = (function_exists('get_file_data')) ? get_file_data(plugin_dir_path(__FILE__) . 'opening-hours.php', array('Version' => 'Version'), FALSE) : array();
 			$version = (array_key_exists('Version', $plugin_data)) ? $plugin_data['Version'] : 0;
 			$initial_version = get_option(__CLASS__ . '_initial_version', 0);
-			$custom_styles = get_option(__CLASS__ . '_custom_styles');
+			$custom_styles = get_option(__CLASS__ . '_custom_styles', '');
 
 			if (!is_numeric(get_option(__CLASS__ . '_google_places_api', NULL)))
 			{
@@ -613,9 +616,7 @@ class we_are_open
 	{
 		// Initiate the plugin in the front-end
 
-		$stylesheet = get_option($this->prefix . 'stylesheet', TRUE);
-		$javascript = get_option($this->prefix . 'javascript', TRUE);
-		$structured_data = get_option($this->prefix . 'structured_data', 0);
+		$structured_data = apply_filters($this->prefix . 'structured_data', get_option($this->prefix . 'structured_data', 0));
 
 		add_shortcode('closed_now', array($this, 'wp_display_closed_now'));
 		add_shortcode('open', array($this, 'wp_display'));
@@ -627,12 +628,12 @@ class we_are_open
 		add_shortcode('opening_hours_text', array($this, 'wp_display'));
 		add_shortcode('we_are_open', array($this, 'wp_display'));
 		
-		if (is_bool($stylesheet) && $stylesheet || is_numeric($stylesheet) && $stylesheet > 0 || is_string($stylesheet) && $stylesheet != NULL)
+		if ($this->asset_mode('stylesheet') > 0)
 		{
 			add_action('wp_enqueue_scripts', array($this, 'wp_css_load'));
 		}
 		
-		if (is_bool($javascript) && $javascript || is_numeric($javascript) && $javascript > 0 || is_string($javascript) && $javascript != NULL)
+		if ($this->asset_mode('javascript') > 0)
 		{
 			add_action('wp_enqueue_scripts', array($this, 'wp_js_load'));
 			add_action('wp_ajax_' . $this->class_name . '_wp_ajax', array($this, 'wp_ajax'));
@@ -668,7 +669,7 @@ class we_are_open
 			return TRUE;
 		}
 
-		$frequency = get_option($this->prefix . 'google_sync_frequency', 24);
+		$frequency = apply_filters($this->prefix . 'google_sync_frequency', get_option($this->prefix . 'google_sync_frequency', 24));
 
 		if (!is_numeric($frequency) || $frequency < 1 || $frequency > 24)
 		{
@@ -832,7 +833,7 @@ class we_are_open
 		$this->set_localized_dates();
 		
 		$this->consolidation_types = array(
-			NULL => __('None', 'opening-hours'),
+			'' => __('None', 'opening-hours'),
 			'weekdays' => __('Weekdays only', 'opening-hours'),
 			'weekend' => __('Weekend only', 'opening-hours'),
 			'separate' => __('Weekdays and weekend, separately', 'opening-hours'),
@@ -889,7 +890,21 @@ class we_are_open
 				)
 		);
 		
-		$this->section = get_option($this->prefix . 'section');
+		$legacy_section = get_option($this->prefix . 'section', '');
+
+		if (is_string($legacy_section) && mb_strlen($legacy_section) >= 1)
+		{
+			$existing_section = get_user_meta(get_current_user_id(), $this->prefix . 'section', TRUE);
+
+			if (!is_string($existing_section) || mb_strlen($existing_section) < 1)
+			{
+				update_user_meta(get_current_user_id(), $this->prefix . 'section', $legacy_section);
+			}
+
+			delete_option($this->prefix . 'section');
+		}
+
+		$this->section = get_user_meta(get_current_user_id(), $this->prefix . 'section', TRUE);
 
 		$placeholders = array(
 			'hours_24' => $this->hours_string(array(
@@ -939,7 +954,7 @@ class we_are_open
 		
 		$html = '';
 		
-		if (is_string(get_option($this->prefix . 'api_key')) && is_string(get_option($this->prefix . 'place_id')))
+		if (get_option($this->prefix . 'api_key', '') != NULL && get_option($this->prefix . 'place_id', '') != NULL)
 		{
 			$this->set();
 
@@ -1026,10 +1041,11 @@ class we_are_open
 		// Handle AJAX requests from Dashboard
 
 		$ret = array();
+		$logged = FALSE;
 
 		if (!$this->dashboard || !current_user_can('edit_published_posts', $this->class_name))
 		{
-			echo json_encode($ret);
+			echo json_encode($ret, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 			wp_die();
 		}
 
@@ -1059,7 +1075,7 @@ class we_are_open
 		{
 		case 'section':
 			$this->section = $section;
-			update_option($this->prefix . 'section', $this->section, 'no');
+			update_user_meta(get_current_user_id(), $this->prefix . 'section', $this->section);
 			$ret = array(
 				'success' => TRUE
 			);
@@ -1184,8 +1200,8 @@ class we_are_open
 				break;
 			}
 
-			$current_api_key = get_option($this->prefix . 'api_key');
-			$current_place_id = get_option($this->prefix . 'place_id');
+			$current_api_key = get_option($this->prefix . 'api_key', '');
+			$current_place_id = get_option($this->prefix . 'place_id', '');
 			
 			$api_key = $this->set_api_key($api_key, $current_api_key);
 			$place_id = $this->set_place_id($place_id, $current_place_id, $current_api_key);
@@ -1201,7 +1217,7 @@ class we_are_open
 			if (($current_api_key != NULL || $current_place_id != NULL) && $api_key == NULL && $place_id == NULL)
 			{
 				$ret = array(
-					'message' => __('Successfully cleared Google My Business credentials', 'opening-hours'),
+					'message' => __('Successfully cleared Google Business Profile credentials', 'opening-hours'),
 					'business_name' => $business_name,
 					'google_data_exists' => $this->google_data_exists(),
 					'success' => TRUE
@@ -1212,7 +1228,7 @@ class we_are_open
 			if ($api_key != NULL && $place_id == NULL)
 			{
 				$ret = array(
-					'message' => __('Successfully set API Key for Google My Business', 'opening-hours'),
+					'message' => __('Successfully set API Key for Google Business Profile', 'opening-hours'),
 					'business_name' => $business_name,
 					'google_data_exists' => $this->google_data_exists(),
 					'success' => TRUE
@@ -1223,7 +1239,7 @@ class we_are_open
 			if ($api_key == NULL && $place_id != NULL)
 			{
 				$ret = array(
-					'message' => __('Successfully set Place ID for Google My Business', 'opening-hours'),
+					'message' => __('Successfully set Place ID for Google Business Profile', 'opening-hours'),
 					'business_name' => $business_name,
 					'google_data_exists' => $this->google_data_exists(),
 					'success' => TRUE
@@ -1232,7 +1248,7 @@ class we_are_open
 			}
 
 			$ret = array(
-				'message' => __('Successfully set Google My Business credentials', 'opening-hours'),
+				'message' => __('Successfully set Google Business Profile credentials', 'opening-hours'),
 				'business_name' => $business_name,
 				'google_data_exists' => $this->google_data_exists(),
 				'success' => TRUE
@@ -1266,7 +1282,7 @@ class we_are_open
 						'valid' => $this->google_result_valid,
 						'regular' => $this->regular,
 						'special' => $this->special,
-						'message' => __('Failed to set data from Google My Business because opening hours do not exist for this place', 'opening-hours'),
+						'message' => __('Failed to set data from Google Business Profile because opening hours do not exist for this place', 'opening-hours'),
 						'success' => FALSE
 					);
 					break;
@@ -1276,7 +1292,7 @@ class we_are_open
 					'valid' => $this->google_result_valid,
 					'regular' => $this->regular,
 					'special' => $this->special,
-					'message' => __('Failed to set data from Google My Business', 'opening-hours'),
+					'message' => __('Failed to set data from Google Business Profile', 'opening-hours'),
 					'success' => FALSE
 				);
 				break;
@@ -1297,7 +1313,7 @@ class we_are_open
 				'valid' => $this->google_result_valid,
 				'regular' => $this->regular,
 				'special' => ($places_api == 1) ? $this->special : NULL,
-				'message' => __('Successfully set data from Google My Business', 'opening-hours'),
+				'message' => __('Successfully set data from Google Business Profile', 'opening-hours'),
 				'success' => TRUE
 			);
 			break;
@@ -1537,7 +1553,7 @@ class we_are_open
 				break;
 			}
 			
-			if ($custom_styles == get_option($this->prefix . 'custom_styles'))
+			if ($custom_styles == get_option($this->prefix . 'custom_styles', ''))
 			{
 				$ret = array(
 					'success' => TRUE
@@ -1667,7 +1683,7 @@ class we_are_open
 			}
 			
 			$this->section = NULL;
-			update_option($this->prefix . 'section', $this->section, 'no');
+			delete_user_meta(get_current_user_id(), $this->prefix . 'section');
 
 			$ret = array(
 				'success' => TRUE
@@ -1723,7 +1739,7 @@ class we_are_open
 			break;
 		}
 
-		echo json_encode($ret);
+		echo json_encode($ret, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 		wp_die();
 	}
 	
@@ -1793,19 +1809,35 @@ class we_are_open
 
 		wp_register_script('open_admin_js', plugins_url('opening-hours/admin/js/js.js'));
 		wp_localize_script('open_admin_js', 'we_are_open_admin_ajax', array('url' => admin_url('admin-ajax.php'), 'action' => 'we_are_open_admin_ajax'));
-		wp_register_script('open_wp_js', plugins_url('opening-hours/wp/js/js.js'), array('jquery'));
+		wp_register_script('open_wp_js', plugins_url('opening-hours/wp/js/js.js'));
 		wp_enqueue_script('open_admin_js');
 		wp_enqueue_script('open_wp_js');
 	}
 	
+	private function asset_mode($name)
+	{
+		// Loading mode for the style sheet or JavaScript
+
+		$value = get_option($this->prefix . $name, TRUE);
+
+		if (is_numeric($value))
+		{
+			return (intval($value) == 2) ? 2 : ((intval($value) > 0) ? 1 : 0);
+		}
+
+		if (is_string($value) && preg_match('/^(?:compress(?:ed)?|min)$/i', $value))
+		{
+			return 2;
+		}
+
+		return (is_bool($value) && $value || is_string($value) && $value != NULL) ? 1 : 0;
+	}
+
 	public function wp_css_load()
 	{
 		// Load style sheet in the front-end
-		
-		$mode = get_option(__CLASS__ . '_stylesheet', TRUE);
-		$compressed = (is_numeric($mode) && $mode == 2 || is_string($mode) && ($mode == 'compress' || $mode == 'compressed' || $mode == 'min'));
-		
-		wp_register_style('open_wp_css', ($compressed && is_file(plugins_url('opening-hours/wp/css/css.min.css'))) ? plugins_url('opening-hours/wp/css/css.min.css') : plugins_url('opening-hours/wp/css/css.css'));
+
+		wp_register_style('open_wp_css', ($this->asset_mode('stylesheet') == 2 && is_file(plugin_dir_path(__FILE__) . 'wp/css/css.min.css')) ? plugins_url('opening-hours/wp/css/css.min.css') : plugins_url('opening-hours/wp/css/css.css'));
 		wp_enqueue_style('open_wp_css');
 		
 		if (is_file(plugin_dir_path(__FILE__) . 'wp/css/custom.css') && filesize(plugin_dir_path(__FILE__) . 'wp/css/custom.css') > 20)
@@ -1818,11 +1850,8 @@ class we_are_open
 	public function wp_js_load()
 	{
 		// Load Javascript in the front-end
-		
-		$mode = get_option(__CLASS__ . '_javascript', TRUE);
-		$compressed = (is_numeric($mode) && $mode == 2 || is_string($mode) && ($mode == 'compress' || $mode == 'compressed' || $mode == 'min'));
 
-		wp_register_script('open_wp_js', ($compressed && is_file(plugins_url('opening-hours/wp/js/js.min.js'))) ? plugins_url('opening-hours/wp/js/js.min.js') : plugins_url('opening-hours/wp/js/js.js'), array('jquery'));
+		wp_register_script('open_wp_js', ($this->asset_mode('javascript') == 2 && is_file(plugin_dir_path(__FILE__) . 'wp/js/js.min.js')) ? plugins_url('opening-hours/wp/js/js.min.js') : plugins_url('opening-hours/wp/js/js.js'));
 		wp_localize_script('open_wp_js', 'we_are_open_wp_ajax', array('url' => admin_url('admin-ajax.php'), 'action' => 'we_are_open_wp_ajax'));
 		wp_enqueue_script('open_wp_js');
 	}
@@ -1853,7 +1882,7 @@ class we_are_open
 
 		if (!is_numeric($this->offset))
 		{
-			$this->offset = round(floatval(get_option('gmt_offset')) * HOUR_IN_SECONDS);
+			$this->offset = round(floatval(get_option('gmt_offset', '')) * HOUR_IN_SECONDS);
 		}
 				
 		if (!is_array($this->offset_changes))
@@ -1865,9 +1894,9 @@ class we_are_open
 		{
 			$timezone = FALSE;
 			
-			if (class_exists('DateTimeZone') && get_option('timezone_string') != NULL)
+			if (class_exists('DateTimeZone') && get_option('timezone_string', '') != NULL)
 			{
-				$timezone = new DateTimeZone(get_option('timezone_string'));
+				$timezone = new DateTimeZone(get_option('timezone_string', ''));
 			}
 			
 			if (is_object($timezone))
@@ -1909,19 +1938,20 @@ class we_are_open
 			return $ret;
 		}
 	
-		$this->api_key = ($this->api_key != NULL) ? $this->api_key : get_option($this->prefix . 'api_key');
-		$this->place_id = ($this->place_id != NULL) ? $this->place_id : get_option($this->prefix . 'place_id');
+		$this->api_key = ($this->api_key != NULL) ? $this->api_key : apply_filters($this->prefix . 'api_key', get_option($this->prefix . 'api_key', ''));
+		$this->place_id = ($this->place_id != NULL) ? $this->place_id : apply_filters($this->prefix . 'place_id', get_option($this->prefix . 'place_id', ''));
 				
 		return $this->retrieve_google_data($format, $force);
 	}
 	
 	private function set_google_data()
 	{
-		// Set opening hours using data retrieved from Google My Business
+		// Set opening hours using data retrieved from Google Business Profile
 		
 		$this->set();
+		$this->google_data = apply_filters($this->prefix . 'google_data', $this->google_data);
 
-		$google_sync = (defined('DOING_CRON') && DOING_CRON) ? ((is_numeric(get_option($this->prefix . 'google_sync', FALSE))) ? intval(get_option($this->prefix . 'google_sync')) : 0) : ((isset($this->google_data['currentOpeningHours']) && is_array($this->google_data['currentOpeningHours']) && isset($this->google_data['currentOpeningHours']['periods']) && is_array($this->google_data['currentOpeningHours']['periods'])) ? 3 : 1);
+		$google_sync = (defined('DOING_CRON') && DOING_CRON) ? ((is_numeric(get_option($this->prefix . 'google_sync', FALSE))) ? intval(get_option($this->prefix . 'google_sync', '')) : 0) : ((isset($this->google_data['currentOpeningHours']) && is_array($this->google_data['currentOpeningHours']) && isset($this->google_data['currentOpeningHours']['periods']) && is_array($this->google_data['currentOpeningHours']['periods'])) ? 3 : 1);
 		
 		if ($google_sync < 1)
 		{
@@ -1948,7 +1978,7 @@ class we_are_open
 			'regular' => array(),
 			'special' => array()
 		);
-		$open_always = (count($periods['regular']) == 1 && isset($periods['regular'][0]['periods']['open']) && !isset($periods['regular'][0]['periods']['close']));
+		$open_always = (count($periods['regular']) == 1 && isset($periods['regular'][0]['open']) && !isset($periods['regular'][0]['close']));
 		$unix_days = (is_array($periods['special']) && !empty($periods['special'])) ? round(mktime(0, 0, $this->offset * -1, wp_date("m"), wp_date("j"), wp_date("Y")) / DAY_IN_SECONDS) : NULL;
 
 		if ((!$open_always || $open_always && (is_array($periods['special']) && !empty($periods['special']))) && !empty($periods['regular']))
@@ -1961,21 +1991,21 @@ class we_are_open
 				}
 
 				$weekday_open = intval($a['open']['day']);
-				$weekday_close = intval($a['close']['day']);
+				$weekday_close = (array_key_exists('close', $a) && array_key_exists('day', $a['close'])) ? intval($a['close']['day']) : $weekday_open;
 				$weekday_gaps = array();
 
 				if ($google_sync % 2 == 1 && $weekday_close != $weekday_open)
 				{
 					for ($weekday_gap = $weekday_open; $weekday_gap < 14; $weekday_gap++)
 					{
-						if (array_key_exists($weekday_gap % 7, $opening_hours['regular']) || ($weekday_gap == $weekday_open && intval($a['open']['hour']) > 0 || intval($a['open']['minute']) > 0))
-						{
-							continue;
-						}
-
 						if ($weekday_gap % 7 == $weekday_close)
 						{
 							break;
+						}
+
+						if (array_key_exists($weekday_gap % 7, $opening_hours['regular']) || ($weekday_gap == $weekday_open && (intval($a['open']['hour']) > 0 || intval($a['open']['minute']) > 0)))
+						{
+							continue;
 						}
 
 						$opening_hours['regular'][$weekday_gap % 7] = array(
@@ -2048,6 +2078,14 @@ class we_are_open
 								'label' => (is_array($this->special) && isset($this->special[$timestamp]) && isset($this->special[$timestamp]['label'])) ? $this->special[$timestamp]['label'] : NULL,
 								'note' => (is_array($this->special) && isset($this->special[$timestamp]) && isset($this->special[$timestamp]['note'])) ? $this->special[$timestamp]['note'] : NULL
 							);
+						}
+
+						if (!array_key_exists('close', $c))
+						{
+							$opening_hours['special'][$timestamp]['closed'] = FALSE;
+							$opening_hours['special'][$timestamp]['hours_24'] = TRUE;
+							$opening_hours['special'][$timestamp]['hours'] = NULL;
+							continue(2);
 						}
 
 						if (!array_key_exists('hour', $c['close']) || isset($c['close']['hour']) && !is_numeric($c['close']['hour']) || is_numeric($c['close']['hour']) && $c['close']['hour'] < 0 || $c['close']['hour'] > 23)
@@ -2228,7 +2266,8 @@ class we_are_open
 			}
 			
 			$set_dates = array();
-			$special_cut_off = intval((is_numeric(get_option($this->prefix . 'special_cut_off', NULL)) && get_option($this->prefix . 'special_cut_off') >= 1) ? get_option($this->prefix . 'special_cut_off') : 14);
+			$special_cut_off = apply_filters($this->prefix . 'special_cut_off', get_option($this->prefix . 'special_cut_off', 14));
+			$special_cut_off = (is_numeric($special_cut_off) && $special_cut_off >= -2 && $special_cut_off <= 365) ? intval($special_cut_off) : 14;
 			$current_date = $this->get_day_timestamp();
 			$remove_date = $this->get_day_timestamp($special_cut_off * -1);
 
@@ -2270,7 +2309,12 @@ class we_are_open
 
 					continue;
 				}
-				
+
+				if ($timestamp <= $remove_date)
+				{
+					continue;
+				}
+
 				$a['date'] = $timestamp;
 				$modified = (array_key_exists($timestamp, $this->special) && array_key_exists('modified', $this->special[$timestamp])) ? $this->special[$timestamp]['modified'] : NULL;
 				$checksum = ($modified != NULL) ? md5(serialize(array($this->special[$timestamp]['closed'], $this->special[$timestamp]['hours_24'], $this->special[$timestamp]['hours'], (isset($this->special[$timestamp]['label'])) ? $this->special[$timestamp]['label'] : NULL, (isset($this->special[$timestamp]['note'])) ? $this->special[$timestamp]['note'] : NULL))) : NULL;
@@ -2390,7 +2434,7 @@ class we_are_open
 		$google_sync = get_option($this->prefix . 'google_sync', FALSE);
 		$places_api = (get_option($this->prefix . 'google_places_api', 0) == 1 || is_bool($google_sync) && $google_sync || is_numeric($google_sync) && $google_sync >= 2) ? 1 : 0;
 		$fields = ($places_api == 1) ? array('regularOpeningHours', 'currentOpeningHours', 'displayName', 'googleMapsUri', 'businessStatus') : array('opening_hours', 'name', 'url', 'business_status');
-		$language = get_option($this->prefix . 'language');
+		$language = apply_filters($this->prefix . 'language', get_option($this->prefix . 'language', ''));
 		$recheck = FALSE;
 		$retrieval = NULL;
 		$last_retrieval = NULL;
@@ -2404,7 +2448,7 @@ class we_are_open
 		
 		if ($force)
 		{
-			$retrieval = get_option($this->prefix . 'retrieval');
+			$retrieval = get_option($this->prefix . 'retrieval', '');
 			
 			if (is_array($retrieval) && isset($retrieval['requests']) && is_array($retrieval['requests']) && count($retrieval) > 1)
 			{
@@ -2426,7 +2470,7 @@ class we_are_open
 		
 		if (!$force && !is_array($retrieval) && (!is_array($this->google_result) || is_array($this->google_result) && (empty($this->google_result) || !empty($this->google_result) && (!isset($this->google_result['status']) && !isset($this->google_result['displayName']) || $this->settings_updated && (isset($this->google_data['error']) && is_array($this->google_data['error']) || isset($this->google_result['status']) && !preg_match('/^OK$/i', $this->google_result['status']))))))
 		{
-			$retrieval = get_option($this->prefix . 'retrieval');
+			$retrieval = get_option($this->prefix . 'retrieval', '');
 			
 			if ($this->settings_updated && (!is_array($retrieval) || !isset($retrieval['requests']) || isset($retrieval['requests']) && count($retrieval['requests']) < 5))
 			{
@@ -2476,7 +2520,7 @@ class we_are_open
 			
 			$data_array = ($data_string != NULL) ? json_decode($data_string, TRUE) : array();
 			$this->google_result = $data_array;
-			$retrieval = ($retrieval == NULL) ? get_option($this->prefix . 'retrieval') : $retrieval;
+			$retrieval = ($retrieval == NULL) ? get_option($this->prefix . 'retrieval', '') : $retrieval;
 			
 			if (!is_array($retrieval))
 			{
@@ -2806,16 +2850,16 @@ class we_are_open
 				update_option($this->prefix . 'force', $m[1] . '/1', 'yes');
 			}
 			
-			$force = ($force || ((is_bool($force) && !$force || !is_bool($force)) && $this->settings_updated && !is_array(get_option($this->prefix . 'regular'))));
+			$force = ($force || ((is_bool($force) && !$force || !is_bool($force)) && $this->settings_updated && !is_array(get_option($this->prefix . 'regular', ''))));
 		}
 
-		$this->regular = (isset($regular) && is_array($regular)) ? $regular : ((is_array($this->regular) && !empty($this->regular)) ? $this->regular : get_option($this->prefix . 'regular'));
-		$this->special = (isset($special) && is_array($special)) ? $special : ((is_array($this->special) && !empty($this->special)) ? $this->special : get_option($this->prefix . 'special'));
-		$this->closure = (isset($closure) && is_array($closure)) ? $closure : ((is_array($this->closure) && !empty($this->closure)) ? $this->closure : get_option($this->prefix . 'closure'));
-		$this->api_key = (isset($api_key) && is_string($api_key) && $api_key != NULL) ? $api_key : get_option($this->prefix . 'api_key');
-		$this->place_id = (isset($place_id) && is_string($place_id) && $place_id != NULL) ? $place_id : get_option($this->prefix . 'place_id');
+		$this->regular = (isset($regular) && is_array($regular)) ? $regular : ((is_array($this->regular) && !empty($this->regular)) ? $this->regular : get_option($this->prefix . 'regular', ''));
+		$this->special = (isset($special) && is_array($special)) ? $special : ((is_array($this->special) && !empty($this->special)) ? $this->special : get_option($this->prefix . 'special', ''));
+		$this->closure = (isset($closure) && is_array($closure)) ? $closure : ((is_array($this->closure) && !empty($this->closure)) ? $this->closure : get_option($this->prefix . 'closure', ''));
+		$this->api_key = (isset($api_key) && is_string($api_key) && $api_key != NULL) ? $api_key : apply_filters($this->prefix . 'api_key', get_option($this->prefix . 'api_key', ''));
+		$this->place_id = (isset($place_id) && is_string($place_id) && $place_id != NULL) ? $place_id : apply_filters($this->prefix . 'place_id', get_option($this->prefix . 'place_id', ''));
 		$this->consolidation_labels = (isset($consolidation_labels) && is_bool($consolidation_labels)) ? $consolidation_labels : get_option($this->prefix . 'consolidation_labels', TRUE);
-		$consolidation = (is_array($data) && array_key_exists('consolidation', $data)) ? ((isset($consolidation)) ? $consolidation : NULL) : get_option($this->prefix . 'consolidation');
+		$consolidation = (is_array($data) && array_key_exists('consolidation', $data)) ? ((isset($consolidation)) ? $consolidation : NULL) : get_option($this->prefix . 'consolidation', '');
 
 		
 		if (is_array($data) && (array_key_exists('regular', $data) || array_key_exists('special', $data) || array_key_exists('closure', $data)))
@@ -2903,12 +2947,12 @@ class we_are_open
 			{
 				if (is_numeric($start))
 				{
-					$end = ($end - WEEK_IN_SECONDS - $start > YEAR_IN_SECONDS) ? $start + YEAR_IN_SECONDS + WEEK_IN_SECONDS : $end;
+					$end = ($end - $start > 400 * DAY_IN_SECONDS) ? $start + 400 * DAY_IN_SECONDS : $end;
 					$count = ceil(($end - $start) / DAY_IN_SECONDS);
 				}
 				else
 				{
-					$end = ($end - WEEK_IN_SECONDS - $this->today_timestamp > YEAR_IN_SECONDS) ? $this->today_timestamp + YEAR_IN_SECONDS + WEEK_IN_SECONDS : $end;
+					$end = ($end - $this->today_timestamp > 400 * DAY_IN_SECONDS) ? $this->today_timestamp + 400 * DAY_IN_SECONDS : $end;
 					$count = ceil(($end - $this->today_timestamp) / DAY_IN_SECONDS);
 				}
 			}
@@ -2929,7 +2973,7 @@ class we_are_open
 		else
 		{
 			$end = NULL;
-			$count = (isset($count) && is_numeric($count) && $count >= 1 && $count <= ((!$regular && ($special || $closure)) ? 366 : 31)) ? intval($count) : 7;
+			$count = (isset($count) && is_numeric($count) && $count >= 1 && $count <= ((!$regular && ($special || $closure)) ? 400 : 31)) ? intval($count) : 7;
 		}
 		
 		$days = array();
@@ -2937,7 +2981,7 @@ class we_are_open
 		$week_start = (isset($week_start) && is_numeric($week_start)) ? (($week_start < 0) ? (($week_start == -2) ? $this->yesterday : $this->today) : $week_start) : $this->week_start;
 		$start_modifier = (is_numeric($start) && abs(round(($start - $this->today_timestamp) / DAY_IN_SECONDS)) <= 731) ? round(($start - $this->today_timestamp) / DAY_IN_SECONDS) : 0;
 		
-		for ($i = (($start_modifier != 0 || $this->today == $week_start) ? 0 : -7); $i <= ((!$regular && ($special || $closure)) ? 372 : 31); $i++)
+		for ($i = (($start_modifier != 0 || $this->today == $week_start) ? 0 : -7); $i <= ((!$regular && ($special || $closure)) ? 406 : 31); $i++)
 		{
 			if (count($days) == $count)
 			{
@@ -3256,7 +3300,7 @@ class we_are_open
 		$test = (is_bool($return) && $return);
 		$string = (is_string($return) && $return == 'json');
 		$html = (is_string($return) && $return == 'html');
-		$show_in_page = get_option($this->prefix . 'structured_data', 0);
+		$show_in_page = apply_filters($this->prefix . 'structured_data', get_option($this->prefix . 'structured_data', 0));
 		$show_in_page = (!$this->dashboard && (is_numeric($show_in_page) && $show_in_page > 1 && function_exists('get_the_ID') && get_the_ID() == intval($show_in_page) || (is_bool($show_in_page) && $show_in_page || is_numeric($show_in_page) && intval($show_in_page) == 1) && is_front_page()));
 		
 		if (!$return && !$string && empty($data) && !$show_in_page)
@@ -3292,7 +3336,7 @@ class we_are_open
 		
 		if (!is_string($logo) || is_string($logo) && !preg_match('/.+\.(?:jpe?g|png|svg|gif|webp)$/i', $logo))
 		{
-			$a = get_option('wpseo_titles');
+			$a = get_option('wpseo_titles', '');
 			
 			if (is_array($a) && isset($a['company_logo']) && is_string($a['company_logo']))
 			{
@@ -3309,11 +3353,11 @@ class we_are_open
 			}
 		}
 
-		$name = (is_string(get_option($this->prefix . 'name'))) ? get_option($this->prefix . 'name') : ((isset($this->google_data['result']['name']) && is_string($this->google_data['result']['name'])) ? sanitize_text_field($this->google_data['result']['name']) : FALSE);
-		$address = (is_string(get_option($this->prefix . 'address'))) ? get_option($this->prefix . 'address') : ((isset($this->google_data['result']['formatted_address']) && is_string($this->google_data['result']['formatted_address'])) ? sanitize_text_field($this->google_data['result']['formatted_address']) : FALSE);
+		$name = (is_string(get_option($this->prefix . 'name', ''))) ? get_option($this->prefix . 'name', '') : ((isset($this->google_data['result']['name']) && is_string($this->google_data['result']['name'])) ? sanitize_text_field($this->google_data['result']['name']) : FALSE);
+		$address = (is_string(get_option($this->prefix . 'address', ''))) ? get_option($this->prefix . 'address', '') : ((isset($this->google_data['result']['formatted_address']) && is_string($this->google_data['result']['formatted_address'])) ? sanitize_text_field($this->google_data['result']['formatted_address']) : FALSE);
 		$telephone = get_option($this->prefix . 'telephone', FALSE);
-		$business_type = (is_string(get_option($this->prefix . 'business_type'))) ? get_option($this->prefix . 'business_type') : FALSE;
-		$price_range = (is_numeric(get_option($this->prefix . 'price_range', NULL))) ? str_repeat('$', get_option($this->prefix . 'price_range')) : FALSE;
+		$business_type = (is_string(get_option($this->prefix . 'business_type', ''))) ? get_option($this->prefix . 'business_type', '') : FALSE;
+		$price_range = (is_numeric(get_option($this->prefix . 'price_range', NULL))) ? str_repeat('$', get_option($this->prefix . 'price_range', '')) : FALSE;
 		
 		extract($data, EXTR_OVERWRITE);
 		
@@ -3480,7 +3524,8 @@ class we_are_open
 			}
 		}
 		
-		$data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+		$data = apply_filters($this->prefix . 'schema', $data);
+		$data = (is_array($data)) ? json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : NULL;
 		$structured_data = '<script type="application/ld+json">' . PHP_EOL . '[ ' . $data . ' ]' . PHP_EOL . '</script>';
 		wp_cache_add('structured_data', $structured_data, $this->class_name, HOUR_IN_SECONDS);
 		
@@ -3541,7 +3586,7 @@ class we_are_open
 		}
 		else
 		{
-			$this->logo_image_id = get_option($this->prefix . 'logo');
+			$this->logo_image_id = get_option($this->prefix . 'logo', '');
 		}
 		
 		if (is_numeric($this->logo_image_id))
@@ -3636,7 +3681,7 @@ class we_are_open
 	{
 		// Find all references to existing Google Reviews, API Key and Place ID
 		
-		if (!$force && is_string(get_option($this->prefix . 'time_format')) && get_option($this->prefix . 'time_format') != NULL)
+		if (!$force && is_string(get_option($this->prefix . 'time_format', '')) && get_option($this->prefix . 'time_format', '') != NULL)
 		{
 			switch ($format)
 			{
@@ -3655,27 +3700,27 @@ class we_are_open
 		
 		$ret = array();
 		
-		if (get_option('google_business_reviews_rating_api_key') != NULL && get_option('google_business_reviews_rating_place_id') != NULL)
+		if (get_option('google_business_reviews_rating_api_key', '') != NULL && get_option('google_business_reviews_rating_place_id', '') != NULL)
 		{
 			$ret = array(
-				'api_key' => get_option('google_business_reviews_rating_api_key'),
-				'place_id' => get_option('google_business_reviews_rating_place_id')
+				'api_key' => get_option('google_business_reviews_rating_api_key', ''),
+				'place_id' => get_option('google_business_reviews_rating_place_id', '')
 			);
 		}
 
-		if (empty($ret) && is_string(get_option('grw_google_api_key')) && $wpdb->get_var("SHOW TABLES LIKE '" . $wpdb->prefix . "grp_google_place'") == $wpdb->prefix . 'grp_google_place')
+		if (empty($ret) && is_string(get_option('grw_google_api_key', '')) && $wpdb->get_var("SHOW TABLES LIKE '" . $wpdb->prefix . "grp_google_place'") == $wpdb->prefix . 'grp_google_place')
 		{
 			$id = $wpdb->get_var("SELECT `id` FROM `" . $wpdb->prefix . "grp_google_place` ORDER BY `id` DESC LIMIT 1");
 			$place_id = $wpdb->get_var("SELECT `place_id` FROM `" . $wpdb->prefix . "grp_google_place` WHERE `id` = '" . esc_sql($id) . "' LIMIT 1");
 			$ret = array(
-				'api_key' => get_option('grw_google_api_key'),
+				'api_key' => get_option('grw_google_api_key', ''),
 				'place_id' => $place_id
 			);
 		}
 		
-		if (empty($ret) && is_array(get_option('wpfbr_google_options')))
+		if (empty($ret) && is_array(get_option('wpfbr_google_options', '')))
 		{
-			$d = get_option('wpfbr_google_options');
+			$d = get_option('wpfbr_google_options', '');
 			if ($d['select_google_api'] != 'default' && is_string($d['google_api_key']))
 			{				
 				$ret = array(
@@ -3685,14 +3730,14 @@ class we_are_open
 			}
 		}
 		
-		if (empty($ret) && is_array(get_option('googleplacesreviews_options')))
+		if (empty($ret) && is_array(get_option('googleplacesreviews_options', '')))
 		{
-			$d = get_option('googleplacesreviews_options');
+			$d = get_option('googleplacesreviews_options', '');
 			$w = array('place_id' => NULL);
 			
 			if (array_key_exists('google_places_api_key', $d))
 			{
-				$w = get_option('googleplacesreviews_options');
+				$w = get_option('googleplacesreviews_options', '');
 				if (is_array($w) && array_key_exists('place_id', $w))
 				{
 					$place_id = $w['place_id'];
@@ -3705,10 +3750,10 @@ class we_are_open
 			}
 		}
 		
-		if (empty($ret) && is_string(get_option('google_places_api_key')))
+		if (empty($ret) && is_string(get_option('google_places_api_key', '')))
 		{
 			$ret = array(
-				'api_key' => get_option('google_places_api_key')
+				'api_key' => get_option('google_places_api_key', '')
 			);
 		}
 		
@@ -3716,12 +3761,12 @@ class we_are_open
 		{
 		case 'boolean':
 		case 'test':
-			$ret = (!empty($ret) || !is_numeric(get_option($this->prefix . 'week_start')));
+			$ret = (!empty($ret) || !is_numeric(get_option($this->prefix . 'week_start', '')));
 			break;
 		case 'json':
-			$ret['day_format'] = get_option('day_format');			
-			$ret['time_format'] = get_option('time_format');			
-			$ret['week_start'] = get_option('start_of_week');
+			$ret['day_format'] = get_option('day_format', '');			
+			$ret['time_format'] = get_option('time_format', '');			
+			$ret['week_start'] = get_option('start_of_week', '');
 			$ret = json_encode($ret);
 			break;
 		default:
@@ -3858,6 +3903,26 @@ class we_are_open
 		return array($open_now, $seconds_to_change);
 	}
 	
+	private function label_string($label, $day, $label_format = NULL, $format = 'html')
+	{
+		// Combine a label with the day using the label_format template
+
+		if (!is_string($label_format) || $label_format == NULL)
+		{
+			return $label;
+		}
+
+		return str_replace(
+			array('%label%', '%day%', '%date%'),
+			array(
+				($format == 'html') ? '<span class="label">' . $label . '</span>' : $label,
+				($format == 'html') ? '<span class="date">' . $day . '</span>' : $day,
+				($format == 'html') ? '<span class="date">' . $day . '</span>' : $day
+			),
+			$label_format
+		);
+	}
+
 	private function day_string($data, $day_format, $day_range_suffix = NULL, $day_format_length = NULL, $format = 'html', $preferences = NULL)
 	{
 		// Create a text string of day or day range from arguments
@@ -3871,7 +3936,15 @@ class we_are_open
 		$replace_day_name = (isset($days) && is_array($days) && count($days) == 7);
 		$labels = ($data['special'] && $data['label'] != NULL && (!isset($labels) || (isset($labels) && $labels)));
 		$today_tomorrow_text = (isset($today) && $today != NULL && $data['date'] == $this->today_timestamp) ? $today : ((isset($tomorrow) && $tomorrow != NULL && $data['date'] == $this->tomorrow_timestamp) ? $tomorrow : NULL);
-		$day_name = ($today_tomorrow_text != NULL && (!$labels || !isset($labels_precedence) || !$labels_precedence)) ? $today_tomorrow_text : (($labels) ? $data['label'] : (($replace_day_name) ? $days[$day] : $this->days[$day]));
+		$day_label = ($today_tomorrow_text != NULL && (!$labels || !isset($labels_precedence) || !$labels_precedence)) ? $today_tomorrow_text : (($labels) ? $data['label'] : NULL);
+		$day_name = ($day_label != NULL) ? $day_label : (($replace_day_name) ? $days[$day] : $this->days[$day]);
+		$label_format = (isset($label_format) && is_string($label_format)) ? $label_format : NULL;
+
+		if ($day_label != NULL && $label_format != NULL)
+		{
+			$day_name = $this->label_string($day_label, ((!$replace_day_name && isset($data['date']) && is_numeric($data['date']) && preg_match($this->accepted_day_format, $day_format)) ? wp_date($day_format, $data['date']) : (($replace_day_name) ? $days[$day] : $this->days[$day])), $label_format, $format);
+		}
+
 		$day_replacement_word = NULL;
 		$consolidated = $data['consolidated'];
 		$consolidated_first = $data['consolidated_first'];
@@ -3916,7 +3989,7 @@ class we_are_open
 			
 			if (!$replace_day_name)
 			{
-				$day_name = ($today_tomorrow_text != NULL && (!$labels || !isset($labels_precedence) || !$labels_precedence)) ? $today_tomorrow_text : wp_date($day_format, $timestamp);
+				$day_name = ($day_label != NULL) ? $this->label_string($day_label, wp_date($day_format, $timestamp), $label_format, $format) : wp_date($day_format, $timestamp);
 			}
 		}
 
@@ -3924,9 +3997,9 @@ class we_are_open
 		{
 			if (count($this->data) == count($consolidated))
 			{
-				$day_replacement_word = (array_key_exists('everyday_text', $preferences)) ? $everyday_text : get_option($this->prefix . 'everyday_text');
+				$day_replacement_word = (array_key_exists('everyday_text', $preferences)) ? $everyday_text : get_option($this->prefix . 'everyday_text', '');
 			}
-			elseif (count($this->weekdays) == count($consolidated) || count($this->weekend) == count($consolidated) && ((array_key_exists('weekdays_text', $preferences) && $weekdays_text != NULL || get_option($this->prefix . 'weekdays_text') != NULL) || (array_key_exists('weekend_text', $preferences) && $weekend_text != NULL || get_option($this->prefix . 'weekend_text') != NULL)))
+			elseif (count($this->weekdays) == count($consolidated) || count($this->weekend) == count($consolidated) && ((array_key_exists('weekdays_text', $preferences) && $weekdays_text != NULL || get_option($this->prefix . 'weekdays_text', '') != NULL) || (array_key_exists('weekend_text', $preferences) && $weekend_text != NULL || get_option($this->prefix . 'weekend_text', '') != NULL)))
 			{
 				$weekdays_check = 0;
 				$weekend_check = 0;
@@ -3953,11 +4026,11 @@ class we_are_open
 					}
 					elseif ($weekend_check == 0)
 					{
-						$day_replacement_word = (array_key_exists('weekdays_text', $preferences) && ($weekdays_text == NULL || is_string($weekdays_text))) ? $weekdays_text : get_option($this->prefix . 'weekdays_text');
+						$day_replacement_word = (array_key_exists('weekdays_text', $preferences) && ($weekdays_text == NULL || is_string($weekdays_text))) ? $weekdays_text : get_option($this->prefix . 'weekdays_text', '');
 					}
 					else
 					{
-						$day_replacement_word = (array_key_exists('weekend_text', $preferences) && ($weekend_text == NULL || is_string($weekend_text))) ? $weekend_text : get_option($this->prefix . 'weekend_text');
+						$day_replacement_word = (array_key_exists('weekend_text', $preferences) && ($weekend_text == NULL || is_string($weekend_text))) ? $weekend_text : get_option($this->prefix . 'weekend_text', '');
 					}
 				}
 			}
@@ -4003,7 +4076,7 @@ class we_are_open
 					}
 				}
 
-				$day_range_separator = (isset($day_range_separator)) ? $day_range_separator : get_option($this->prefix . 'day_range_separator');
+				$day_range_separator = (isset($day_range_separator)) ? $day_range_separator : get_option($this->prefix . 'day_range_separator', '');
 				
 				if (preg_match('/^["]([^"]+)["]$/', $day_range_separator, $m))
 				{
@@ -4014,7 +4087,7 @@ class we_are_open
 			}
 			else
 			{
-				$day_separator = (isset($day_separator)) ? $day_separator : get_option($this->prefix . 'day_separator');
+				$day_separator = (isset($day_separator)) ? $day_separator : get_option($this->prefix . 'day_separator', '');
 				
 				if (preg_match('/^["]?([^|]+)\|([^|"]+)["]?$/', $day_separator, $m))
 				{
@@ -4073,6 +4146,11 @@ class we_are_open
 			{
 				$html = preg_replace('#&lt;(sup)&gt;([^&]{1,10})&lt;(/sup)&gt;#i', '<$1>$2<$3>', $html);
 			}
+
+			if ($label_format != NULL)
+			{
+				$html = preg_replace('#&lt;span class=&quot;(label|date)&quot;&gt;(.*?)&lt;/span&gt;#', '<span class="$1">$2</span>', $html);
+			}
 			break;
 		}
 		
@@ -4110,14 +4188,14 @@ class we_are_open
 			{
 			case 'text':
 				$html = (($note != NULL && isset($preferences['notes']) && $preferences['notes'] === 'prefix') ? $note . ' ' : '')
-					. ((is_array($preferences) && isset($preferences['closed'])) ? $preferences['closed'] : get_option($this->prefix . 'closed_text'))
+					. ((is_array($preferences) && isset($preferences['closed'])) ? $preferences['closed'] : get_option($this->prefix . 'closed_text', ''))
 					. (($note != NULL && (!isset($preferences['notes']) || isset($preferences['notes']) && (is_bool($preferences['notes']) && $preferences['notes'] || $preferences['notes'] === 'suffix'))) ? ' ' . $note : '');
 				$html = wp_strip_all_tags($html);
 				break;
 			case 'html':
 			default:
 				$html = (($note != NULL && isset($preferences['notes']) && $preferences['notes'] === 'prefix') ? '<span class="note prefix">' . esc_html($note) . '</span> ' : '')
-					. esc_html((is_array($preferences) && isset($preferences['closed'])) ? $preferences['closed'] : get_option($this->prefix . 'closed_text'))
+					. esc_html((is_array($preferences) && isset($preferences['closed'])) ? $preferences['closed'] : get_option($this->prefix . 'closed_text', ''))
 					. (($note != NULL && (!isset($preferences['notes']) || isset($preferences['notes']) && (is_bool($preferences['notes']) && $preferences['notes'] || $preferences['notes'] === 'suffix'))) ? ' <span class="note">' . esc_html($note) . '</span>' : '');
 				break;
 			}
@@ -4125,20 +4203,20 @@ class we_are_open
 			return $html;
 		}
 				
-		if ($hours_24 && (is_array($preferences) && array_key_exists('hours_24', $preferences) && $preferences['hours_24'] != NULL || !is_array($preferences) && get_option($this->prefix . '24_hours_text') != NULL || is_array($preferences) && !array_key_exists('hours_24', $preferences) && get_option($this->prefix . '24_hours_text') != NULL))
+		if ($hours_24 && (is_array($preferences) && array_key_exists('hours_24', $preferences) && $preferences['hours_24'] != NULL || !is_array($preferences) && get_option($this->prefix . '24_hours_text', '') != NULL || is_array($preferences) && !array_key_exists('hours_24', $preferences) && get_option($this->prefix . '24_hours_text', '') != NULL))
 		{
 			switch ($format)
 			{
 			case 'text':
 				$html = (($note != NULL && isset($preferences['notes']) && $preferences['notes'] === 'prefix') ? $note . ' ' : '')
-					. ((is_array($preferences) && array_key_exists('hours_24', $preferences) && $preferences['hours_24'] != NULL) ? $preferences['hours_24'] : get_option($this->prefix . '24_hours_text'))
+					. ((is_array($preferences) && array_key_exists('hours_24', $preferences) && $preferences['hours_24'] != NULL) ? $preferences['hours_24'] : get_option($this->prefix . '24_hours_text', ''))
 					. (($note != NULL && (!isset($preferences['notes']) || isset($preferences['notes']) && (is_bool($preferences['notes']) && $preferences['notes'] || $preferences['notes'] === 'suffix'))) ? ' ' . $note : '');
 				$html = wp_strip_all_tags($html);
 				break;
 			case 'html':
 			default:
 				$html = (($note != NULL && isset($preferences['notes']) && $preferences['notes'] === 'prefix') ? '<span class="note prefix">' . esc_html($note) . '</span> ' : '')
-					. esc_html((is_array($preferences) && array_key_exists('hours_24', $preferences) && $preferences['hours_24'] != NULL) ? $preferences['hours_24'] : get_option($this->prefix . '24_hours_text'))
+					. esc_html((is_array($preferences) && array_key_exists('hours_24', $preferences) && $preferences['hours_24'] != NULL) ? $preferences['hours_24'] : get_option($this->prefix . '24_hours_text', ''))
 					. (($note != NULL && (!isset($preferences['notes']) || isset($preferences['notes']) && (is_bool($preferences['notes']) && $preferences['notes'] || $preferences['notes'] === 'suffix'))) ? ' <span class="note">' . esc_html($note) . '</span>' : '');
 				break;
 			}
@@ -4164,17 +4242,19 @@ class we_are_open
 		$html = array();
 		$time_group_separator_first = NULL;
 		$time_group_separator_last = NULL;
-		$time_format_key = (is_array($preferences) && isset($preferences['time_format'])) ? $preferences['time_format'] : ((get_option($this->prefix . 'time_format') != NULL) ? get_option($this->prefix . 'time_format') : '24_colon');
+		$time_format_key = (is_array($preferences) && isset($preferences['time_format'])) ? $preferences['time_format'] : ((get_option($this->prefix . 'time_format', '') != NULL) ? get_option($this->prefix . 'time_format', '') : '24_colon');
 		$time_format = $this->time_formats[$time_format_key][1];
 		$time_format_space = (preg_match('/^.*[^ ]+ [^ ]+.*$/', $time_format));
 		$time_trim = (is_bool($this->time_formats[$time_format_key][2]) && $this->time_formats[$time_format_key][2]);
 		$time_minute_replacement = (is_string($this->time_formats[$time_format_key][2])) ? $this->time_formats[$time_format_key][2] : NULL;
-		$time_separator = (is_array($preferences) && isset($preferences['time_separator'])) ? $preferences['time_separator'] : get_option($this->prefix . 'time_separator');
-		$time_group_separator = (is_array($preferences) && isset($preferences['time_group_separator'])) ? $preferences['time_group_separator'] : get_option($this->prefix . 'time_group_separator');
+		$time_separator = (is_array($preferences) && isset($preferences['time_separator'])) ? $preferences['time_separator'] : get_option($this->prefix . 'time_separator', '');
+		$time_group_separator = (is_array($preferences) && isset($preferences['time_group_separator'])) ? $preferences['time_group_separator'] : get_option($this->prefix . 'time_group_separator', '');
 		$time_group_prefix = (is_array($preferences) && isset($preferences['time_group_prefix'])) ? $preferences['time_group_prefix'] : NULL;
 		$time_group_suffix = (is_array($preferences) && isset($preferences['time_group_suffix'])) ? $preferences['time_group_suffix'] : NULL;
-		$midday_text = (is_array($preferences) && array_key_exists('midday', $preferences)) ? $preferences['midday'] : get_option($this->prefix . 'midday_text');
-		$midnight_text = (is_array($preferences) && array_key_exists('midnight', $preferences)) ? $preferences['midnight'] : get_option($this->prefix . 'midnight_text');
+		$time_prefix = (is_array($preferences) && isset($preferences['time_prefix']) && is_string($preferences['time_prefix'])) ? $preferences['time_prefix'] : '';
+		$time_suffix = (is_array($preferences) && isset($preferences['time_suffix']) && is_string($preferences['time_suffix'])) ? $preferences['time_suffix'] : '';
+		$midday_text = (is_array($preferences) && array_key_exists('midday', $preferences)) ? $preferences['midday'] : get_option($this->prefix . 'midday_text', '');
+		$midnight_text = (is_array($preferences) && array_key_exists('midnight', $preferences)) ? $preferences['midnight'] : get_option($this->prefix . 'midnight_text', '');
 
 		if ($time_format_space)
 		{
@@ -4255,28 +4335,24 @@ class we_are_open
 			
 			if ($time_trim)
 			{
-				$html[] = (($time_group_prefix != NULL) ? $time_group_prefix : '')
-				. (($time_first_text != NULL) ? $time_first_text : ((intval($minute_first) == 0) ? preg_replace('/^(\d{1,2})[^\d]*[0]{2}(.*)$/', '$1$2', gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020))) : gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020))))
-				. (($format != 'start' && $format != 'end' && $format != 'next') ? $time_separator
-				. (($time_last_text != NULL) ? $time_last_text : ((intval($minute_last) == 0) ? preg_replace('/^(\d{1,2})[^\d]*[0]{2}(.*)$/', '$1$2', gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020))) : gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020)))) : '')
-				. (($time_group_suffix != NULL && $time_last_text == NULL) ? $time_group_suffix : '');
+				$time_first = ($time_first_text != NULL) ? $time_first_text : ((intval($minute_first) == 0) ? preg_replace('/^(\d{1,2})[^\d]*[0]{2}(.*)$/', '$1$2', gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020))) : gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020)));
+				$time_last = ($time_last_text != NULL) ? $time_last_text : ((intval($minute_last) == 0) ? preg_replace('/^(\d{1,2})[^\d]*[0]{2}(.*)$/', '$1$2', gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020))) : gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020)));
 			}
 			elseif ($time_minute_replacement != NULL)
 			{
-				$html[] = (($time_group_prefix != NULL) ? $time_group_prefix : '')
-				. (($time_first_text != NULL) ? $time_first_text : ((intval($minute_first) == 0) ? preg_replace('/^(\d{1,2}[^\d]*)[0]{2}(.*)$/', '$1' . $time_minute_replacement . '$2', gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020))) : gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020))))
-				. (($format != 'start' && $format != 'end' && $format != 'next') ? $time_separator
-				. (($time_last_text != NULL) ? $time_last_text : ((intval($minute_last) == 0) ? preg_replace('/^(\d{1,2}[^\d]*)[0]{2}(.*)$/', '$1' . $time_minute_replacement . '$2', gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020))) : gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020)))) : '')
-				. (($time_group_suffix != NULL && $time_last_text == NULL) ? $time_group_suffix : '');
+				$time_first = ($time_first_text != NULL) ? $time_first_text : ((intval($minute_first) == 0) ? preg_replace('/^(\d{1,2}[^\d]*)[0]{2}(.*)$/', '$1' . $time_minute_replacement . '$2', gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020))) : gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020)));
+				$time_last = ($time_last_text != NULL) ? $time_last_text : ((intval($minute_last) == 0) ? preg_replace('/^(\d{1,2}[^\d]*)[0]{2}(.*)$/', '$1' . $time_minute_replacement . '$2', gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020))) : gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020)));
 			}
 			else
 			{
-				$html[] = (($time_group_prefix != NULL) ? $time_group_prefix : '')
-				. (($time_first_text != NULL) ? $time_first_text : gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020)))
-				. (($format != 'start' && $format != 'end' && $format != 'next') ? $time_separator
-				. (($time_last_text != NULL) ? $time_last_text : gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020))) : '')
-				. (($time_group_suffix != NULL && $time_last_text == NULL) ? $time_group_suffix : '');
+				$time_first = ($time_first_text != NULL) ? $time_first_text : gmdate($time_format, mktime($hour_first, $minute_first, 0, 1, 1, 2020));
+				$time_last = ($time_last_text != NULL) ? $time_last_text : gmdate($time_format, mktime($hour_last, $minute_last, 0, 1, 1, 2020));
 			}
+
+			$html[] = (($time_group_prefix != NULL) ? $time_group_prefix : '')
+			. $time_prefix . $time_first . $time_suffix
+			. (($format != 'start' && $format != 'end' && $format != 'next') ? $time_separator . $time_prefix . $time_last . $time_suffix : '')
+			. (($time_group_suffix != NULL && $time_last_text == NULL) ? $time_group_suffix : '');
 			
 			if ($format == 'start' || $format == 'next')
 			{
@@ -4328,9 +4404,9 @@ class we_are_open
 
 		$api_key = preg_replace('/[^0-9a-z_.-]/i', '', $api_key);
 		
-		if ($current_api_key === NULL)
+		if (is_null($current_api_key))
 		{
-			$current_api_key = get_option($this->prefix . 'api_key');
+			$current_api_key = get_option($this->prefix . 'api_key', '');
 		}
 		
 		if ($current_api_key != $api_key)
@@ -4363,14 +4439,14 @@ class we_are_open
 
 		$place_id = preg_replace('/[^0-9a-z_.-]/i', '', $place_id);
 		
-		if ($current_api_key === NULL)
+		if (is_null($current_api_key))
 		{
-			$current_api_key = get_option($this->prefix . 'api_key');
+			$current_api_key = get_option($this->prefix . 'api_key', '');
 		}
 		
-		if ($current_place_id === NULL)
+		if (is_null($current_place_id))
 		{
-			$current_place_id = get_option($this->prefix . 'place_id');
+			$current_place_id = get_option($this->prefix . 'place_id', '');
 		}
 		
 		if ($current_place_id != $place_id)
@@ -4493,8 +4569,15 @@ class we_are_open
 	public function wp_ajax()
 	{
 		// Handle AJAX requests from Frontend
-		
-		$type = (isset($_POST['type']) && is_string($_POST['type'])) ? preg_replace('/[^\w_]/', '', strtolower(sanitize_text_field($_POST['type']))) : NULL;
+
+		$payload = json_decode(file_get_contents('php://input'), TRUE);
+
+		if (!is_array($payload))
+		{
+			$payload = [];
+		}
+
+		$type = (isset($payload['type']) && is_string($payload['type'])) ? preg_replace('/[^\w_]/', '', strtolower(sanitize_text_field($payload['type']))) : NULL;
 		$seconds_to_change = FALSE;
 		$seconds_to_change_day = FALSE;
 		$open_now = FALSE;
@@ -4503,7 +4586,7 @@ class we_are_open
 		switch($type)
 		{
 		case 'update':
-			if (!is_array($_POST['elements']) || is_array($_POST['elements']) && empty($_POST['elements']))
+			if (!isset($payload['elements']) || !is_array($payload['elements']) || empty($payload['elements']))
 			{
 				$ret = array(
 					'elements' => array(),
@@ -4521,7 +4604,7 @@ class we_are_open
 				'success' => TRUE
 			);
 			
-			foreach ($_POST['elements'] as $index => $a)
+			foreach ($payload['elements'] as $index => $a)
 			{
 				if (!is_numeric($index) || !is_array($a) || !isset($a['action']) || isset($a['action']) && !is_string($a['action']))
 				{
@@ -4550,23 +4633,23 @@ class we_are_open
 	
 							if (preg_match('/^\s.+\s$/', $p))
 							{
-								$parameters[sanitize_key($pk)] = ' ' . trim(wp_kses_stripslashes(sanitize_text_field($p))) . ' ';
+								$parameters[sanitize_key($pk)] = ' ' . trim(wp_kses_stripslashes(wp_kses($p, array()))) . ' ';
 								continue;
 							}
 							
 							if (preg_match('/^\s.+$/', $p))
 							{
-								$parameters[sanitize_key($pk)] = ' ' . trim(wp_kses_stripslashes(sanitize_text_field($p)));
+								$parameters[sanitize_key($pk)] = ' ' . trim(wp_kses_stripslashes(wp_kses($p, array())));
 								continue;
 							}
 							
 							if (preg_match('/^.*\s$/', $p))
 							{
-								$parameters[sanitize_key($pk)] = trim(wp_kses_stripslashes(sanitize_text_field($p))) . ' ';
+								$parameters[sanitize_key($pk)] = trim(wp_kses_stripslashes(wp_kses($p, array()))) . ' ';
 								continue;
 							}
 
-							$parameters[sanitize_key($pk)] = wp_kses_stripslashes(sanitize_text_field($p));
+							$parameters[sanitize_key($pk)] = wp_kses_stripslashes(wp_kses($p, array()));
 						}
 					}
 
@@ -4575,7 +4658,7 @@ class we_are_open
 					
 					if (isset($a['content']) && is_string($a['content']) && strlen($a['content']) > 1)
 					{
-						$content = wp_kses_stripslashes($a['content'], array('div' => array('id' => array(), 'class' => array(), 'style' => array()), 'section' => array('id' => array(), 'class' => array(), 'style' => array()), 'aside' => array('id' => array(), 'class' => array(), 'style' => array()), 'header' => array('id' => array(), 'class' => array(), 'style' => array()), 'footer' => array('id' => array(), 'class' => array(), 'style' => array()), 'span' => array('id' => array(), 'class' => array(), 'style' => array()), 'ul' => array('id' => array(), 'class' => array(), 'style' => array()), 'ol' => array('id' => array(), 'class' => array(), 'style' => array()), 'li' => array('id' => array(), 'class' => array(), 'style' => array()), 'h1' => array('id' => array(), 'class' => array(), 'style' => array()), 'h2' => array('id' => array(), 'class' => array(), 'style' => array()), 'h3' => array('id' => array(), 'class' => array(), 'style' => array()), 'h4' => array('id' => array(), 'class' => array(), 'style' => array()), 'h5' => array('id' => array(), 'class' => array(), 'style' => array()), 'h6' => array('id' => array(), 'class' => array(), 'style' => array()), 'p' => array('id' => array(), 'class' => array(), 'style' => array()), 'br' => array(), 'a' => array('id' => array(), 'class' => array(), 'href' => array(), 'target' => array(), 'rel' => array(), 'title' => array()), 'img' => array('id' => array(), 'class' => array(), 'src' => array(), 'alt' => array(), 'style' => array(), 'srcset' => array()), 'table' => array('id' => array(), 'class' => array(), 'style' => array()), 'tr' => array('id' => array(), 'class' => array(), 'rowspan' => array(), 'style' => array()), 'th' => array('id' => array(), 'class' => array(), 'colspan' => array(), 'style' => array()), 'td' => array('id' => array(), 'class' => array(), 'colspan' => array(), 'style' => array()), 'thead' => array(), 'tbody' => array(), 'tfoot' => array(), 'code' => array(), 'strong' => array(), 'b' => array(), 'em' => array(), 'i' => array(), 'abbr' => array('title' => array())));
+						$content = wp_kses(wp_kses_stripslashes($a['content']), array('div' => array('id' => array(), 'class' => array(), 'style' => array()), 'section' => array('id' => array(), 'class' => array(), 'style' => array()), 'aside' => array('id' => array(), 'class' => array(), 'style' => array()), 'header' => array('id' => array(), 'class' => array(), 'style' => array()), 'footer' => array('id' => array(), 'class' => array(), 'style' => array()), 'span' => array('id' => array(), 'class' => array(), 'style' => array()), 'ul' => array('id' => array(), 'class' => array(), 'style' => array()), 'ol' => array('id' => array(), 'class' => array(), 'style' => array()), 'li' => array('id' => array(), 'class' => array(), 'style' => array()), 'h1' => array('id' => array(), 'class' => array(), 'style' => array()), 'h2' => array('id' => array(), 'class' => array(), 'style' => array()), 'h3' => array('id' => array(), 'class' => array(), 'style' => array()), 'h4' => array('id' => array(), 'class' => array(), 'style' => array()), 'h5' => array('id' => array(), 'class' => array(), 'style' => array()), 'h6' => array('id' => array(), 'class' => array(), 'style' => array()), 'p' => array('id' => array(), 'class' => array(), 'style' => array()), 'br' => array(), 'a' => array('id' => array(), 'class' => array(), 'href' => array(), 'target' => array(), 'rel' => array(), 'title' => array()), 'img' => array('id' => array(), 'class' => array(), 'src' => array(), 'alt' => array(), 'style' => array(), 'srcset' => array()), 'table' => array('id' => array(), 'class' => array(), 'style' => array()), 'tr' => array('id' => array(), 'class' => array(), 'rowspan' => array(), 'style' => array()), 'th' => array('id' => array(), 'class' => array(), 'colspan' => array(), 'style' => array()), 'td' => array('id' => array(), 'class' => array(), 'colspan' => array(), 'style' => array()), 'thead' => array(), 'tbody' => array(), 'tfoot' => array(), 'code' => array(), 'strong' => array(), 'b' => array(), 'em' => array(), 'i' => array(), 'abbr' => array('title' => array())));
 						$parameters['shortcodes'] = FALSE;
 
 						if (!isset($a['shortcodes']) && isset($parameters['shortcodes']))
@@ -4620,10 +4703,67 @@ class we_are_open
 			break;
 		}
 		
-		echo json_encode($ret);
+		echo json_encode($ret, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 		wp_die();
 
 		return;
+	}
+
+	private function boolean($value, $default = FALSE)
+	{
+		// Resolve a parameter value to a boolean, leaving anything unrecognized to the default
+
+		if (is_null($value))
+		{
+			return $default;
+		}
+
+		if (is_bool($value))
+		{
+			return $value;
+		}
+
+		if (!is_string($value))
+		{
+			return $default;
+		}
+
+		if (preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $value))
+		{
+			return TRUE;
+		}
+
+		if (preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $value))
+		{
+			return FALSE;
+		}
+
+		return $default;
+	}
+
+	private function parameters_filter($shortcode_defaults, $atts, $shortcode)
+	{
+		// Seed filtered defaults into the attributes so they read as supplied on the shortcode
+
+		$atts = (is_array($atts)) ? $atts : array();
+		$overrides = apply_filters($this->prefix . 'parameters', array(), $shortcode, $shortcode_defaults);
+
+		if (!is_array($overrides))
+		{
+			return $atts;
+		}
+
+		foreach ($overrides as $k => $v)
+		{
+			if (!array_key_exists($k, $shortcode_defaults) || array_key_exists($k, $atts))
+			{
+				continue;
+			}
+
+			$atts[$k] = (is_int($v)) ? strval($v) : $v;
+		}
+
+		return $atts;
 	}
 
 	public function wp_display($atts = NULL, $content = NULL, $shortcode = NULL)
@@ -4631,7 +4771,7 @@ class we_are_open
 		// Display HTML from shortcodes
 		
 		$this->set_localized_dates();
-		
+
 		$type_check = 'table';
 		$shortcode_defaults = array(
 			'class' => NULL,
@@ -4649,17 +4789,18 @@ class we_are_open
 			'day_range_suffix' => NULL,
 			'day_range_suffix_special' => NULL,
 			'day_separator' => NULL,
-			'day_separator' => NULL,
 			'day_separator_last' => NULL,
 			'day_suffix' => NULL,
 			'day_suffix_special' => NULL,
 			'day_suffix_consolidated' => NULL,
+			'day_consolidated_suffix' => NULL,
 			'days' => NULL,
 			'end' => NULL,
 			'everyday_text' => NULL,
 			'errors' => NULL,
 			'hours_24' => NULL,
 			'id' => NULL,
+			'label_format' => NULL,
 			'labels' => NULL,
 			'labels_precedence' => NULL,
 			'midday' => NULL,
@@ -4673,12 +4814,13 @@ class we_are_open
 			'span_strip' => NULL,
 			'special' => NULL,
 			'start' => NULL,
-			'stylesheet' => NULL,
 			'time_format' => NULL,
 			'time_group_prefix' => NULL,
 			'time_group_separator' => NULL,
 			'time_group_suffix' => NULL,
+			'time_prefix' => NULL,
 			'time_separator' => NULL,
+			'time_suffix' => NULL,
 			'tag' => NULL,
 			'today' => NULL,
 			'tomorrow' => NULL,
@@ -4740,7 +4882,8 @@ class we_are_open
 		{
 			$shortcode_defaults[$t] = 0;
 		}
-		
+
+		$atts = $this->parameters_filter($shortcode_defaults, $atts, $shortcode);
 		$args = shortcode_atts($shortcode_defaults, $atts);
 		
 		if (!is_array($atts))
@@ -4776,31 +4919,34 @@ class we_are_open
 		$class = (is_string($class)) ? preg_replace('/[^\w _-]/', '-', trim(strtolower($class))) : NULL;
 		$day_format_key = (is_string($day_format) && array_key_exists($day_format, $this->day_formats)) ? $day_format : NULL;
 		$day_format_special_key = (is_string($day_format_special) && array_key_exists($day_format_special, $this->day_formats)) ? $day_format_special : NULL;
-		$time_format_key = (is_string($time_format) && array_key_exists($time_format, $this->time_formats)) ? $time_format : ((get_option($this->prefix . 'time_format') != NULL) ? get_option($this->prefix . 'time_format') : '24_colon');
+		$time_format_key = (is_string($time_format) && array_key_exists($time_format, $this->time_formats)) ? $time_format : ((get_option($this->prefix . 'time_format', '') != NULL) ? get_option($this->prefix . 'time_format', '') : '24_colon');
 		$time_separator = (is_string($time_separator) && $time_separator != '') ? $time_separator : NULL;
 		$time_group_separator = (is_string($time_group_separator) && $time_group_separator != '') ? $time_group_separator : NULL;
 		$time_group_prefix = (is_string($time_group_prefix) && $time_group_prefix != '') ? ltrim($time_group_prefix) : NULL;
 		$time_group_suffix = (is_string($time_group_suffix) && $time_group_suffix != '') ? rtrim($time_group_suffix) : NULL;
-		$consolidation = (array_key_exists('consolidation', $atts) && ($consolidation == NULL || is_string($consolidation) && array_key_exists($consolidation, $this->consolidation_types))) ? (($consolidation == NULL) ? NULL : $consolidation) : get_option($this->prefix . 'consolidation');
+		$time_prefix = (is_string($time_prefix) && $time_prefix != '') ? ltrim($time_prefix) : NULL;
+		$time_suffix = (is_string($time_suffix) && $time_suffix != '') ? rtrim($time_suffix) : NULL;
+		$consolidation = (array_key_exists('consolidation', $atts) && ($consolidation == NULL || is_string($consolidation) && array_key_exists($consolidation, $this->consolidation_types))) ? (($consolidation == NULL) ? NULL : $consolidation) : get_option($this->prefix . 'consolidation', '');
 		$days = (is_string($days) && preg_match('/^(?:[^,]+,\s*){6}[^,]+$/', $days)) ? preg_split('/,\s*/', $days, 7) : NULL;
 		$labels = (!array_key_exists('labels', $atts) || array_key_exists('labels', $atts) && (is_bool($labels) && $labels || is_string($labels) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $labels)));
-		$labels_precedence = (array_key_exists('labels_precedence', $atts) && (is_bool($labels_precedence) && $labels_precedence || is_string($labels_precedence) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $labels_precedence)));
+		$label_format = (is_string($label_format) && preg_match('/%label%/', $label_format)) ? $label_format : NULL;
+		$labels_precedence = $this->boolean($labels_precedence);
 		$day_separator = (is_string($day_separator) && $day_separator != '') ? $day_separator : NULL;
 		$day_suffix = (array_key_exists('day_suffix', $atts) && is_string($day_suffix)) ? rtrim($day_suffix) : NULL;
 		$day_suffix_special = (array_key_exists('day_suffix_special', $atts) && is_string($day_suffix_special)) ? rtrim($day_suffix_special) : NULL;
-		$day_suffix_consolidated = (array_key_exists('day_suffix_consolidated', $atts) && is_string($day_suffix_consolidated)) ? rtrim($day_suffix_consolidated) : NULL;
+		/* day_consolidated_suffix is a legacy alias from earlier docs — accept either name */
+		$day_suffix_consolidated = (array_key_exists('day_suffix_consolidated', $atts) && is_string($day_suffix_consolidated)) ? rtrim($day_suffix_consolidated) : ((array_key_exists('day_consolidated_suffix', $atts) && is_string($day_consolidated_suffix)) ? rtrim($day_consolidated_suffix) : NULL);
 		$day_range_separator = (is_string($day_range_separator) && $day_range_separator != '') ? $day_range_separator : NULL;
-		$day_range_suffix = (array_key_exists('day_range_suffix', $atts) && is_string($day_range_suffix)) ? rtrim($day_range_suffix) : get_option($this->prefix . 'day_range_suffix');
-		$day_range_suffix_special = (array_key_exists('day_range_suffix_special', $atts) && (is_null($day_range_suffix_special) || is_string($day_range_suffix_special))) ? rtrim($day_range_suffix_special) : get_option($this->prefix . 'day_range_suffix_special');
+		$day_range_suffix = (array_key_exists('day_range_suffix', $atts) && is_string($day_range_suffix)) ? rtrim($day_range_suffix) : get_option($this->prefix . 'day_range_suffix', '');
+		$day_range_suffix_special = (array_key_exists('day_range_suffix_special', $atts) && (is_null($day_range_suffix_special) || is_string($day_range_suffix_special))) ? rtrim($day_range_suffix_special) : get_option($this->prefix . 'day_range_suffix_special', '');
 		$day_range_min = (is_numeric($day_range_min) && $day_range_min >= 2 && $day_range_min <= 31) ? intval($day_range_min) : ((array_key_exists('hours_24', $atts)) ? NULL : $this->day_range_min);
-		$weekdays_text = (array_key_exists('weekdays_text', $atts)) ? ((is_string($weekdays_text) && $weekdays_text != '') ? $weekdays_text : NULL) : get_option($this->prefix . 'weekdays_text');
-		$weekend_text = (array_key_exists('weekend_text', $atts)) ? ((is_string($weekend_text) && $weekend_text != '') ? $weekend_text : NULL) : get_option($this->prefix . 'weekend_text');
-		$everyday_text = (array_key_exists('everyday_text', $atts)) ? ((is_string($everyday_text) && $everyday_text != '') ? $everyday_text : NULL) : get_option($this->prefix . 'everyday_text');
+		$weekdays_text = (array_key_exists('weekdays_text', $atts)) ? ((is_string($weekdays_text) && $weekdays_text != '') ? $weekdays_text : NULL) : get_option($this->prefix . 'weekdays_text', '');
+		$weekend_text = (array_key_exists('weekend_text', $atts)) ? ((is_string($weekend_text) && $weekend_text != '') ? $weekend_text : NULL) : get_option($this->prefix . 'weekend_text', '');
+		$everyday_text = (array_key_exists('everyday_text', $atts)) ? ((is_string($everyday_text) && $everyday_text != '') ? $everyday_text : NULL) : get_option($this->prefix . 'everyday_text', '');
 		$today = (array_key_exists('today', $atts) && is_string($today)) ? $today : NULL;
 		$tomorrow = (array_key_exists('tomorrow', $atts) && is_string($tomorrow)) ? $tomorrow : NULL;
-		$closed = (is_string($closed) && $closed != '') ? $closed : get_option($this->prefix . 'closed_text');
+		$closed = (is_string($closed) && $closed != '') ? $closed : get_option($this->prefix . 'closed_text', '');
 		$closed_show = ((array_key_exists('closed_show', $atts) && (is_null($closed_show) || is_bool($closed_show) && $closed_show || is_string($closed_show) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $closed_show))) || !array_key_exists('closed_show', $atts) && get_option($this->prefix . 'closed_show', TRUE));
-		$stylesheet = (is_null($stylesheet) || is_bool($stylesheet) && $stylesheet || is_string($stylesheet) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $stylesheet));
 		$midday = (array_key_exists('midday', $atts) && (is_null($midday) || is_string($midday))) ? $midday : get_option($this->prefix . 'midday_text', NULL);
 		$midnight = (array_key_exists('midnight', $atts) && (is_null($midnight) || is_string($midnight))) ? $midnight : get_option($this->prefix . 'midnight_text', NULL);
 		$hours_24 = (array_key_exists('hours_24', $atts) && (is_null($hours_24) || is_string($hours_24))) ? $hours_24 : NULL;
@@ -4811,13 +4957,13 @@ class we_are_open
 		$end = (is_string($end) && preg_match('#^(\d{4})[ .-/](\d{1,2})[ .-/](\d{1,2})$#', $end, $m)) ? mktime(0, 0, ($this->offset * -1), $m[2], $m[3] + 1, $m[1]) : ((is_numeric($end) && $end >= -7 && $end <= 731) ? intval($end) : NULL);
 		$count = (is_numeric($count) && $count >= 1 && $count <= ((!$regular && $special) ? 400 : 31)) ? intval($count) : NULL;
 		$update_immediate = (array_key_exists('update', $atts) && is_string($update) && preg_match('/^(?:immediate|instant)(?:ly)?$/i', $update));
-		$update = ($update_immediate || array_key_exists('update', $atts) && (is_bool($update) && $update || is_string($update) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $update)));
-		$reload = ($update && array_key_exists('reload', $atts) && (is_bool($reload) && $reload || is_string($reload) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $reload)));
-		$class_strip = (is_bool($class_strip) && $class_strip || is_string($class_strip) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $class_strip));
-		$span_strip = (is_bool($span_strip) && $span_strip || is_string($span_strip) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $span_strip));
+		$update = ($update_immediate || $this->boolean($update));
+		$reload = ($update && $this->boolean($reload));
+		$class_strip = $this->boolean($class_strip);
+		$span_strip = $this->boolean($span_strip);
 		$tag = (array_key_exists('tag', $atts) && is_string($tag) && preg_match('/^(?:span|div|p|section|aside|em|strong|abbr|label|h[123456]|li)$/', trim(strtolower($tag)))) ? preg_replace('/[^0-9a-z]/', '', trim(strtolower($tag))) : NULL;
-		$outer_tag = (is_null($outer_tag) || is_bool($outer_tag) && $outer_tag || is_string($outer_tag) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $outer_tag));
-		$shortcodes = (is_null($shortcodes) || is_bool($shortcodes) && $shortcodes || is_string($shortcodes) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $shortcodes));
+		$outer_tag = $this->boolean($outer_tag, TRUE);
+		$shortcodes = $this->boolean($shortcodes, TRUE);
 		$errors = (is_bool($errors) && !$errors || is_string($errors) && preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $errors)) ? FALSE : ((defined('WP_DEBUG')) ? WP_DEBUG : FALSE);
 
 		if ($errors && (!array_key_exists($time_format_key, $this->time_formats) || get_option($this->prefix . 'time_format', NULL) == NULL))
@@ -4827,7 +4973,7 @@ class we_are_open
 			return $html;
 		}
 		
-		if ($day_format != NULL && $day_format_key == NULL && preg_match($this->accepted_day_format, $day_format))
+		if (is_string($day_format) && $day_format != NULL && $day_format_key == NULL && preg_match($this->accepted_day_format, $day_format))
 		{
 			$day_format_length = NULL;
 		}
@@ -4835,14 +4981,14 @@ class we_are_open
 		{
 			if ($day_format_key == NULL)
 			{
-				$day_format_key = get_option($this->prefix . 'day_format');
+				$day_format_key = get_option($this->prefix . 'day_format', '');
 			}
 			
 			$day_format = $this->day_formats[$day_format_key][1];
 			$day_format_length = $this->day_formats[$day_format_key][2];
 		}
 		
-		if ($day_format_special != NULL && $day_format_special_key == NULL && preg_match($this->accepted_day_format, $day_format_special))
+		if (is_string($day_format_special) && $day_format_special != NULL && $day_format_special_key == NULL && preg_match($this->accepted_day_format, $day_format_special))
 		{
 			$day_format_special_length = NULL;
 			$day_range_suffix_special = $day_range_suffix;
@@ -4851,7 +4997,7 @@ class we_are_open
 		{
 			if ($day_format_special_key == NULL)
 			{
-				$day_format_special_key = get_option($this->prefix . 'day_format_special');
+				$day_format_special_key = get_option($this->prefix . 'day_format_special', '');
 			}
 			
 			$day_format_special = ($day_format_special_key != NULL) ? $this->day_formats[$day_format_special_key][1] : $day_format;
@@ -4891,17 +5037,17 @@ class we_are_open
 			$day_preferences['closed_show'] = FALSE;
 		}
 		
-		if ($consolidation != get_option($this->prefix . 'consolidation'))
+		if ($consolidation != get_option($this->prefix . 'consolidation', ''))
 		{
 			$day_preferences['consolidation'] = $consolidation;
 		}
 		
-		if ($day_separator != NULL && $day_separator != get_option($this->prefix . 'day_separator'))
+		if ($day_separator != NULL && $day_separator != get_option($this->prefix . 'day_separator', ''))
 		{
 			$day_preferences['day_separator'] = $day_separator;
 		}
 
-		if ($day_range_separator != NULL && $day_range_separator != get_option($this->prefix . 'day_range_separator'))
+		if ($day_range_separator != NULL && $day_range_separator != get_option($this->prefix . 'day_range_separator', ''))
 		{
 			$day_preferences['day_range_separator'] = $day_range_separator;
 		}
@@ -4911,17 +5057,17 @@ class we_are_open
 			$day_preferences['day_range_min'] = $day_range_min;
 		}
 
-		if ($weekdays_text != get_option($this->prefix . 'weekdays_text'))
+		if ($weekdays_text != get_option($this->prefix . 'weekdays_text', ''))
 		{
 			$day_preferences['weekdays_text'] = $weekdays_text;
 		}
 
-		if ($weekend_text != get_option($this->prefix . 'weekend_text'))
+		if ($weekend_text != get_option($this->prefix . 'weekend_text', ''))
 		{
 			$day_preferences['weekend_text'] = $weekend_text;
 		}
 
-		if ($everyday_text != get_option($this->prefix . 'everyday_text'))
+		if ($everyday_text != get_option($this->prefix . 'everyday_text', ''))
 		{
 			$day_preferences['everyday_text'] = $everyday_text;
 		}
@@ -4936,7 +5082,7 @@ class we_are_open
 			$day_preferences['tomorrow'] = $tomorrow;
 		}
 
-		if ($time_format_key != NULL && $time_format_key != get_option($this->prefix . 'time_format'))
+		if ($time_format_key != NULL && $time_format_key != get_option($this->prefix . 'time_format', ''))
 		{
 			$time_preferences['time_format'] = $time_format_key;
 		}
@@ -4961,7 +5107,17 @@ class we_are_open
 			$time_preferences['time_group_suffix'] = $time_group_suffix;
 		}
 
-		if ($closed != NULL && $closed != get_option($this->prefix . 'closed_text'))
+		if ($time_prefix != NULL)
+		{
+			$time_preferences['time_prefix'] = $time_prefix;
+		}
+
+		if ($time_suffix != NULL)
+		{
+			$time_preferences['time_suffix'] = $time_suffix;
+		}
+
+		if ($closed != NULL && $closed != get_option($this->prefix . 'closed_text', ''))
 		{
 			$time_preferences['closed'] = $closed;
 		}
@@ -5058,6 +5214,11 @@ class we_are_open
 		{
 			$day_preferences['labels_precedence'] = $labels_precedence;
 		}
+
+		if ($label_format != NULL)
+		{
+			$day_preferences['label_format'] = $label_format;
+		}
 		
 		switch ($type)
 		{
@@ -5102,6 +5263,7 @@ class we_are_open
 					. $tag . (($id != NULL) ? ' id="' . esc_attr($id) . '"' : '')
 					. ' class="opening-hours open-text'
 					. (($class != NULL) ? ' ' . $class : '')
+					. (($errors) ? ' errors' : '')
 					. ' update' . (($reload) ? ' reload' : '') . (($open_now) ? ' open-now' : ' closed-now') . '"'
 					. ' data-data="' . esc_attr(json_encode($update_data)) . '"'
 					. '>' . $html . '</' . $tag . '>';
@@ -5117,12 +5279,8 @@ class we_are_open
 
 			if (preg_match('/^([^|]+)\|([^|]+)$/', $day_separator, $m))
 			{
+				$day_separator_last = ($day_separator_last == $day_separator) ? $m[2] : $day_separator_last;
 				$day_separator = $m[1];
-				$day_separator_last = $m[2];
-			}	
-			else
-			{
-				$day_separator_last = $day_separator;
 			}
 			
 			if ($outer_tag)
@@ -5131,6 +5289,7 @@ class we_are_open
 				. (($id != NULL) ? ' id="' . esc_attr($id) . '"' : '')
 				. ' class="opening-hours'
 				. (($class != NULL) ? ' ' . $class : '')
+				. (($errors) ? ' errors' : '')
 				. (($update) ? ' update' . (($reload) ? ' reload' : '') . (($open_now) ? ' open-now' : ' closed-now') : '') . '"'
 				. (($update) ? ' data-data="' . (($update_data != NULL) ? esc_attr(json_encode($update_data)) : '') . '"' : '')
 				. '>
@@ -5202,6 +5361,7 @@ class we_are_open
 				. (($id != NULL) ? ' id="' . esc_attr($id) . '"' : '')
 				. ' class="opening-hours'
 				. (($class != NULL) ? ' ' . $class : '')
+				. (($errors) ? ' errors' : '')
 				. (($update) ? ' update' . (($reload) ? ' reload' : '') . (($open_now) ? ' open-now' : ' closed-now') : '') . '"'
 				. (($update) ? ' data-data="' . (($update_data != NULL) ? esc_attr(json_encode($update_data)) : '') . '"' : '')
 				. '>
@@ -5266,6 +5426,7 @@ class we_are_open
 				. (($id != NULL) ? ' id="' . esc_attr($id) . '"' : '')
 				. ' class="opening-hours'
 				. (($class != NULL) ? ' ' . $class : '')
+				. (($errors) ? ' errors' : '')
 				. (($update) ? ' update' . (($reload) ? ' reload' : '') . (($open_now) ? ' open-now' : ' closed-now') : '') . '"'
 				. (($update) ? ' data-data="' . (($update_data != NULL) ? esc_attr(json_encode($update_data)) : '') . '"' : '')
 				. '>
@@ -5374,6 +5535,7 @@ class we_are_open
 					. $tag . (($id != NULL) ? ' id="' . esc_attr($id) . '"' : '')
 					. ' class="opening-hours open-text'
 					. (($class != NULL) ? ' ' . $class : '')
+					. (($errors) ? ' errors' : '')
 					. ' update' . (($reload) ? ' reload' : '') . (($open_now) ? ' open-now' : ' closed-now') . '"'
 					. ' data-data="' . esc_attr(json_encode($update_data)) . '"'
 					. '>' . $html . '</' . $tag . '>';
@@ -5385,6 +5547,7 @@ class we_are_open
 				. (($id != NULL) ? ' id="' . esc_attr($id) . '"' : '')
 				. ' class="opening-hours'
 				. (($class != NULL) ? ' ' . $class : '')
+				. (($errors) ? ' errors' : '')
 				. (($update) ? ' update' . (($reload) ? ' reload' : '') . (($open_now) ? ' open-now' : ' closed-now') : '') . '"'
 				. (($update) ? ' data-data="' . (($update_data != NULL) ? esc_attr(json_encode($update_data)) : '') . '"' : '')
 				. '>
@@ -5468,6 +5631,7 @@ class we_are_open
 			'id' => NULL,
 			'class' => NULL,
 			'class_strip' => NULL,
+			'errors' => NULL,
 			'update' => NULL,
 			'reload' => NULL,
 			'hide' => NULL,
@@ -5475,7 +5639,8 @@ class we_are_open
 			'shortcodes' => NULL
 		);
 		$data = NULL;
-		$open = (boolean)$open;
+		$open = boolval($open);
+		$atts = $this->parameters_filter($shortcode_defaults, $atts, $shortcode);
 		$args = shortcode_atts($shortcode_defaults, $atts);
 		list($open_now, $seconds_to_change) = $this->open_change();
 		
@@ -5494,7 +5659,7 @@ class we_are_open
 
 		extract($args, EXTR_SKIP);
 		
-		$shortcodes = (is_null($shortcodes) || is_bool($shortcodes) && $shortcodes || is_string($shortcodes) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $shortcodes));
+		$shortcodes = $this->boolean($shortcodes, TRUE);
 		
 		if ($shortcodes && preg_match('#\[/?[a-z][^[\]]+\]#i', $content))
 		{
@@ -5503,18 +5668,20 @@ class we_are_open
 		
 		$update_immediate = (array_key_exists('update', $atts) && is_string($update) && preg_match('/^(?:immediate|instant)(?:ly)?$/i', $update));
 		$update = ($update_immediate || !array_key_exists('update', $atts) || array_key_exists('update', $atts) && (is_bool($update) && $update || is_string($update) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $update)));
-		$reload = ($update && array_key_exists('reload', $atts) && (is_null($reload) || is_bool($reload) && $reload || is_string($reload) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $reload)));
+		$reload = ($update && array_key_exists('reload', $atts) && $this->boolean($reload, TRUE));
 		$hide = (is_null($hide) || is_bool($hide) && $hide || is_string($hide) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|show)$/i', $hide));
 		$remove_html = (is_null($remove_html) || is_bool($remove_html) && $remove_html || is_string($remove_html) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off)$/i', $remove_html));
 		$tag = (array_key_exists('tag', $atts) && is_string($tag) && preg_match('/^(?:span|div|p|section|aside|em|strong|abbr|label|h[123456]|li)$/', trim(strtolower($tag)))) ? preg_replace('/[^0-9a-z]/', '', trim(strtolower($tag))) : ((!array_key_exists('tag', $atts) && (!array_key_exists('update', $atts) || array_key_exists('update', $atts) && $update)) ? (($this->phrasing_content($content)) ? 'span' : 'div') : NULL);
 		$id = (is_string($id)) ? preg_replace('/[^\w_-]/', '-', trim($id)) : NULL;
 		$class = (is_string($class)) ? preg_replace('/[^\w _-]/', '-', trim(strtolower($class))) : NULL;
-		$class_strip = (is_bool($class_strip) && $class_strip || is_string($class_strip) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $class_strip));
-		
+		$class_strip = $this->boolean($class_strip);
+		$errors = (is_bool($errors) && !$errors || is_string($errors) && preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $errors)) ? FALSE : ((defined('WP_DEBUG')) ? WP_DEBUG : FALSE);
+
 		if ($tag != NULL)
 		{
 			$class = 'opening-hours-conditional'
 			. (($class != NULL) ? ' ' . $class : '')
+			. (($errors) ? ' errors' : '')
 			. (($open) ? ' open' : ' closed')
 			. (($hide) ? (($open == $open_now) ? ' show' : ' hide') : '')
 			. (($update) ? ' update' : '')
@@ -5568,6 +5735,7 @@ class we_are_open
 			'class' => NULL,
 			'class_strip' => NULL,
 			'count' => NULL,
+			'errors' => NULL,
 			'end' => NULL,
 			'empty' => NULL,
 			'hide' => NULL,
@@ -5580,7 +5748,8 @@ class we_are_open
 		$day_preferences = array(
 			'regular' => FALSE,
 			'special' => TRUE
-		);	
+		);
+		$atts = $this->parameters_filter($shortcode_defaults, $atts, $shortcode);
 		$args = shortcode_atts($shortcode_defaults, $atts);
 		
 		if (!is_array($atts))
@@ -5602,7 +5771,7 @@ class we_are_open
 		$end = (is_string($end) && preg_match('#^(\d{4})[ .-/](\d{1,2})[ .-/](\d{1,2})$#', $end, $m)) ? mktime(0, 0, ($this->offset * -1), $m[2], $m[3] + 1, $m[1]) : ((is_numeric($end) && $end >= -7 && $end <= 731) ? intval($end) : NULL);
 		$count = (is_numeric($count) && $count >= 1 && $count <= 400) ? intval($count) : NULL;
 		$week_start = (is_numeric($week_start) && $week_start < 0 || is_string($week_start) && preg_match('/^(?:today|now|yesterday|-\d+)$/i', $week_start)) ? ((is_numeric($week_start) && $week_start == -2 || is_string($week_start) && preg_match('/^(?:yesterday|-2)$/i', $week_start)) ? $this->yesterday : $this->today) : ((is_numeric($week_start) && $week_start >= 0 && $week_start <= 6) ? intval($week_start) : $this->week_start);		
-		$empty = (is_bool($empty) && $empty || is_string($empty) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $empty));
+		$empty = $this->boolean($empty);
 		$tag = (array_key_exists('tag', $atts) && is_string($tag) && preg_match('/^(?:span|div|p|section|aside|em|strong|abbr|label|h[123456]|li)$/', trim(strtolower($tag)))) ? preg_replace('/[^0-9a-z]/', '', trim(strtolower($tag))) : ((!array_key_exists('tag', $atts) && (!array_key_exists('update', $atts) || array_key_exists('update', $atts) && $update)) ? (($this->phrasing_content($content)) ? 'span' : 'div') : NULL);
 		
 		if (is_numeric($start))
@@ -5632,7 +5801,7 @@ class we_are_open
 			return $html;
 		}
 		
-		$shortcodes = (is_null($shortcodes) || is_bool($shortcodes) && $shortcodes || is_string($shortcodes) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $shortcodes));
+		$shortcodes = $this->boolean($shortcodes, TRUE);
 
 		if ($empty && $tag != NULL && empty($this->data))
 		{
@@ -5645,13 +5814,16 @@ class we_are_open
 
 		$id = (is_string($id)) ? preg_replace('/[^\w_-]/', '-', trim($id)) : NULL;
 		$class = (is_string($class)) ? preg_replace('/[^\w _-]/', '-', trim(strtolower($class))) : NULL;
-		$class_strip = (is_bool($class_strip) && $class_strip || is_string($class_strip) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $class_strip));
+		$class_strip = $this->boolean($class_strip);
 		$hide = (is_null($hide) || is_bool($hide) && $hide || is_string($hide) && !preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|show)$/i', $hide));
+
+		$errors = (is_bool($errors) && !$errors || is_string($errors) && preg_match('/^(?:f(?:alse)?|no?(?:ne)?|0|off|hide)$/i', $errors)) ? FALSE : ((defined('WP_DEBUG')) ? WP_DEBUG : FALSE);
 
 		if ($tag != NULL)
 		{
 			$class = 'opening-hours-conditional special'
 			. (($class != NULL) ? ' ' . $class : '')
+			. (($errors) ? ' errors' : '')
 			. (($empty && $content == NULL) ? ' empty' : '')
 			. (($hide && $content == NULL) ? ' hide' : '');
 		}
@@ -5777,6 +5949,7 @@ class we_are_open
 			}
 
 			$di = NULL;
+			$timestamp = NULL;
 
 			if ($this->today == $d)
 			{
@@ -5811,7 +5984,7 @@ class we_are_open
 					}
 				}
 
-				if (!is_numeric($di))
+				if (!is_numeric($di) || !is_numeric($timestamp))
 				{
 					continue;
 				}
@@ -6322,7 +6495,7 @@ class we_are_open
 					continue;
 				}
 				
-				$output[$i] = wp_date((isset($logic_parameters[$i]['format']) && $logic_parameters[$i]['format'] != NULL) ? $logic_parameters[$i]['format'] : get_option('date_format'), ($lv == 'closure_start' || $lv == 'temporary_closure_start') ? $this->closure['start_display'] : $this->closure['end_display']); 
+				$output[$i] = wp_date((isset($logic_parameters[$i]['format']) && $logic_parameters[$i]['format'] != NULL) ? $logic_parameters[$i]['format'] : get_option('date_format', ''), ($lv == 'closure_start' || $lv == 'temporary_closure_start') ? $this->closure['start_display'] : $this->closure['end_display']); 
 				continue;
 			}
 			
@@ -6450,12 +6623,12 @@ class we_are_open
 			
 			if (is_bool($data))
 			{
-				return (boolean)$data;
+				return boolval($data);
 			}
 
 			if (is_string($data) || is_numeric($data))
 			{
-				return ($stripslashes && is_string($data)) ? stripslashes(wp_kses_stripslashes(sanitize_text_field($data), array())) : wp_kses(sanitize_text_field($data), array());
+				return ($stripslashes && is_string($data)) ? wp_kses(stripslashes(wp_kses_stripslashes(sanitize_text_field($data))), array()) : wp_kses(sanitize_text_field($data), array());
 			}
 
 			return FALSE;
@@ -6483,7 +6656,7 @@ class we_are_open
 			
 			if (is_bool($data[$k]))
 			{
-				$data[$k] = (boolean)$data[$k];
+				$data[$k] = boolval($data[$k]);
 				continue;
 			}
 
@@ -6493,7 +6666,7 @@ class we_are_open
 				continue;
 			}
 
-			$data[$k] = ($stripslashes && is_string($data[$k])) ? stripslashes(wp_kses_stripslashes(sanitize_text_field($data[$k]), array())) : wp_kses(sanitize_text_field($data[$k]), array());
+			$data[$k] = ($stripslashes && is_string($data[$k])) ? wp_kses(stripslashes(wp_kses_stripslashes(sanitize_text_field($data[$k]))), array()) : wp_kses(sanitize_text_field($data[$k]), array());
 		}
 	
 		return $data;

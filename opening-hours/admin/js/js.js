@@ -2126,3 +2126,64 @@ jQuery(window).on('keydown', function(event) {
 
 	return;
 });
+
+/* Select all the text in a read-only code field when it is clicked */
+
+const open_admin_code_select = event => {
+	let field = event.target.closest('.shortcode'),
+		selection = null,
+		range = null;
+
+	if (field == null) {
+		return;
+	}
+
+	if (typeof field.select == 'function') {
+		field.select();
+		return;
+	}
+
+	selection = window.getSelection();
+	range = document.createRange();
+	range.selectNodeContents(field);
+	selection.removeAllRanges();
+	selection.addRange(range);
+};
+
+document.addEventListener('click', open_admin_code_select);
+
+/* Follow a link to an anchor in another settings section, opening its tab first */
+
+const open_admin_section_link = event => {
+	let link = event.target.closest('a.section-link'),
+		target = null,
+		section = null,
+		tab = null,
+		scroll_to = null;
+
+	if (link == null) {
+		return;
+	}
+
+	target = document.querySelector(link.hash);
+
+	if (target == null) {
+		return;
+	}
+
+	event.preventDefault();
+	section = target.closest('.section');
+	tab = (section != null) ? document.querySelector(`.nav-tab-wrapper a[href="#${section.id}"]`) : null;
+	scroll_to = () => window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 35, behavior: 'smooth' });
+
+	if (tab == null || tab.classList.contains('nav-tab-active')) {
+		scroll_to();
+		return;
+	}
+
+	open_settings_tab(tab);
+	/* open_settings_tab returns to the top on a 110ms timer, so wait it out */
+	setTimeout(scroll_to, 150);
+};
+
+document.addEventListener('click', open_admin_section_link);

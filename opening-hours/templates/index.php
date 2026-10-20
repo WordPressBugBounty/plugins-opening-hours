@@ -16,9 +16,9 @@ list($closure_timestamp_start, $closure_timestamp_end, $closure_date_start, $clo
 		<div class="regular">
 			<h2><?php esc_html_e('Regular', 'opening-hours'); ?></h2>
 			<?php if ($this->synchronization == 'google_places') : ?>
-				<p><?php _e('Your regular business opening hours are synchronized daily from Google My Business.', 'opening-hours'); ?></p>
+				<p><?php _e('Your regular business opening hours are synchronized daily from Google Business Profile.', 'opening-hours'); ?></p>
 				<?php elseif ($this->google_data_exists(TRUE)) : ?>
-				<p><?php _e('Your regular business opening hours with an option to update from Google My Business.', 'opening-hours'); ?></p>
+				<p><?php _e('Your regular business opening hours with an option to update from Google Business Profile.', 'opening-hours'); ?></p>
 			<?php else : ?>
 				<p><?php _e('Your business regular opening hours.', 'opening-hours'); ?></p>
 			<?php endif; ?>
@@ -239,7 +239,7 @@ endforeach;
 			<a href="<?php echo esc_attr(admin_url('options-general.php?page=opening_hours_settings')); ?>"  id="open-settings" class="button ui-button button-secondary<?php echo ($this->day_formats == NULL || $this->time_formats == NULL) ? ' action-required' : ''; ?>"><span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e('Settings', 'opening-hours'); ?></a>
 <?php endif; ?>
 <?php if ($this->google_data_exists(TRUE)) : ?>
-			<a href="#open-regular" id="open-google-business-populate" class="button ui-button button-secondary"><span class="dashicons dashicons-download"></span> <?php esc_html_e('Populate from Google My Business', 'opening-hours'); ?></a>
+			<a href="#open-regular" id="open-google-business-populate" class="button ui-button button-secondary"><span class="dashicons dashicons-download"></span> <?php esc_html_e('Populate from Google Business Profile', 'opening-hours'); ?></a>
 <?php endif; ?>
 		</p>
 	</div>

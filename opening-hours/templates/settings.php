@@ -5,6 +5,8 @@ if (!defined('ABSPATH'))
 	die();
 }
 
+$placeholders = (isset($placeholders)) ? $placeholders : array();
+
 ?>
 <div id="opening-hours-settings" class="opening-hours wrap banner closed" data-nonce="<?php echo esc_attr(wp_create_nonce($this->class_name . '_settings_nonce')); ?>">
 	<h1><?php esc_html_e('We’re Open!', 'opening-hours'); ?></h1>
@@ -31,12 +33,12 @@ if (!defined('ABSPATH'))
 		<form method="post" action="options.php" id="open-general">
 			<h2 id="general-general"><?php esc_html_e('General', 'opening-hours'); ?></h2>
 			<table class="form-table general">
-<?php if (get_option('we_are_open_time_format') == NULL || get_option('we_are_open_day_format') == NULL) : ?>
+<?php if (get_option('we_are_open_time_format', '') == NULL || get_option('we_are_open_day_format', '') == NULL) : ?>
 				<tr>
 					<th scope="row"><label><?php esc_html_e('Timezone', 'opening-hours'); ?></label></th>
 					<td>
 						<p>
-							<input type="text" id="timezone" class="regular-text" name="we_are_open_timezone" value="<?php echo esc_html(get_option('timezone_string')); ?>" placeholder="<?php esc_attr_e('None', 'opening-hours'); ?>" readonly="readonly"> <a class="button" href="<?php echo esc_attr(admin_url('options-general.php#timezone_string')); ?>"><?php esc_html_e('Change', 'opening-hours'); ?></a>
+							<input type="text" id="timezone" class="regular-text" name="we_are_open_timezone" value="<?php echo esc_html(get_option('timezone_string', '')); ?>" placeholder="<?php esc_attr_e('None', 'opening-hours'); ?>" readonly="readonly"> <a class="button" href="<?php echo esc_attr(admin_url('options-general.php#timezone_string')); ?>"><?php esc_html_e('Change', 'opening-hours'); ?></a>
 						</p>
 						<p class="description"><?php /* translators: %s: URL and bookmark to alter the main Timezone Settings */
 						echo sprintf(__('Please ensure this is set correctly in the <a href="%s">General Settings</a> to avoid unexpected results.', 'opening-hours'), esc_attr(admin_url('options-general.php#timezone_string'))); ?></p>
@@ -45,18 +47,18 @@ if (!defined('ABSPATH'))
 <?php endif; ?>
 			  <tr>
 				<th scope="row"><label for="time-format"><?php esc_html_e('Time Format', 'opening-hours'); ?></label></th>
-				<td class="<?php echo (get_option('we_are_open_time_type') == 12) ? 'hours-12' : 'hours-24'; ?>">
-					<label class="hours-12" for="time-type-12"><input type="radio" id="time-type-12" name="we_are_open_time_type" value="12"<?php echo (get_option('we_are_open_time_type') != 24) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('12 Hour', 'opening-hours'); ?></label>
-					<label class="hours-24" for="time-type-24"><input type="radio" id="time-type-24" name="we_are_open_time_type" value="24"<?php echo (get_option('we_are_open_time_type') == 24) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('24 Hour', 'opening-hours'); ?></label>
+				<td class="<?php echo (get_option('we_are_open_time_type', '') == 12) ? 'hours-12' : 'hours-24'; ?>">
+					<label class="hours-12" for="time-type-12"><input type="radio" id="time-type-12" name="we_are_open_time_type" value="12"<?php echo (get_option('we_are_open_time_type', '') != 24) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('12 Hour', 'opening-hours'); ?></label>
+					<label class="hours-24" for="time-type-24"><input type="radio" id="time-type-24" name="we_are_open_time_type" value="24"<?php echo (get_option('we_are_open_time_type', '') == 24) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('24 Hour', 'opening-hours'); ?></label>
 					<select id="time-format" name="we_are_open_time_format" required>
-						<option value=""<?php echo (get_option('we_are_open_time_format') == NULL) ? ' selected' : ' disabled'; ?>><?php esc_html_e('Select', 'opening-hours'); ?></option>
+						<option value=""<?php echo (get_option('we_are_open_time_format', '') == NULL) ? ' selected' : ' disabled'; ?>><?php esc_html_e('Select', 'opening-hours'); ?></option>
 						<optgroup label="<?php esc_attr_e('12 Hour', 'opening-hours'); ?>">
 <?php foreach ($this->time_formats as $k => $a) : ?>
 <?php if ($k == '24_none'): ?>
 						</optgroup>
 						<optgroup label="<?php esc_attr_e('24 Hour', 'opening-hours'); ?>">
 <?php endif; ?>
-							<option value="<?php echo esc_attr($k); ?>" class="<?php echo (preg_match('/^g/', $a[1])) ? 'hours-12' : 'hours-24'; ?>" data-php="<?php echo esc_attr($a[1]); ?>" data-initial="<?php echo esc_attr($a[0]); ?>"<?php echo (get_option('we_are_open_time_format') == $k) ? ' selected' : ''; ?>><?php echo esc_html($a[0]); ?></option>
+							<option value="<?php echo esc_attr($k); ?>" class="<?php echo (preg_match('/^g/', $a[1])) ? 'hours-12' : 'hours-24'; ?>" data-php="<?php echo esc_attr($a[1]); ?>" data-initial="<?php echo esc_attr($a[0]); ?>"<?php echo (get_option('we_are_open_time_format', '') == $k) ? ' selected' : ''; ?>><?php echo esc_html($a[0]); ?></option>
 <?php endforeach; ?>
 						</optgroup>
 					</select>
@@ -66,7 +68,7 @@ if (!defined('ABSPATH'))
 				<th scope="row"><label for="day-format"><?php esc_html_e('Day Format', 'opening-hours'); ?></label></th>
 				<td>
 					<select id="day-format" name="we_are_open_day_format" title="<?php esc_attr_e('Regular Days', 'opening-hours'); ?>" required>
-						<option value=""<?php echo (get_option('we_are_open_day_format') == NULL) ? ' selected' : ' disabled'; ?>><?php esc_html_e('Regular Days', 'opening-hours'); ?></option>
+						<option value=""<?php echo (get_option('we_are_open_day_format', '') == NULL) ? ' selected' : ' disabled'; ?>><?php esc_html_e('Regular Days', 'opening-hours'); ?></option>
 						<optgroup label="<?php esc_attr_e('Day Names', 'opening-hours'); ?>">
 <?php foreach ($this->day_formats as $k => $a) : ?> 
 <?php if ($k == 'short_date_short_month'): ?>
@@ -76,13 +78,13 @@ if (!defined('ABSPATH'))
 						</optgroup>
 						<optgroup label="<?php esc_attr_e('Full Date', 'opening-hours'); ?>">
 <?php endif; ?>
-							<option value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_day_format') == $k) ? ' selected' : ''; ?>><?php echo esc_html(((is_numeric($a[2])) ? substr($a[0], 0, $a[2]) : $a[0])); ?></option>
+							<option value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_day_format', '') == $k) ? ' selected' : ''; ?>><?php echo esc_html(((is_numeric($a[2])) ? substr($a[0], 0, $a[2]) : $a[0])); ?></option>
 <?php endforeach; ?>
 						</optgroup>
 					</select>
 					<select id="day-format-special" name="we_are_open_day_format_special" title="<?php esc_attr_e('Special Days', 'opening-hours'); ?>">
 						<option value="" disabled><?php esc_html_e('Special Days', 'opening-hours'); ?></option>
-						<option value=""<?php echo (get_option('we_are_open_day_format_special') == NULL) ? ' selected' : ''; ?>><?php esc_html_e('Same as Regular Days', 'opening-hours'); ?></option>
+						<option value=""<?php echo (get_option('we_are_open_day_format_special', '') == NULL) ? ' selected' : ''; ?>><?php esc_html_e('Same as Regular Days', 'opening-hours'); ?></option>
 						<optgroup label="<?php esc_attr_e('Day Names', 'opening-hours'); ?>">
 <?php foreach ($this->day_formats as $k => $a) : ?>
 <?php if ($k == 'short_date_short_month') : ?>
@@ -92,7 +94,7 @@ if (!defined('ABSPATH'))
 						</optgroup>
 						<optgroup label="<?php esc_attr_e('Full Date', 'opening-hours'); ?>">
 <?php endif; ?>
-							<option value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_day_format_special') == $k) ? ' selected' : ''; ?>><?php echo esc_html(((is_numeric($a[2])) ? substr($a[0], 0, $a[2]) : $a[0])); ?></option>
+							<option value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_day_format_special', '') == $k) ? ' selected' : ''; ?>><?php echo esc_html(((is_numeric($a[2])) ? substr($a[0], 0, $a[2]) : $a[0])); ?></option>
 <?php endforeach; ?>
 						</optgroup>
 					</select>
@@ -103,10 +105,10 @@ if (!defined('ABSPATH'))
 				<td>
 					<p>
 <?php foreach ($this->days as $k => $v) : ?>
-						<label><input type="radio" id="<?php echo esc_attr('week-start-' . $k); ?>" name="we_are_open_week_start" value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_week_start') == $k) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
+						<label><input type="radio" id="<?php echo esc_attr('week-start-' . $k); ?>" name="we_are_open_week_start" value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_week_start', '') == $k) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
 <?php endforeach; ?>
-						<label><input type="radio" id="week-start-yesterday" name="we_are_open_week_start" value="-2"<?php echo (get_option('we_are_open_week_start') == -2) ? ' checked' : ''; ?>> <?php esc_html_e('Yesterday', 'opening-hours'); ?></label>
-						<label><input type="radio" id="week-start-today" name="we_are_open_week_start" value="-1"<?php echo (get_option('we_are_open_week_start') == -1) ? ' checked' : ''; ?>> <?php esc_html_e('Today', 'opening-hours'); ?></label>
+						<label><input type="radio" id="week-start-yesterday" name="we_are_open_week_start" value="-2"<?php echo (get_option('we_are_open_week_start', '') == -2) ? ' checked' : ''; ?>> <?php esc_html_e('Yesterday', 'opening-hours'); ?></label>
+						<label><input type="radio" id="week-start-today" name="we_are_open_week_start" value="-1"<?php echo (get_option('we_are_open_week_start', '') == -1) ? ' checked' : ''; ?>> <?php esc_html_e('Today', 'opening-hours'); ?></label>
 					</p>
 				</td>
 			  </tr>
@@ -115,9 +117,9 @@ if (!defined('ABSPATH'))
 				<td>
 					<p>
 <?php foreach ($this->days as $k => $v) : ?>
-						<label><input type="checkbox" id="<?php echo esc_attr('weekdays-' . $k); ?>" name="weekdays-options[]" value="<?php echo esc_attr($k); ?>"<?php echo (is_array(get_option('we_are_open_weekdays')) && in_array($k, get_option('we_are_open_weekdays'))) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
+						<label><input type="checkbox" id="<?php echo esc_attr('weekdays-' . $k); ?>" name="weekdays-options[]" value="<?php echo esc_attr($k); ?>"<?php echo (is_array(get_option('we_are_open_weekdays', '')) && in_array($k, get_option('we_are_open_weekdays', ''))) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
 <?php endforeach; ?>
-					<input type="hidden" id="weekdays" name="we_are_open_weekdays" value="<?php echo esc_attr((is_array(get_option('we_are_open_weekdays'))) ? preg_replace('/[^,\s\d]+/', '0', implode(',', get_option('we_are_open_weekdays'))) : preg_replace('/[^,\s\d]+/', '0', get_option('we_are_open_weekdays'))); ?>">
+					<input type="hidden" id="weekdays" name="we_are_open_weekdays" value="<?php echo esc_attr((is_array(get_option('we_are_open_weekdays', ''))) ? preg_replace('/[^,\s\d]+/', '0', implode(',', get_option('we_are_open_weekdays', ''))) : preg_replace('/[^,\s\d]+/', '0', get_option('we_are_open_weekdays', ''))); ?>">
 					</p>
 				</td>
 			  </tr>
@@ -126,9 +128,9 @@ if (!defined('ABSPATH'))
 				<td>
 					<p>
 <?php foreach ($this->days as $k => $v) : ?>
-					<label><input type="checkbox" id="<?php echo esc_attr('weekend-' . $k); ?>" name="weekend-options[]" value="<?php echo esc_attr($k); ?>"<?php echo (is_array(get_option('we_are_open_weekend')) && in_array($k, get_option('we_are_open_weekend'))) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
+					<label><input type="checkbox" id="<?php echo esc_attr('weekend-' . $k); ?>" name="weekend-options[]" value="<?php echo esc_attr($k); ?>"<?php echo (is_array(get_option('we_are_open_weekend', '')) && in_array($k, get_option('we_are_open_weekend', ''))) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
 <?php endforeach; ?>
-					<input type="hidden" id="weekend" name="we_are_open_weekend" value="<?php echo esc_attr((is_array(get_option('we_are_open_weekend'))) ? preg_replace('/[^,\s\d]+/', '0', implode(',', get_option('we_are_open_weekend'))) : preg_replace('/[^,\s\d]+/', '0', get_option('we_are_open_weekend'))); ?>">
+					<input type="hidden" id="weekend" name="we_are_open_weekend" value="<?php echo esc_attr((is_array(get_option('we_are_open_weekend', ''))) ? preg_replace('/[^,\s\d]+/', '0', implode(',', get_option('we_are_open_weekend', ''))) : preg_replace('/[^,\s\d]+/', '0', get_option('we_are_open_weekend', ''))); ?>">
 					</p>
 				</td>
 			  </tr>
@@ -137,22 +139,41 @@ if (!defined('ABSPATH'))
 				<td>
 					<p>
 <?php foreach ($this->consolidation_types as $k => $v) : ?>
-						<label><input type="radio" id="<?php echo esc_attr('consolidation-' . $k); ?>" name="we_are_open_consolidation" value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_consolidation') == $k) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
+						<label><input type="radio" id="<?php echo esc_attr('consolidation-' . $k); ?>" name="we_are_open_consolidation" value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_consolidation', '') == $k) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
 <?php endforeach; ?>
 					</p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="closed-show"><?php esc_html_e('Closed Days', 'opening-hours'); ?></label></th>
-				<td><label><input type="checkbox" id="closed-show" name="we_are_open_closed_show" value="1"<?php echo (get_option('we_are_open_closed_show')) ? ' checked' : ''; ?>> <?php esc_html_e('Show closed days', 'opening-hours'); ?></label></td>
+				<td><label><input type="checkbox" id="closed-show" name="we_are_open_closed_show" value="1"<?php echo (get_option('we_are_open_closed_show', '')) ? ' checked' : ''; ?>> <?php esc_html_e('Show closed days', 'opening-hours'); ?></label></td>
+			  </tr>
+<?php
+	$asset_modes = array(
+		0 => __('None', 'opening-hours'),
+		1 => __('Standard', 'opening-hours'),
+		2 => __('Minified', 'opening-hours')
+	);
+?>
+			  <tr>
+				<th scope="row"><label><?php esc_html_e('Style Sheet', 'opening-hours'); ?></label></th>
+				<td>
+					<p>
+<?php foreach ($asset_modes as $k => $v) : ?>
+						<label><input type="radio" id="<?php echo esc_attr('stylesheet-' . $k); ?>" name="we_are_open_stylesheet" value="<?php echo esc_attr($k); ?>"<?php echo ($this->asset_mode('stylesheet') == $k) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
+<?php endforeach; ?>
+					</p>
+				</td>
 			  </tr>
 			  <tr>
-				<th scope="row"><label for="stylesheet"><?php esc_html_e('Style Sheet', 'opening-hours'); ?></label></th>
-				<td><label><input type="checkbox" id="stylesheet" name="we_are_open_stylesheet" value="1"<?php echo ((is_bool(get_option('we_are_open_stylesheet')) && get_option('we_are_open_stylesheet') || is_numeric(get_option('we_are_open_stylesheet')) && get_option('we_are_open_stylesheet') > 0 || is_string(get_option('we_are_open_stylesheet')) && get_option('we_are_open_stylesheet') != NULL) ? ' checked="checked"' : ''); ?>> <?php esc_html_e('Load style sheet', 'opening-hours'); ?></label></td>
-			  </tr>
-			  <tr>
-				<th scope="row"><label for="javascript"><?php esc_html_e('JavaScript', 'opening-hours'); ?></label></th>
-				<td><label><input type="checkbox" id="javascript" name="we_are_open_javascript" value="1"<?php echo ((is_bool(get_option('we_are_open_javascript', TRUE)) && get_option('we_are_open_javascript', TRUE) || is_numeric(get_option('we_are_open_javascript')) && get_option('we_are_open_javascript') > 0 || is_string(get_option('we_are_open_javascript')) && get_option('we_are_open_javascript') != NULL) ? ' checked="checked"' : ''); ?>> <?php esc_html_e('Load JavaScript', 'opening-hours'); ?></label></td>
+				<th scope="row"><label><?php esc_html_e('JavaScript', 'opening-hours'); ?></label></th>
+				<td>
+					<p>
+<?php foreach ($asset_modes as $k => $v) : ?>
+						<label><input type="radio" id="<?php echo esc_attr('javascript-' . $k); ?>" name="we_are_open_javascript" value="<?php echo esc_attr($k); ?>"<?php echo ($this->asset_mode('javascript') == $k) ? ' checked' : ''; ?>> <?php echo esc_html($v); ?></label>
+<?php endforeach; ?>
+					</p>
+				</td>
 			  </tr>
 			</table>
 <?php
@@ -168,7 +189,7 @@ if (!defined('ABSPATH'))
 	
 	<div id="sync" class="section<?php echo (($this->section != 'sync') ? ' hide' : ''); ?>">
 		<form method="post" action="options.php" id="open-settings-sync">
-			<div class="<?php echo (get_option('we_are_open_place_id') != NULL && get_option('we_are_open_api_key') != NULL && $this->google_data_exists()) ? 'columns-2' : 'columns'; ?>">
+			<div class="<?php echo (get_option('we_are_open_place_id', '') != NULL && get_option('we_are_open_api_key', '') != NULL && $this->google_data_exists()) ? 'columns-2' : 'columns'; ?>">
 				<div id="structured-data-section" class="column">
 					<h2 id="sync-structured-data"><?php esc_html_e('Structured Data', 'opening-hours'); ?></h2>
 					<p><?php /* translators: %s: refers to Schema URL and name, leave unchanged */ 
@@ -178,42 +199,42 @@ if (!defined('ABSPATH'))
 							<th scope="row"><label for="structured-data"><?php esc_html_e('Structured Data', 'opening-hours'); ?></label></th>
 							<td>
 								<p>
-									<label for="structured-data"><input type="checkbox" id="structured-data" name="we_are_open_structured_data" value="<?php echo esc_attr((is_numeric(get_option('we_are_open_structured_data')) && get_option('we_are_open_structured_data') != 0) ? get_option('we_are_open_structured_data') : 1); ?>"<?php echo (intval(get_option('we_are_open_structured_data')) != 0) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('Enable and insert Structured Data on the front page.', 'opening-hours'); ?></label>
-									<button type="button" name="structured-data-preview" id="structured-data-preview" class="button button-secondary structured-data"<?php echo (get_option('we_are_open_structured_data') ? '' : ' style="display: none"'); ?>><span class="dashicons dashicons-text-page"></span> <?php esc_html_e('Preview', 'opening-hours'); ?></button>
+									<label for="structured-data"><input type="checkbox" id="structured-data" name="we_are_open_structured_data" value="<?php echo esc_attr((is_numeric(get_option('we_are_open_structured_data', '')) && get_option('we_are_open_structured_data', '') != 0) ? get_option('we_are_open_structured_data', '') : 1); ?>"<?php echo (intval(get_option('we_are_open_structured_data', '')) != 0) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('Enable and insert Structured Data on the front page.', 'opening-hours'); ?></label>
+									<button type="button" name="structured-data-preview" id="structured-data-preview" class="button button-secondary structured-data"<?php echo (get_option('we_are_open_structured_data', '') ? '' : ' style="display: none"'); ?>><span class="dashicons dashicons-text-page"></span> <?php esc_html_e('Preview', 'opening-hours'); ?></button>
 								</p>
 							</td>
 						</tr>
-						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data') ? '' : ' style="display: none"'); ?>>
+						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data', '') ? '' : ' style="display: none"'); ?>>
 							<th scope="row"><label for="name"><?php esc_html_e('Name', 'opening-hours'); ?></label></th>
 							<td>
-								<input type="text" id="name" class="regular-text" name="we_are_open_name" value="<?php echo esc_attr(get_option('we_are_open_name')); ?>">
+								<input type="text" id="name" class="regular-text" name="we_are_open_name" value="<?php echo esc_attr(get_option('we_are_open_name', '')); ?>">
 							</td>
 						</tr>
-						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data') ? '' : ' style="display: none"'); ?>>
+						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data', '') ? '' : ' style="display: none"'); ?>>
 							<th scope="row"><label for="address"><?php esc_html_e('Address', 'opening-hours'); ?></label></th>
 							<td>
 								<p class="input">
-									<textarea id="address" class="regular-text" name="we_are_open_address"><?php echo esc_html(get_option('we_are_open_address')); ?></textarea>
+									<textarea id="address" class="regular-text" name="we_are_open_address"><?php echo esc_html(get_option('we_are_open_address', '')); ?></textarea>
 								</p>
 								<p class="description">
 									<?php esc_html_e('For a well-formatted postal address, separate by new lines as follows: street address, city, state, postcode and two letter country code.', 'opening-hours'); ?>
 								</p>
 							</td>
 						</tr>
-						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data') ? '' : ' style="display: none"'); ?>>
+						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data', '') ? '' : ' style="display: none"'); ?>>
 							<th scope="row"><label for="telephone"><?php esc_html_e('Telephone', 'opening-hours'); ?></label></th>
 							<td>
-								<input type="tel" id="telephone" class="regular-text" name="we_are_open_telephone" value="<?php echo esc_attr(get_option('we_are_open_telephone')); ?>">
+								<input type="tel" id="telephone" class="regular-text" name="we_are_open_telephone" value="<?php echo esc_attr(get_option('we_are_open_telephone', '')); ?>">
 							</td>
 						</tr>
-						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data') ? '' : ' style="display: none"'); ?>>
+						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data', '') ? '' : ' style="display: none"'); ?>>
 							<th scope="row"><label for="business-type"><?php esc_html_e('Business Type', 'opening-hours'); ?></label></th>
 							<td>
 								<select id="business-type" name="we_are_open_business_type">
 									<optgroup label="<?php esc_attr_e('Local Business', 'opening-hours'); ?>" data-type="LocalBusiness">
-										<option value=""<?php echo (get_option('we_are_open_business_type') == NULL) ? ' selected' : ''; ?>><?php esc_html_e('Not Applicable/Other', 'opening-hours'); ?></option>
+										<option value=""<?php echo (get_option('we_are_open_business_type', '') == NULL) ? ' selected' : ''; ?>><?php esc_html_e('Not Applicable/Other', 'opening-hours'); ?></option>
 <?php foreach ($this->business_types as $k => $name) : ?>
-									   <option value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_business_type') == $k) ? ' selected' : ''; ?>><?php echo esc_attr($name); ?></option>
+									   <option value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_business_type', '') == $k) ? ' selected' : ''; ?>><?php echo esc_attr($name); ?></option>
 <?php endforeach; ?>
 									</optgroup>
 									<optgroup label="<?php esc_attr_e('Airline', 'opening-hours'); ?>" data-type="Airline">
@@ -261,24 +282,24 @@ if (!defined('ABSPATH'))
 								</select>
 							</td>
 						</tr>
-						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data') ? '' : ' style="display: none"'); ?>>
+						<tr class="structured-data"<?php echo (get_option('we_are_open_structured_data', '') ? '' : ' style="display: none"'); ?>>
 							<th scope="row"><label for="price-range"><?php esc_html_e('Price Range', 'opening-hours'); ?></label></th>
 							<td>
 								<select id="price-range" name="we_are_open_price_range">
-									<option value=""<?php echo (get_option('we_are_open_price_range') == NULL) ? ' selected' : ''; ?>><?php esc_attr_e('Not Applicable', 'opening-hours'); ?></option>
+									<option value=""<?php echo (get_option('we_are_open_price_range', '') == NULL) ? ' selected' : ''; ?>><?php esc_attr_e('Not Applicable', 'opening-hours'); ?></option>
 <?php foreach ($this->price_ranges as $k => $a) : ?>
-									<option value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_price_range') == $k) ? ' selected' : ''; ?>><?php echo esc_attr($a['name']); ?></option>
+									<option value="<?php echo esc_attr($k); ?>"<?php echo (get_option('we_are_open_price_range', '') == $k) ? ' selected' : ''; ?>><?php echo esc_attr($a['name']); ?></option>
 <?php endforeach; ?>
 								</select>
 							</td>
 						</tr>
-						<tr id="logo-image-row" class="structured-data<?php echo ((get_option('we_are_open_logo') == NULL) ? ' empty' : ''); ?>"<?php echo ((get_option('we_are_open_structured_data') ? '' : ' style="display: none"')); ?>>
+						<tr id="logo-image-row" class="structured-data<?php echo ((get_option('we_are_open_logo', '') == NULL) ? ' empty' : ''); ?>"<?php echo ((get_option('we_are_open_structured_data', '') ? '' : ' style="display: none"')); ?>>
 							<th scope="row"><?php esc_html_e('Logo', 'opening-hours'); ?></th>
 							<td>
-								<p class="logo-image<?php echo (get_option('we_are_open_logo') == NULL) ? ' empty' : ''; ?>">
-									<span id="logo-image-preview" class="image thumbnail"><?php echo (get_option('we_are_open_logo') != NULL) ? preg_replace('/\s+(?:width|height)="\d*"/i', '', wp_get_attachment_image($this->logo_image_id, 'large')) : ''; ?></span>
-									<span class="set"><button type="button" id="logo-image" class="button button-secondary ui-button" name="logo-image" value="1" data-set-text="<?php esc_attr_e('Choose Image', 'opening-hours'); ?>" data-replace-text="<?php esc_attr_e('Replace', 'opening-hours'); ?>"><span class="dashicons dashicons-format-image"></span> <?php echo (get_option('we_are_open_logo') == NULL) ? esc_attr__('Choose Image', 'opening-hours') : esc_attr__('Replace', 'opening-hours'); ?></button></span>
-									<span class="delete"<?php echo (get_option('we_are_open_logo') == NULL) ? ' style="display: none;"' : ''; ?>><button type="button" id="logo-image-delete" class="button button-secondary ui-button" name="logo-image-delete" value="1"><span class="dashicons dashicons-no"></span> Remove</button></span>
+								<p class="logo-image<?php echo (get_option('we_are_open_logo', '') == NULL) ? ' empty' : ''; ?>">
+									<span id="logo-image-preview" class="image thumbnail"><?php echo (get_option('we_are_open_logo', '') != NULL) ? preg_replace('/\s+(?:width|height)="\d*"/i', '', wp_get_attachment_image($this->logo_image_id, 'large')) : ''; ?></span>
+									<span class="set"><button type="button" id="logo-image" class="button button-secondary ui-button" name="logo-image" value="1" data-set-text="<?php esc_attr_e('Choose Image', 'opening-hours'); ?>" data-replace-text="<?php esc_attr_e('Replace', 'opening-hours'); ?>"><span class="dashicons dashicons-format-image"></span> <?php echo (get_option('we_are_open_logo', '') == NULL) ? esc_attr__('Choose Image', 'opening-hours') : esc_attr__('Replace', 'opening-hours'); ?></button></span>
+									<span class="delete"<?php echo (get_option('we_are_open_logo', '') == NULL) ? ' style="display: none;"' : ''; ?>><button type="button" id="logo-image-delete" class="button button-secondary ui-button" name="logo-image-delete" value="1"><span class="dashicons dashicons-no"></span> Remove</button></span>
 									<input type="hidden" id="logo-image-id" name="we_are_open_logo" value="<?php echo esc_attr($this->logo_image_id); ?>">
 								</p>
 							</td>
@@ -286,16 +307,16 @@ if (!defined('ABSPATH'))
 					</table>
 				</div>
 
-<?php if (get_option('we_are_open_place_id') != NULL && get_option('we_are_open_api_key') != NULL && $this->google_data_exists()) : ?>
+<?php if (get_option('we_are_open_place_id', '') != NULL && get_option('we_are_open_api_key', '') != NULL && $this->google_data_exists()) : ?>
 				<div id="google-sync-section" class="column">
-					<h2 id="sync-google-my-business"><?php esc_html_e('Google My Business', 'opening-hours'); ?></h2>
-					<p><?php _e('As an alternative to Structured Data, you can update your regular opening hours from your Google My Business listing.', 'opening-hours'); ?></p>
+					<h2 id="sync-google-my-business"><?php esc_html_e('Google Business Profile', 'opening-hours'); ?></h2>
+					<p><?php _e('As an alternative to Structured Data, you can update your regular opening hours from your Google Business Profile listing.', 'opening-hours'); ?></p>
 					<table class="form-table google-sync">
 						<tr>
 							<th scope="row"><label for="google-sync"><?php esc_html_e('Synchronize', 'opening-hours'); ?></label></th>
 							<td>
 								<p>
-									<label for="google-sync"><input type="checkbox" id="google-sync" name="we_are_open_google_sync" value="<?php echo esc_attr((is_bool(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) || is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) >= 2) ? ((is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE)) ? '3' : '2') : '1'); ?>"<?php echo (is_bool(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) || is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) >= 1) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('Enable daily updates from Google My Business.', 'opening-hours'); ?></label>
+									<label for="google-sync"><input type="checkbox" id="google-sync" name="we_are_open_google_sync" value="<?php echo esc_attr((is_bool(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) || is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) >= 2) ? ((is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE)) ? '3' : '2') : '1'); ?>"<?php echo (is_bool(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) || is_numeric(get_option('we_are_open_google_sync', FALSE)) && get_option('we_are_open_google_sync', FALSE) >= 1) ? ' checked="checked"' : ''; ?>> <?php esc_html_e('Enable daily updates from Google Business Profile.', 'opening-hours'); ?></label>
 								</p>
 							</td>
 						</tr>
@@ -330,44 +351,44 @@ if (!defined('ABSPATH'))
 			  <tr>
 				<th scope="row"><label for="time-separator"><?php esc_html_e('Time Separator', 'opening-hours'); ?></label></th>
 				<td class="leading-trailing-spaces">
-					<input type="text" id="time-separator" class="small-text" name="we_are_open_time_separator" value="<?php echo esc_attr(get_option('we_are_open_time_separator')); ?>" pattern="^.{1,10}$" required>
-					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_time_separator')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
-					<span class="trailing-space"><span class="dashicons <?php echo preg_match('/^.*\s+$/', get_option('we_are_open_time_separator')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
+					<input type="text" id="time-separator" class="small-text" name="we_are_open_time_separator" value="<?php echo esc_attr(get_option('we_are_open_time_separator', '')); ?>" pattern="^.{1,10}$" required>
+					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_time_separator', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
+					<span class="trailing-space"><span class="dashicons <?php echo preg_match('/^.*\s+$/', get_option('we_are_open_time_separator', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('The characters or word to separate the open and close times.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="time-group-separator"><?php esc_html_e('Time Group Separator', 'opening-hours'); ?></label></th>
 				<td class="leading-trailing-spaces">
-					<input type="text" id="time-group-separator" class="small-text" name="we_are_open_time_group_separator" value="<?php echo esc_attr(get_option('we_are_open_time_group_separator')); ?>" pattern="^.{1,20}$" required>
-					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_time_group_separator')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
-					<span class="trailing-space"><span class="dashicons <?php echo preg_match('/^.*\s+$/', get_option('we_are_open_time_group_separator')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
+					<input type="text" id="time-group-separator" class="small-text" name="we_are_open_time_group_separator" value="<?php echo esc_attr(get_option('we_are_open_time_group_separator', '')); ?>" pattern="^.{1,20}$" required>
+					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_time_group_separator', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
+					<span class="trailing-space"><span class="dashicons <?php echo preg_match('/^.*\s+$/', get_option('we_are_open_time_group_separator', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('The characters or word to separate groups of opening times in a given day; optionally use | to use separate first and last characters or words.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="day-separator"><?php esc_html_e('Individual Day Separator', 'opening-hours'); ?></label></th>
 				<td class="leading-trailing-spaces">
-					<input type="text" id="day-separator" class="small-text" name="we_are_open_day_separator" value="<?php echo esc_attr(get_option('we_are_open_day_separator')); ?>" pattern="^.{1,10}$" required>
-					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_day_separator')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
-					<span class="trailing-space"><span class="dashicons <?php echo preg_match('/^.*\s+$/', get_option('we_are_open_day_separator')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
+					<input type="text" id="day-separator" class="small-text" name="we_are_open_day_separator" value="<?php echo esc_attr(get_option('we_are_open_day_separator', '')); ?>" pattern="^.{1,10}$" required>
+					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_day_separator', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
+					<span class="trailing-space"><span class="dashicons <?php echo preg_match('/^.*\s+$/', get_option('we_are_open_day_separator', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('When consolidated, the characters or word that separates individual days as a list; optionally use | to use separate first and last characters or words.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="day-range-separator"><?php esc_html_e('Day Range Separator', 'opening-hours'); ?></label></th>
 				<td class="leading-trailing-spaces">
-					<input type="text" id="day-range-separator" class="small-text" name="we_are_open_day_range_separator" value="<?php echo esc_attr(get_option('we_are_open_day_range_separator')); ?>" pattern="^.{1,10}$" required>
-					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_day_range_separator')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
-					<span class="trailing-space"><span class="dashicons <?php echo preg_match('/^.*\s+$/', get_option('we_are_open_day_range_separator')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
+					<input type="text" id="day-range-separator" class="small-text" name="we_are_open_day_range_separator" value="<?php echo esc_attr(get_option('we_are_open_day_range_separator', '')); ?>" pattern="^.{1,10}$" required>
+					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_day_range_separator', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
+					<span class="trailing-space"><span class="dashicons <?php echo preg_match('/^.*\s+$/', get_option('we_are_open_day_range_separator', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('When consolidated, the characters or word that separates the first and last day of the range.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="day-range-suffix"><?php esc_html_e('Day Suffix', 'opening-hours'); ?></label></th>
 				<td class="leading-trailing-spaces">
-					<input type="text" id="day-range-suffix" class="small-text" name="we_are_open_day_range_suffix" value="<?php echo esc_attr(get_option('we_are_open_day_range_suffix')); ?>" pattern="^.{1,10}$">
-					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_day_range_suffix')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
+					<input type="text" id="day-range-suffix" class="small-text" name="we_are_open_day_range_suffix" value="<?php echo esc_attr(get_option('we_are_open_day_range_suffix', '')); ?>" pattern="^.{1,10}$">
+					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_day_range_suffix', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
 					<span class="trailing-space disabled"><span class="dashicons dashicons-marker"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('The optional overall suffix character for the day, date or list of days such as a colon character.', 'opening-hours'); ?></p>
 				</td>
@@ -375,8 +396,8 @@ if (!defined('ABSPATH'))
 			  <tr>
 				<th scope="row"><label for="day-range-suffix-special"><?php esc_html_e('Day Suffix for Special Days', 'opening-hours'); ?></label></th>
 				<td class="leading-trailing-spaces">
-					<input type="text" id="day-range-suffix-special" class="small-text" name="we_are_open_day_range_suffix_special" value="<?php echo esc_attr(get_option('we_are_open_day_range_suffix_special')); ?>" pattern="^.{1,10}$">
-					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_day_range_suffix_special')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
+					<input type="text" id="day-range-suffix-special" class="small-text" name="we_are_open_day_range_suffix_special" value="<?php echo esc_attr(get_option('we_are_open_day_range_suffix_special', '')); ?>" pattern="^.{1,10}$">
+					<span class="leading-space"><span class="dashicons <?php echo preg_match('/^\s+.*$/', get_option('we_are_open_day_range_suffix_special', '')) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Leading Space', 'opening-hours'); ?></span>
 					<span class="trailing-space disabled"><span class="dashicons dashicons-marker"></span> <?php esc_html_e('Trailing Space', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('The optional overall suffix character for special days or dates if the format varies.', 'opening-hours'); ?></p>
 				</td>
@@ -384,64 +405,64 @@ if (!defined('ABSPATH'))
 			  <tr id="weekdays-text-row">
 				<th scope="row"><label for="weekdays-text"><?php esc_html_e('Weekdays Text', 'opening-hours'); ?></label></th>
 				<td class="value-text-suffix-empty">
-					<input type="text" id="weekdays-text" class="small-text" name="we_are_open_weekdays_text" value="<?php echo esc_attr(get_option('we_are_open_weekdays_text')); ?>" pattern="^.{1,40}$">
-					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_weekdays_text') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
-					<span class="value-suffix action"><span class="dashicons <?php echo (preg_match('/^.+' . preg_quote(get_option('we_are_open_day_range_suffix'), '/') . '$/i', get_option('we_are_open_weekdays_text'))) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Suffix', 'opening-hours'); ?></span>
-					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_weekdays_text') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Day Names', 'opening-hours'); ?></span>
+					<input type="text" id="weekdays-text" class="small-text" name="we_are_open_weekdays_text" value="<?php echo esc_attr(get_option('we_are_open_weekdays_text', '')); ?>" pattern="^.{1,40}$">
+					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_weekdays_text', '') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
+					<span class="value-suffix action"><span class="dashicons <?php echo (preg_match('/^.+' . preg_quote(get_option('we_are_open_day_range_suffix', ''), '/') . '$/i', get_option('we_are_open_weekdays_text', ''))) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Suffix', 'opening-hours'); ?></span>
+					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_weekdays_text', '') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Day Names', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('Text to replace all individual weekdays when consolidated. Leave blank to avoid summary word.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr id="weekend-text-row">
 				<th scope="row"><label for="weekend-text"><?php esc_html_e('Weekend Text', 'opening-hours'); ?></label></th>
 				<td class="value-text-suffix-empty">
-					<input type="text" id="weekend-text" class="small-text" name="we_are_open_weekend_text" value="<?php echo esc_attr(get_option('we_are_open_weekend_text')); ?>" pattern="^.{1,40}$">
-					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_weekend_text') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
-					<span class="value-suffix action"><span class="dashicons <?php echo (preg_match('/^.+' . preg_quote(get_option('we_are_open_day_range_suffix'), '/') . '$/i', get_option('we_are_open_weekend_text'))) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Suffix', 'opening-hours'); ?></span>
-					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_weekend_text') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Day Names', 'opening-hours'); ?></span>
+					<input type="text" id="weekend-text" class="small-text" name="we_are_open_weekend_text" value="<?php echo esc_attr(get_option('we_are_open_weekend_text', '')); ?>" pattern="^.{1,40}$">
+					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_weekend_text', '') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
+					<span class="value-suffix action"><span class="dashicons <?php echo (preg_match('/^.+' . preg_quote(get_option('we_are_open_day_range_suffix', ''), '/') . '$/i', get_option('we_are_open_weekend_text', ''))) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Suffix', 'opening-hours'); ?></span>
+					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_weekend_text', '') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Day Names', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('Text to replace all individual days in the weekend when consolidated. Leave blank to avoid summary word.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr id="everyday-text-row">
 				<th scope="row"><label for="everyday-text"><?php esc_html_e('Everyday Text', 'opening-hours'); ?></label></th>
 				<td class="value-text-suffix-empty">
-					<input type="text" id="everyday-text" class="small-text" name="we_are_open_everyday_text" value="<?php echo esc_attr(get_option('we_are_open_everyday_text')); ?>" pattern="^.{1,40}$">
-					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_everyday_text') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
-					<span class="value-suffix action"><span class="dashicons <?php echo (preg_match('/^.+' . preg_quote(get_option('we_are_open_day_range_suffix'), '/') . '$/i', get_option('we_are_open_everyday_text'))) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Suffix', 'opening-hours'); ?></span>
-					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_everyday_text') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Day Names', 'opening-hours'); ?></span>
+					<input type="text" id="everyday-text" class="small-text" name="we_are_open_everyday_text" value="<?php echo esc_attr(get_option('we_are_open_everyday_text', '')); ?>" pattern="^.{1,40}$">
+					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_everyday_text', '') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
+					<span class="value-suffix action"><span class="dashicons <?php echo (preg_match('/^.+' . preg_quote(get_option('we_are_open_day_range_suffix', ''), '/') . '$/i', get_option('we_are_open_everyday_text', ''))) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Suffix', 'opening-hours'); ?></span>
+					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_everyday_text', '') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Day Names', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('Text to replace all individual days when consolidated. Leave blank to avoid summary word.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="hours-24-text"><?php esc_html_e('24 Hours Text', 'opening-hours'); ?></label></th>
 				<td class="value-text-empty">
-					<input type="text" id="hours-24-text" class="small-text" name="we_are_open_24_hours_text" value="<?php echo esc_attr(get_option('we_are_open_24_hours_text')); ?>" pattern="^.{1,40}$" placeholder="<?php echo esc_attr($placeholders['hours_24']); ?>">
-					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_24_hours_text') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
-					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_24_hours_text') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Hours', 'opening-hours'); ?></span>
+					<input type="text" id="hours-24-text" class="small-text" name="we_are_open_24_hours_text" value="<?php echo esc_attr(get_option('we_are_open_24_hours_text', '')); ?>" pattern="^.{1,40}$" placeholder="<?php echo esc_attr($placeholders['hours_24']); ?>">
+					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_24_hours_text', '') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
+					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_24_hours_text', '') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Hours', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('Text to display when open for a full 24 hours in a day. Leave blank to use equivalent time range.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="midday-text"><?php esc_html_e('Midday Text', 'opening-hours'); ?></label></th>
 				<td class="value-text-empty">
-					<input type="text" id="midday-text" class="small-text" name="we_are_open_midday_text" value="<?php echo esc_attr(get_option('we_are_open_midday_text')); ?>" placeholder="<?php echo esc_attr($placeholders['midday']); ?>" pattern="^.{1,40}$">
-					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_midday_text') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
-					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_midday_text') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Time', 'opening-hours'); ?></span>
+					<input type="text" id="midday-text" class="small-text" name="we_are_open_midday_text" value="<?php echo esc_attr(get_option('we_are_open_midday_text', '')); ?>" placeholder="<?php echo esc_attr($placeholders['midday']); ?>" pattern="^.{1,40}$">
+					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_midday_text', '') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
+					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_midday_text', '') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Time', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('Optional text to display at midday; replacing the time string.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="midnight-text"><?php esc_html_e('Midnight Text', 'opening-hours'); ?></label></th>
 				<td class="value-text-empty">
-					<input type="text" id="midnight-text" class="small-text" name="we_are_open_midnight_text" value="<?php echo esc_attr(get_option('we_are_open_midnight_text')); ?>" placeholder="<?php echo esc_attr($placeholders['midnight']); ?>" pattern="^.{1,40}$">
-					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_midnight_text') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
-					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_midnight_text') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Time', 'opening-hours'); ?></span>
+					<input type="text" id="midnight-text" class="small-text" name="we_are_open_midnight_text" value="<?php echo esc_attr(get_option('we_are_open_midnight_text', '')); ?>" placeholder="<?php echo esc_attr($placeholders['midnight']); ?>" pattern="^.{1,40}$">
+					<span class="value-text"><span class="dashicons <?php echo (get_option('we_are_open_midnight_text', '') != NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Text', 'opening-hours'); ?></span>
+					<span class="value-empty action"><span class="dashicons <?php echo (get_option('we_are_open_midnight_text', '') == NULL) ? ' dashicons-yes-alt' : ' dashicons-marker'; ?>"></span> <?php esc_html_e('Display Time', 'opening-hours'); ?></span>
 					<p class="description"><?php esc_html_e('Optional text to display at midnight; replacing the time string.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
 			  <tr>
 				<th scope="row"><label for="closed-text"><?php esc_html_e('Closed Text', 'opening-hours'); ?></label></th>
 				<td>
-					<input type="text" id="closed-text" class="small-text" name="we_are_open_closed_text" value="<?php echo esc_attr(get_option('we_are_open_closed_text')); ?>" pattern="^.{1,40}$" required>
+					<input type="text" id="closed-text" class="small-text" name="we_are_open_closed_text" value="<?php echo esc_attr(get_option('we_are_open_closed_text', '')); ?>" pattern="^.{1,40}$" required>
 					<p class="description"><?php esc_html_e('Text to display when there are no open hours for a given day.', 'opening-hours'); ?></p>
 				</td>
 			  </tr>
@@ -526,7 +547,10 @@ if (!defined('ABSPATH'))
 			</div>
 			
 			<h2 id="parameters"><?php esc_html_e('Parameters', 'opening-hours'); ?></h2>
-			<p><?php _e('A wide range of parameters are accepted, so a guide will help cover all the possibilities to customize the output of your reviews, links and text. Shortcode parameters will override the values in the General. All parameters are optional.', 'opening-hours'); ?></p>
+			<p><?php _e('A wide range of parameters are accepted, so a guide will help cover all the possibilities to customize the output of your opening hours and text. All parameters are optional.', 'opening-hours'); ?></p>
+			<p><?php
+				/* translators: 1: the opening link tag to the Filters section, 2: the closing link tag, 3: the name of the Settings tab */
+				echo sprintf(esc_html__('Each value is taken from the first of these that is set: the shortcode parameter, then a %1$sfilter%2$s, then the value in %3$s, then the built-in default.', 'opening-hours'), '<a href="#additional-filters" class="section-link">', '</a>', '<em>' . esc_html__('General', 'opening-hours') . '</em>'); ?></p>
 			<table class="wp-list-table widefat fixed striped parameters">
 				<tr>
 					<th class="parameter"><?php esc_html_e('Parameter', 'opening-hours'); ?></th>
@@ -537,9 +561,29 @@ if (!defined('ABSPATH'))
 					<th class="boolean"><abbr title="<?php esc_attr_e('Accepted for Conditional Shortcode', 'opening-hours'); ?>"><?php esc_html_e('Conditions', 'opening-hours'); ?></abbr></th>
 					<th class="boolean"><abbr title="<?php esc_attr_e('Accepted for Replacement Codes', 'opening-hours'); ?>"><?php esc_html_e('Replacement Codes', 'opening-hours'); ?></abbr></th>
 				</tr>
+				<tr id="parameter-type">
+					<td class="parameter">type</td>
+					<td class="description"><?php /* translators: %s: shortcode example */
+						printf(esc_html__('Set the display type. The parameter name can be left out, as in %s.', 'opening-hours'), '<span class="code">[open lines]</span>'); ?></td>
+					<td class="accepted">table, text, lines, p, ul, ol, structured</td>
+					<td class="default">table</td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+				</tr>
 				<tr id="parameter-day-format">
 					<td class="parameter">day_format</td>
 					<td class="description"><?php _e('Set your choice of format for the day of week.', 'opening-hours'); ?></td>
+					<td class="accepted"><?php echo esc_html(implode(', ', array_keys($this->day_formats))); ?></td>
+					<td class="default"><span class="code">NULL</span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+				</tr>
+				<tr id="parameter-day-format-special">
+					<td class="parameter">day_format_special</td>
+					<td class="description"><?php /* translators: %s: name of the day_format parameter */
+						printf(esc_html__('Set the format for the day of week in special opening hours, falling back to %s.', 'opening-hours'), '<span class="code">day_format</span>'); ?></td>
 					<td class="accepted"><?php echo esc_html(implode(', ', array_keys($this->day_formats))); ?></td>
 					<td class="default"><span class="code">NULL</span></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
@@ -600,11 +644,40 @@ if (!defined('ABSPATH'))
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 				</tr>
+				<tr id="parameter-time-prefix">
+					<td class="parameter">time_prefix</td>
+					<td class="description"><?php _e('The character or word added to the start of every individual time. Trailing spaces accepted.', 'opening-hours'); ?></td>
+					<td class="accepted"><em><?php esc_html_e('Any string'); ?></em></td>
+					<td class="default"><span class="code">NULL</span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+				</tr>
+				<tr id="parameter-time-suffix">
+					<td class="parameter">time_suffix</td>
+					<td class="description"><?php _e('The character or word added to the end of every individual time. Leading spaces accepted.', 'opening-hours'); ?></td>
+					<td class="accepted"><em><?php esc_html_e('Any string'); ?></em></td>
+					<td class="default"><span class="code">NULL</span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+				</tr>
 				<tr id="parameter-days">
 					<td class="parameter">days</td>
 					<td class="description"><?php _e('Overwrite the default names of the days of the week. Must start with Sunday; include all seven days in order; comma separated list.', 'opening-hours'); ?></td>
 					<td class="accepted"><em><?php esc_html_e('Any string'); ?></em></td>
 					<td class="default"><?php echo esc_html('"' . implode(', ', $this->days) . '"'); ?></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+				</tr>
+				<tr id="parameter-label-format">
+					<td class="parameter">label_format</td>
+					<td class="description"><?php
+						/* translators: 1: the label replacement code, 2: the day replacement code */
+						echo sprintf(esc_html__('Show a label alongside the day or date instead of replacing it. Only applies where a label is set, and only when %1$s is included; %2$s is the day or date as normal.', 'opening-hours'), '<code>%label%</code>', '<code>%day%</code>'); ?></td>
+					<td class="accepted"><span class="code">%label%, %day%</span></td>
+					<td class="default"><span class="code">NULL</span></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
@@ -654,6 +727,16 @@ if (!defined('ABSPATH'))
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 				</tr>
+				<tr id="parameter-day-separator-last">
+					<td class="parameter">day_separator_last</td>
+					<td class="description"><?php /* translators: %s: name of the day_separator parameter */
+						printf(esc_html__('The character or word used before the last day in text, such as “ and ”, falling back to %s. Spaces accepted.', 'opening-hours'), '<span class="code">day_separator</span>'); ?></td>
+					<td class="accepted"><em><?php esc_html_e('Any string', 'opening-hours'); ?></em></td>
+					<td class="default"><span class="code">NULL</span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+				</tr>
 				<tr id="parameter-day-range-separator">
 					<td class="parameter">day_range_separator</td>
 					<td class="description"><?php _e('The character or word used to separate a range of days between the start and end days. Spaces accepted.', 'opening-hours'); ?></td>
@@ -699,8 +782,8 @@ if (!defined('ABSPATH'))
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 				</tr>
-				<tr id="parameter-day-consolidated-suffix">
-					<td class="parameter">day_consolidated_suffix</td>
+				<tr id="parameter-day-suffix-consolidated">
+					<td class="parameter">day_suffix_consolidated</td>
 					<td class="description"><?php _e('The suffix character added to the end of the consolidated word, as an alternative to specifying this for each of the three text strings. Leading spaces accepted.', 'opening-hours'); ?></td>
 					<td class="accepted"><em><?php esc_html_e('Any string'); ?></em></td>
 					<td class="default"><span class="code">NULL</span></td>
@@ -721,7 +804,7 @@ if (!defined('ABSPATH'))
 					<td class="parameter">weekdays_text</td>
 					<td class="description"><?php _e('Set text to represent consolidated weekdays. Set as empty (<span class="code">NULL</span>) to only use day names.', 'opening-hours'); ?></td>
 					<td class="accepted"><em><?php esc_html_e('Any string'); ?></em></td>
-					<td class="default"><?php echo esc_html(get_option('we_are_open_weekdays_text')); ?></td>
+					<td class="default"><?php echo esc_html(get_option('we_are_open_weekdays_text', '')); ?></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
@@ -730,7 +813,7 @@ if (!defined('ABSPATH'))
 					<td class="parameter">weekend_text</td>
 					<td class="description"><?php _e('Set text to represent a consolidated weekend. Set as empty (<span class="code">NULL</span>) to only use day names.', 'opening-hours'); ?></td>
 					<td class="accepted"><em><?php esc_html_e('Any string'); ?></em></td>
-					<td class="default"><?php echo esc_html(get_option('we_are_open_weekend_text')); ?></td>
+					<td class="default"><?php echo esc_html(get_option('we_are_open_weekend_text', '')); ?></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
@@ -739,7 +822,7 @@ if (!defined('ABSPATH'))
 					<td class="parameter">everyday_text</td>
 					<td class="description"><?php _e('Set text to represent everyday the same consolidated hours. Set as empty (<span class="code">NULL</span>) to only use day names.', 'opening-hours'); ?></td>
 					<td class="accepted"><em><?php esc_html_e('Any string'); ?></em></td>
-					<td class="default"><?php echo esc_html(get_option('we_are_open_everyday_text')); ?></td>
+					<td class="default"><?php echo esc_html(get_option('we_are_open_everyday_text', '')); ?></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
@@ -867,6 +950,15 @@ if (!defined('ABSPATH'))
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 				</tr>
+				<tr id="parameter-closure">
+					<td class="parameter">closure</td>
+					<td class="description"><?php esc_html_e('Show or hide the temporary closure.', 'opening-hours'); ?></td>
+					<td class="accepted">yes, no, true, false, <span class="code">1</span>, <span class="code">0</span>, show, hide, on, off</td>
+					<td class="default"><span class="code">TRUE</span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+				</tr>
 				<tr id="parameter-closed-show">
 					<td class="parameter">closed_show</td>
 					<td class="description"><?php _e('Show or hide days when business is closed.', 'opening-hours'); ?></td>
@@ -905,11 +997,20 @@ if (!defined('ABSPATH'))
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
 					<td class="boolean"><span class="explanation" title="<?php esc_attr_e('Only when update parameter is active'); ?>"><span class="dashicons dashicons-yes"></span>*</span></td>
 				</tr>
+				<tr id="parameter-outer-tag">
+					<td class="parameter">outer_tag</td>
+					<td class="description"><?php esc_html_e('Include the main enclosing HTML element. Turning this off also removes its ID, class and live updating.', 'opening-hours'); ?></td>
+					<td class="accepted">yes, no, true, false, <span class="code">1</span>, <span class="code">0</span>, show, hide, on, off</td>
+					<td class="default"><span class="code">TRUE</span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
+					<td class="boolean"><span class="explanation" title="<?php esc_attr_e('Only when update parameter is active', 'opening-hours'); ?>"><span class="dashicons dashicons-yes"></span>*</span></td>
+				</tr>
 				<tr id="parameter-update">
 					<td class="parameter">update</td>
 					<td class="description"><?php _e('Set an AJAX request to reload content when there is either a change of day for opening hours or a change of status from closed to open or open to closed. Maximum time is 24 hours. Use <em>immediate</em> to circumvent caching by refreshing data immediately.', 'opening-hours'); ?></td>
 					<td class="accepted">yes, no, true, false, <span class="code">1</span>, <span class="code">0</span>, on, off, immediate</td>
-					<td class="default"><span class="code">TRUE</span></td>
+					<td class="default"><span class="explanation" title="<?php esc_attr_e('TRUE for the conditional shortcode', 'opening-hours'); ?>"><span class="code">FALSE</span>*</span></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
@@ -980,7 +1081,7 @@ if (!defined('ABSPATH'))
 				</tr>
 				<tr id="parameter-errors">
 					<td class="parameter">errors</td>
-					<td class="description"><?php _e('You can choose to hide error notices. Defaults to <span class="code">WP_DEBUG</span> if defined in <em>wp-config.php</em>.', 'opening-hours'); ?></td>
+					<td class="description"><?php _e('You can choose to hide error notices. Defaults to <span class="code">WP_DEBUG</span> if defined in <em>wp-config.php</em>. Also reports any live updating problems to the browser console.', 'opening-hours'); ?></td>
 					<td class="accepted">yes, no, true, false, <span class="code">1</span>, <span class="code">0</span>, show, hide, on, off</td>
 					<td class="default"><span class="code">FALSE</span></td>
 					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
@@ -1579,6 +1680,7 @@ if (!defined('ABSPATH'))
 			<ul>
 				<li><a href="#additional-google-credentials"><?php esc_html_e('Google Credentials', 'opening-hours'); ?></a></li>
 				<li><a href="#additional-styles"><?php esc_html_e('Custom Styles', 'opening-hours'); ?></a></li>
+				<li><a href="#additional-filters"><?php esc_html_e('Filters', 'opening-hours'); ?></a></li>
 				<li><a href="#additional-cache"><?php esc_html_e('Cache', 'opening-hours'); ?></a></li>
 				<li><a href="#additional-reset"><?php esc_html_e('Reset', 'opening-hours'); ?></a></li>
 			</ul>
@@ -1586,16 +1688,16 @@ if (!defined('ABSPATH'))
 		<h2><?php esc_html_e('Additional', 'opening-hours'); ?></h2>
 		<form method="post" action="options.php" id="open-settings-google-credentials">
 			<h3 id="additional-google-credentials"><?php esc_html_e('Google Credentials', 'opening-hours'); ?></h3>
-			<p><?php _e('Use Google’s Places API (New) to retrieve your current opening hours from Google My Business.', 'opening-hours'); ?></p>
+			<p><?php _e('Use Google’s Places API (New) to retrieve your current opening hours from Google Business Profile.', 'opening-hours'); ?></p>
 			<table class="form-table google-credentials">
 				<tr>
 					<th scope="row"><label for="api-key"><?php esc_html_e('Google API Key', 'opening-hours'); ?></label></th>
 					<td>
 						<p class="input">
-							<input type="text" id="api-key" class="regular-text code" name="we_are_open_api_key" placeholder="<?php echo esc_attr(str_repeat('x', 40)); ?>" value="<?php echo esc_attr(get_option('we_are_open_api_key')); ?>">
+							<input type="text" id="api-key" class="regular-text code" name="we_are_open_api_key" placeholder="<?php echo esc_attr(str_repeat('x', 40)); ?>" value="<?php echo esc_attr(get_option('we_are_open_api_key', '')); ?>">
 						</p>
-						<p class="description<?php echo ((get_option('we_are_open_api_key') == NULL) ? ' unset' : ''); ?>"><?php /* translators: 1: URL of Place ID Finder, 2: IP of the web server, 3: Help icon and reveal toggle link */ 
-						echo sprintf(__('To retrieve Google My Business data, you’ll need your <a href="%1$s" class="components-external-link" target="_blank">API Key</a>, with API: <span class="highlight">Places API (New)</span> and restrict to IP: <span class="highlight">%2$s</span> %3$s', 'opening-hours'), 'https://developers.google.com/maps/documentation/javascript/get-api-key', esc_html($this->server_ip()), ' <a id="google-credentials-help" href="#google-credentials-steps"><span class="dashicons dashicons-editor-help"></span></a>'); ?></p>
+						<p class="description<?php echo ((get_option('we_are_open_api_key', '') == NULL) ? ' unset' : ''); ?>"><?php /* translators: 1: URL of Place ID Finder, 2: IP of the web server, 3: Help icon and reveal toggle link */ 
+						echo sprintf(__('To retrieve Google Business Profile data, you’ll need your <a href="%1$s" class="components-external-link" target="_blank">API Key</a>, with API: <span class="highlight">Places API (New)</span> and restrict to IP: <span class="highlight">%2$s</span> %3$s', 'opening-hours'), 'https://developers.google.com/maps/documentation/javascript/get-api-key', esc_html($this->server_ip()), ' <a id="google-credentials-help" href="#google-credentials-steps"><span class="dashicons dashicons-editor-help"></span></a>'); ?></p>
 						<ol id="google-credentials-steps">
 							<li>
 						<?php /* translators: 1: URL of Google Developer Console, 2: URL of Place API, 3: URL of Google Developer Console, 4: IP of web server, 5: URL for Google billing account */
@@ -1619,14 +1721,14 @@ Finally for regular requests, please <a href="%5$s" class="components-external-l
 					<th scope="row"><label for="place-id"><?php esc_html_e('Google Place ID', 'opening-hours'); ?></label></th>
 					<td>
 						<p class="input">
-							<input type="text" id="place-id" class="regular-text code" name="we_are_open_place_id" placeholder="<?php echo esc_attr(str_repeat('x', 26)); ?>" value="<?php echo esc_attr(get_option('we_are_open_place_id')); ?>">
-							<button type="button" name="google-data-preview" id="google-data-preview" class="button button-secondary google-data"<?php echo (get_option('we_are_open_place_id') != NULL && $this->google_data_exists()) ? '' : ' style="display: none"'; ?>><span class="dashicons dashicons-text-page"></span> <?php esc_html_e('View Retrieved Data', 'opening-hours'); ?></button>
+							<input type="text" id="place-id" class="regular-text code" name="we_are_open_place_id" placeholder="<?php echo esc_attr(str_repeat('x', 26)); ?>" value="<?php echo esc_attr(get_option('we_are_open_place_id', '')); ?>">
+							<button type="button" name="google-data-preview" id="google-data-preview" class="button button-secondary google-data"<?php echo (get_option('we_are_open_place_id', '') != NULL && $this->google_data_exists()) ? '' : ' style="display: none"'; ?>><span class="dashicons dashicons-text-page"></span> <?php esc_html_e('View Retrieved Data', 'opening-hours'); ?></button>
 						</p>
 						<p class="description"><?php /* translators: %s: the Google Place Finder URL */
 						echo sprintf(__('You can find your unique Place ID by searching by your business’ name in <a href="%s" class="components-external-link" target="_blank">Google’s Place ID Finder</a>. Single business locations are accepted; coverage areas are not.', 'opening-hours'), 'https://developers.google.com/places/place-id'); ?></p>
 					</td>
 				</tr>
-				<tr class="google-data"<?php echo ($this->google_data_exists(TRUE) && get_option('we_are_open_api_key') != NULL) ? '' : ' style="display: none"'; ?>>
+				<tr class="google-data"<?php echo ($this->google_data_exists(TRUE) && get_option('we_are_open_api_key', '') != NULL) ? '' : ' style="display: none"'; ?>>
 					<th scope="row"><label for="place-name"><?php esc_html_e('Place Name', 'opening-hours'); ?></label></th>
 					<td>
 						<p class="input">
@@ -1644,12 +1746,72 @@ Finally for regular requests, please <a href="%5$s" class="components-external-l
 			<h3 id="additional-styles"><?php esc_html_e('Custom Styles', 'opening-hours'); ?></h3>
 			<p><?php _e('If you prefer to manage your style sheet outside of your theme, you may add your own customized styles.', 'opening-hours'); ?></p>
 			<p>
-				<textarea id="custom-styles" name="we_are_open_custom_styles" placeholder="&#x2F;&#x2A;&#x20;CSS&#x20;Document&#x20;&#x2A;&#x2F;&#10;&#10;.opening-hours&#x20;.day-name&#x20;{&#10;&#x9;font-weight:&#x20;400;&#10;}"><?php echo esc_html(get_option('we_are_open_custom_styles')); ?></textarea>
+				<textarea id="custom-styles" name="we_are_open_custom_styles" placeholder="&#x2F;&#x2A;&#x20;CSS&#x20;Document&#x20;&#x2A;&#x2F;&#10;&#10;.opening-hours&#x20;.day-name&#x20;{&#10;&#x9;font-weight:&#x20;400;&#10;}"><?php echo esc_html(get_option('we_are_open_custom_styles', '')); ?></textarea>
 			</p>
 			<p class="submit">
 				<button type="button" name="reset" id="custom-styles-button" class="button button-primary"><?php esc_html_e('Save', 'opening-hours'); ?></button>
 			</p>
 		</form>
+
+		<div id="open-settings-filters">
+			<h3 id="additional-filters"><?php esc_html_e('Filters', 'opening-hours'); ?></h3>
+			<p><?php
+				/* translators: refers to the functions.php file of a theme */
+				echo sprintf(esc_html__('Add a filter in %s, or a plugin of your own, to set these values in code.', 'opening-hours'), '<code>functions.php</code>'); ?></p>
+			<table class="wp-list-table widefat fixed striped filters">
+				<tr>
+					<th class="hook"><?php esc_html_e('Filter Hook', 'opening-hours'); ?></th>
+					<th class="description"><?php esc_html_e('Description', 'opening-hours'); ?></th>
+				</tr>
+				<tr id="filter-parameters">
+					<td class="hook">we_are_open_parameters</td>
+					<td class="description"><?php
+						/* translators: 1: the opening link tag to the Parameters table, 2: the closing link tag */
+						echo sprintf(esc_html__('Set any %1$sshortcode parameter%2$s for every shortcode and the Widget.', 'opening-hours'), '<a href="#parameters" class="section-link">', '</a>'); ?></td>
+				</tr>
+				<tr id="filter-structured-data">
+					<td class="hook">we_are_open_structured_data</td>
+					<td class="description"><?php esc_html_e('Set where the Structured Data is placed.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="filter-schema">
+					<td class="hook">we_are_open_schema</td>
+					<td class="description"><?php esc_html_e('Change or extend the Structured Data before it is output.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="filter-google-data">
+					<td class="hook">we_are_open_google_data</td>
+					<td class="description"><?php esc_html_e('Change the data retrieved from Google before the opening hours are set.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="filter-google-sync-frequency">
+					<td class="hook">we_are_open_google_sync_frequency</td>
+					<td class="description"><?php esc_html_e('Set the hours between each synchronization from Google.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="filter-language">
+					<td class="hook">we_are_open_language</td>
+					<td class="description"><?php esc_html_e('Set the language requested from Google.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="filter-api-key">
+					<td class="hook">we_are_open_api_key</td>
+					<td class="description"><?php esc_html_e('Set the Google API Key in code rather than in the database.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="filter-place-id">
+					<td class="hook">we_are_open_place_id</td>
+					<td class="description"><?php esc_html_e('Set the Place ID in code rather than in the database.', 'opening-hours'); ?></td>
+				</tr>
+				<tr id="filter-special-cut-off">
+					<td class="hook">we_are_open_special_cut_off</td>
+					<td class="description"><?php
+						/* translators: 1: the lowest value accepted, 2: the highest value accepted */
+						echo sprintf(esc_html__('Set the days that past special opening hours are kept; accepts: %1$s to %2$s.', 'opening-hours'), '-2', '365'); ?></td>
+				</tr>
+			</table>
+			<pre id="filter-example" class="shortcode">add_filter('we_are_open_parameters', function($parameters, $shortcode)
+{
+	$parameters['consolidation'] = 'all';
+	$parameters['closed_show'] = FALSE;
+
+	return $parameters;
+}, 10, 2);</pre>
+		</div>
 
 		<form method="post" action="options.php" id="open-settings-cache">
 			<h3 id="additional-cache"><?php esc_html_e('Cache', 'opening-hours'); ?></h3>
@@ -1686,7 +1848,7 @@ Finally for regular requests, please <a href="%5$s" class="components-external-l
 		</nav>
 		<div class="entry-content">
 			<h2 id="about-story"><?php esc_html_e('About', 'opening-hours'); ?></h2>
-			<p class="about-story"><?php _e('This is a second plugin I’ve created for the WordPress community — starting with a simple Places API request to retrieve data from <em>Google My Business</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps.', 'opening-hours'); ?></p>
+			<p class="about-story"><?php _e('This is a second plugin I’ve created for the WordPress community — starting with a simple Places API request to retrieve data from <em>Google Business Profile</em> and then transforming it into a fully-fledged opening hours system. All the functionality to collect data using the API is still there, but it’s now substantially more effective with the ability to inform Google, and other search engines, through Structured Data. This provides accurate and current business information to the rich snippets and maps.', 'opening-hours'); ?></p>
 			<p class="about-story"><?php _e('As with the Google Reviews and Rating plugin, you can use shortcodes in any post, page or use the widget version. There is an extensive list of parameters, conditions and variables to enclose text and HTML elements. I have kept the style sheet minimal to allow for your customizations — as a developer/designer this is what I’d like for all plugins.', 'opening-hours'); ?></p>
 			<p class="about-story"><?php /* translators: %s: refers to the plugin’s support URL */ 
 			echo sprintf(__('This one is my second published plugin for WordPress so I’d appreciate any feedback. So if you have any comments or feature requests, please feel free to <a href="%s" class="components-external-link" target="_blank">get in touch</a> with me.', 'opening-hours'), 'https://designextreme.com/wordpress/we-are-open/'); ?></p>
@@ -1704,7 +1866,7 @@ Finally for regular requests, please <a href="%5$s" class="components-external-l
 			<ul id="wordpress-plugin-list">
 				<li id="wordpress-plugin-open">
 					<h3><a href="https://wordpress.org/plugins/opening-hours/" class="components-external-link" target="_blank"><span class="icon"></span> We’re Open!</a></h3>
-					<p>Simple and easy to manage regular and special opening hours for your business, includes support for Structured Data and populating from Google My Business.</p>
+					<p>Simple and easy to manage regular and special opening hours for your business, includes support for Structured Data and populating from Google Business Profile.</p>
 					<p class="more-details"><a href="https://wordpress.org/plugins/opening-hours/" class="components-external-link" target="_blank"><?php esc_html_e('More Details', 'opening-hours'); ?></a></p>
 					<p class="installed"><?php esc_html_e('Installed', 'opening-hours'); ?></p>
 				</li>
