@@ -414,6 +414,7 @@ class we_are_open
 		delete_option(__CLASS__ . '_google_result');
 		delete_option(__CLASS__ . '_google_sync');
 		delete_option(__CLASS__ . '_google_sync_frequency');
+		delete_option(__CLASS__ . '_google_synced');
 		delete_option(__CLASS__ . '_initial_version');
 		delete_option(__CLASS__ . '_javascript');
 		delete_option(__CLASS__ . '_language');
@@ -670,28 +671,11 @@ class we_are_open
 		}
 
 		$frequency = apply_filters($this->prefix . 'google_sync_frequency', get_option($this->prefix . 'google_sync_frequency', 24));
+		$frequency = (is_numeric($frequency) && in_array(intval($frequency), array(1, 2, 3, 4, 6, 8, 12, 24))) ? intval($frequency) : 24;
 
-		if (!is_numeric($frequency) || $frequency < 1 || $frequency > 24)
+		/* WP-Cron needs a visit, so catch up a missed window */
+		if (intval(wp_date("H")) % $frequency > 0 && is_numeric(get_option($this->prefix . 'google_synced', NULL)) && time() - intval(get_option($this->prefix . 'google_synced', NULL)) < 1.2 * $frequency * HOUR_IN_SECONDS)
 		{
-			$frequency = 24;
-		}
-
-		switch ($frequency)
-		{
-		case 24:
-		case 12:
-		case 8:
-		case 6:
-		case 4:
-		case 3:
-		case 2:
-		case 1:
-			if (intval(wp_date("H")) % $frequency > 0)
-			{
-				return TRUE;
-			}
-			break;
-		default:
 			return TRUE;
 		}
 
@@ -2038,14 +2022,43 @@ class we_are_open
 					);
 				}
 
-				if (isset($a['close']['hour']))
+				$hours = (isset($a['close']['hour'])) ? array(str_pad(strval($a['open']['hour']), 2, '0', STR_PAD_LEFT) . ':' . str_pad(strval($a['open']['minute']), 2, '0', STR_PAD_LEFT), str_pad(strval($a['close']['hour']), 2, '0', STR_PAD_LEFT) . ':' . str_pad(strval($a['close']['minute']), 2, '0', STR_PAD_LEFT)) : array(((preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['open']['time'], $m)) ? $m[1] . ':'. $m[2] : NULL), ((preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['close']['time'], $m)) ? $m[1] . ':'. $m[2] : NULL));
+
+				/* A span of two or more days: the first day ends and the last day starts at midnight */
+				if ($google_sync % 2 == 1 && ($weekday_close - $weekday_open + 7) % 7 >= 2)
 				{
-					$opening_hours['regular'][$weekday_open]['hours'][] = array(str_pad(strval($a['open']['hour']), 2, '0', STR_PAD_LEFT) . ':' . str_pad(strval($a['open']['minute']), 2, '0', STR_PAD_LEFT), str_pad(strval($a['close']['hour']), 2, '0', STR_PAD_LEFT) . ':' . str_pad(strval($a['close']['minute']), 2, '0', STR_PAD_LEFT));
+					if ($hours[0] == '00:00')
+					{
+						$opening_hours['regular'][$weekday_open] = array(
+							'closed' => FALSE,
+							'hours_24' => TRUE,
+							'hours' => NULL
+						);
+					}
+
+					if (!$opening_hours['regular'][$weekday_open]['hours_24'])
+					{
+						$opening_hours['regular'][$weekday_open]['hours'][] = array($hours[0], '00:00');
+					}
+
+					if ($hours[1] != '00:00' && !array_key_exists($weekday_close, $opening_hours['regular']))
+					{
+						$opening_hours['regular'][$weekday_close] = array(
+							'closed' => FALSE,
+							'hours_24' => FALSE,
+							'hours' => array()
+						);
+					}
+
+					if ($hours[1] != '00:00' && !$opening_hours['regular'][$weekday_close]['hours_24'])
+					{
+						array_unshift($opening_hours['regular'][$weekday_close]['hours'], array('00:00', $hours[1]));
+					}
 
 					continue;
 				}
-				
-				$opening_hours['regular'][$weekday_open]['hours'][] = array(((preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['open']['time'], $m)) ? $m[1] . ':'. $m[2] : NULL), ((preg_match('/^(\d{2})[^\d]*(\d{2})$/', $a['close']['time'], $m)) ? $m[1] . ':'. $m[2] : NULL));
+
+				$opening_hours['regular'][$weekday_open]['hours'][] = $hours;
 			}
 
 			if ($google_sync > 1 && is_array($periods['current']) && is_array($periods['special']) && !empty($periods['special']))
@@ -2134,6 +2147,8 @@ class we_are_open
 		{
 			$opening_hours['regular'] = $this->regular;
 		}
+
+		update_option($this->prefix . 'google_synced', time(), 'no');
 
 		if ($google_sync > 1 && is_array($opening_hours['special']) && !empty($opening_hours['special']))
 		{
@@ -3012,14 +3027,16 @@ class we_are_open
 		foreach ($days as $i => $timestamp)
 		{
 			$day = wp_date("w", $timestamp);
-			$a = ($special && !empty($this->closure) && $timestamp >= $this->closure['start'] && $timestamp < $this->closure['end']) ? array('closed' => TRUE) : (($special && is_array($this->special) && array_key_exists($timestamp, $this->special)) ? $this->special[$timestamp] : ((isset($this->regular[$day])) ? $this->regular[$day] : array()));
+			$day_closure = ($closure && is_array($this->closure) && isset($this->closure['start']) && isset($this->closure['end']) && $timestamp >= $this->closure['start'] && $timestamp < $this->closure['end']);
+			$day_special = ($special && is_array($this->special) && array_key_exists($timestamp, $this->special));
+			$a = ($day_closure) ? array('closed' => TRUE) : (($day_special) ? $this->special[$timestamp] : ((isset($this->regular[$day])) ? $this->regular[$day] : array()));
 			$closed = (empty($a) || !empty($a) && isset($a['closed']) && $a['closed']);
 			$label = ($special && !empty($a) && isset($a['label']) && (is_string($a['label']) && $a['label'] != NULL)) ? $a['label'] : NULL;
 			$note = ($special && !empty($a) && isset($a['note']) && (is_string($a['note']) && $a['note'] != NULL)) ? $a['note'] : NULL;
 			$day_weekday = (isset($weekdays) && is_array($weekdays) && in_array($day, $weekdays) || (!isset($weekdays) || isset($weekdays) && !is_array($weekdays)) && isset($this->weekdays) && is_array($this->weekdays) && in_array($day, $this->weekdays));
 			$day_weekend = (isset($weekend) && is_array($weekend) && in_array($day, $weekend) || (!isset($weekend) || isset($weekend) && !is_array($weekend)) && isset($this->weekend) && is_array($this->weekend) && in_array($day, $this->weekend));
 			
-			if (!$regular && (!is_array($this->special) || !array_key_exists($timestamp, $this->special)) && (!is_array($this->closure) || is_array($this->closure) && (empty($this->closure) || isset($this->closure['start']) && isset($this->closure['end']) && ($timestamp < $this->closure['start'] || $timestamp >= $this->closure['end']))))
+			if (!$regular && !$day_special && !$day_closure)
 			{
 				continue;
 			}
@@ -3119,9 +3136,9 @@ class we_are_open
 			
 			$this->data[$timestamp] = array(
 				'date' => $timestamp,
-				'regular' => ((!is_array($this->special) || !array_key_exists($timestamp, $this->special)) && (empty($this->closure) || !empty($this->closure) && ($timestamp < $this->closure['start'] || $timestamp >= $this->closure['end']))),
-				'special' => (is_array($this->special) && array_key_exists($timestamp, $this->special) || is_array($this->closure) && !empty($this->closure) && $timestamp >= $this->closure['start'] && $timestamp < $this->closure['end']),
-				'closure' => (is_array($this->closure) && !empty($this->closure) && $timestamp >= $this->closure['start'] && $timestamp < $this->closure['end']),
+				'regular' => (!$day_special && !$day_closure),
+				'special' => ($day_special || $day_closure),
+				'closure' => $day_closure,
 				'day' => $day,
 				'count' => $i,
 				'today' => ($timestamp == $this->today_timestamp),

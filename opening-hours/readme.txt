@@ -5,7 +5,7 @@ Donate link: https://paypal.me/designextreme
 Tags: opening hours, open hours, business hours, open times, opening times
 Requires at least: 5.3
 Tested up to: 7.1
-Stable tag: 2.7
+Stable tag: 2.8
 Requires PHP: 5.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -169,6 +169,12 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 8. Simple Widget to apply your opening hours to a sidebar or footer section
 
 == Changelog ==
+
+= 2.8 =
+
+* Fixed the daily Google sync being missed
+* Fixed the special and closure parameters not hiding their dates
+* Fixed syncing of opening hours spanning several days
 
 = 2.7 =
 
@@ -696,9 +702,6 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 
 == Upgrade Notice ==
 
-= 2.7 =
-
-Security release. Please update.
 
 
 == Getting started with Google Places API (New) ==

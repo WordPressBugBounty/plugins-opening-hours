@@ -712,6 +712,7 @@ function open_admin(popstate) {
 					if (!jQuery(this).val().length && jQuery('.dashicons', jQuery(this).siblings('.value-text')).hasClass('dashicons-yes-alt')) {
 						jQuery('.dashicons', jQuery(this).siblings('.value-text')).removeClass('dashicons-yes-alt').addClass('dashicons-marker');
 						jQuery('.dashicons', jQuery(this).siblings('.value-empty')).removeClass('dashicons-marker').addClass('dashicons-yes-alt');
+						jQuery('.dashicons', jQuery(this).siblings('.value-suffix')).removeClass('dashicons-yes-alt').addClass('dashicons-marker');
 						return;
 					}
 					
@@ -795,6 +796,7 @@ function open_admin(popstate) {
 						if (jQuery(this).hasClass('value-empty')) {
 							if (jQuery('.dashicons', this).hasClass('dashicons-marker')) {
 								jQuery('.dashicons', jQuery(this).siblings('.value-text')).removeClass('dashicons-yes-alt').addClass('dashicons-marker');
+								jQuery('.dashicons', jQuery(this).siblings('.value-suffix')).removeClass('dashicons-yes-alt').addClass('dashicons-marker');
 								jQuery('.dashicons', this).removeClass('dashicons-marker').removeClass('dashicons-marker').addClass('dashicons-yes-alt');
 								jQuery(this).siblings(':input:eq(0)').val('').trigger('focus');
 							}

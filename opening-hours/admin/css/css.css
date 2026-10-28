@@ -181,7 +181,7 @@
 #opening-hours input[type=time],
 #opening-hours .closed-text {
 	text-align: center;
-	box-shadow: 0 0px 0 2px #0064c866 inset;
+	box-shadow: 0 0 0 2px #0064c866 inset;
 	border: 0 none;
 	border-radius: 3px;
 	transition: 0.2s box-shadow linear, 0.2s background-color linear, 0.2s color linear;
@@ -224,7 +224,7 @@
 #opening-hours .closed-text:hover,
 #opening-hours .closed-text:focus,
 #opening-hours .closed-text:focus-visible {
-	box-shadow: 0 0 0 2px #0064c8e6 inset, 0 1px 0 0px  #0064c8b3;
+	box-shadow: 0 0 0 2px #0064c8e6 inset, 0 1px 0 0 #0064c8b3;
 	background-color: #0064c80d;
 }
 #open-regular .week-day-column {
@@ -629,7 +629,7 @@
 	color: #FFFFFF;
 	text-transform: uppercase;
 	font-weight: 700;
-	padding: 0px 3px;
+	padding: 0 3px;
 	border-radius: 2px;
 }
 #open-structured-data .error .dashicons {
@@ -729,6 +729,11 @@
 	padding-block-end: 0.7rem;
 	display: block;
 }
+#opening-hours-settings .form-table :is(th, td) {
+	line-height: 140%;
+	padding-block: 0.4lh;
+	padding-inline: 1.3ex;
+}
 #opening-hours-settings .input label {
 	display: block;
 	padding-block: 0.4em 0.4em;
@@ -763,8 +768,8 @@
 	line-height: 180%;
 }
 #opening-hours-settings td .description {
-	margin: 0.4em 0 0;
-	line-height: 130%;
+	margin: 0.6lh 0 0;
+	line-height: 140%;
 }
 #opening-hours-settings td label {
 	margin-block: 0 0.4em;
@@ -1238,10 +1243,11 @@
 		block-size: 114px;
 		z-index: 30;
 		background: #6089b6f2 url('../../templates/images/we-re-open-logo-shop-sign.svg') no-repeat calc(100% - 25px) top / 114px;
-		box-shadow: -22px 0 0 #678eb8, 19px 0 0 #678eb8;
+		box-shadow: -22px 0 0 #678eb8, 20px 0 0 #678eb8;
 	}
 	.rtl .opening-hours.wrap.banner > h1::before {
 		background-position: 25px top;
+		box-shadow: -20px 0 0 #678eb8, 22px 0 0 #678eb8;
 	}
 	#opening-hours-settings.opening-hours.wrap.banner > h1::before {
 		block-size: 137px;
@@ -1282,10 +1288,10 @@
 	#opening-hours-settings .nav-tab-wrapper,
 	#opening-hours .wp-header-end {
 		border-block-end: 2px solid #6093ca;
-		margin: 0 -21px auto;
+		margin-block: 0 auto;
+		margin-inline: -22px -20px;
 		padding: 9px 16px 0;
 		position: relative;
-		inset-inline-end: 1px;
 		z-index: 40;
 	}
 	#opening-hours .wp-header-end {
@@ -1469,7 +1475,7 @@
 	#opening-hours .closed-text:hover,
 	#opening-hours .closed-text:focus,
 	#opening-hours .closed-text:focus-visible {
-		box-shadow: 0 -2px 0 0 #0064c8e6 inset, 0 1px 0 0px  #0064c8e6;
+		box-shadow: 0 -2px 0 0 #0064c8e6 inset, 0 1px 0 0 #0064c8e6;
 	}
 	#opening-hours input[type=text] {
 		text-align: left;
@@ -1509,7 +1515,7 @@
 		inset-block-start: 0.15em;
 	}
 	#opening-hours-settings #google-data-preview .dashicons {
-		inset-block-start: 0.4rem;
+		inset-block-start: 0.25rem;
 		font-size: 1rem;
 	}
 	#opening-hours .buttons a {
@@ -1616,7 +1622,7 @@
 		position: relative;
 		margin-block: 0.1em 0;
 		margin-inline: 1em 0;
-		padding-block: 0.1em 0.1em;
+		padding-block: 0.25lh 0.25lh;
 		padding-inline: 0.6em 0.1em;
 		float: inline-start;
 		inline-size: 12em;
@@ -1629,8 +1635,8 @@
 	}
 	#opening-hours-settings .separators-text .trailing-space,
 	#opening-hours-settings .separators-text .value-empty {
-		margin-block: 1.53em 0;
-		margin-inline: -12.7em 0;
+		margin-block: 1.5lh 0;
+		margin-inline: -15.7em 0;
 		border-radius: 0 0 3px 3px;
 	}
 	#opening-hours-settings .separators-text .value-text-suffix-empty .value-text,
@@ -1639,22 +1645,20 @@
 	}
 	#opening-hours-settings .separators-text .value-text-suffix-empty .value-text {
 		border-radius: 3px 0 0 0;
-		box-shadow: -1px 0 0 #f5f5f5e6 inset, 0 0 0 1px #6089b6cc inset;
 	}
 	.rtl #opening-hours-settings .separators-text .value-text-suffix-empty .value-text {
 		border-radius: 0 3px 0 0;
-		box-shadow: 1px 0 0 #f5f5f5e6 inset, 0 0 0 1px #6089b6cc inset;
 	}
 	#opening-hours-settings .separators-text .value-suffix {
-		border-radius: 0 3px 0 0;
 		margin-inline-start: 0;
+		border-radius: 0 3px 0 0;
 	}
 	.rtl #opening-hours-settings .separators-text .value-suffix {
 		border-radius: 3px 0 0 0;
 	}
 	#opening-hours-settings .separators-text .value-text-suffix-empty .value-empty {
 		inline-size: 18.7em;
-		margin-block: 1.53em 0 ;
+		margin-block: 1.5lh 0;
 		margin-inline: -19.4em 0;
 	}
 	#opening-hours-settings .separators-text .value-text-suffix-empty .description {

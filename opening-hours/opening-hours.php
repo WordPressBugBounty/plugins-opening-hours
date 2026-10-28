@@ -4,7 +4,7 @@
  * Plugin Name: We’re Open!
  * Plugin URI: https://wordpress.org/plugins/opening-hours/
  * Description: Smart and easy management for your business’ regular and special opening hours with Structured Data plus populate from Google Business Profile
- * Version: 2.7
+ * Version: 2.8
  * Requires at least: 5.3
  * Requires PHP: 5.6
  * Author: Noah Hearle, Design Extreme
