@@ -7,6 +7,7 @@ if (!defined('ABSPATH'))
 
 class we_are_open
 {
+	const VERSION = '2.9';
 	public
 		$days = array(),
 		$regular = array(),
@@ -26,6 +27,7 @@ class we_are_open
 		$google_result = array(),
 		$google_result_valid = NULL,
 		$settings_updated = FALSE,
+		$locale_switched = FALSE,
 		$request_count = NULL,
 		$day_range_min = NULL,
 		$day_formats = array(),
@@ -1769,7 +1771,7 @@ class we_are_open
 			return;
 		}
 
-		wp_register_style('open_admin_css', plugins_url('opening-hours/admin/css/css.css'));
+		wp_register_style('open_admin_css', plugins_url('opening-hours/admin/css/css.css'), array(), self::VERSION);
 		wp_enqueue_style('open_admin_css');
 		
 		if (!$this->admin_current())
@@ -1777,7 +1779,7 @@ class we_are_open
 			return;
 		}
 		
-		wp_register_style('open_wp_css', plugins_url('opening-hours/wp/css/css.css'));
+		wp_register_style('open_wp_css', plugins_url('opening-hours/wp/css/css.css'), array(), self::VERSION);
 		wp_enqueue_style('open_wp_css');
 		wp_enqueue_media();
 	}
@@ -1791,9 +1793,9 @@ class we_are_open
 			return;
 		}
 
-		wp_register_script('open_admin_js', plugins_url('opening-hours/admin/js/js.js'));
+		wp_register_script('open_admin_js', plugins_url('opening-hours/admin/js/js.js'), array(), self::VERSION);
 		wp_localize_script('open_admin_js', 'we_are_open_admin_ajax', array('url' => admin_url('admin-ajax.php'), 'action' => 'we_are_open_admin_ajax'));
-		wp_register_script('open_wp_js', plugins_url('opening-hours/wp/js/js.js'));
+		wp_register_script('open_wp_js', plugins_url('opening-hours/wp/js/js.js'), array(), self::VERSION);
 		wp_enqueue_script('open_admin_js');
 		wp_enqueue_script('open_wp_js');
 	}
@@ -1821,12 +1823,12 @@ class we_are_open
 	{
 		// Load style sheet in the front-end
 
-		wp_register_style('open_wp_css', ($this->asset_mode('stylesheet') == 2 && is_file(plugin_dir_path(__FILE__) . 'wp/css/css.min.css')) ? plugins_url('opening-hours/wp/css/css.min.css') : plugins_url('opening-hours/wp/css/css.css'));
+		wp_register_style('open_wp_css', ($this->asset_mode('stylesheet') == 2 && is_file(plugin_dir_path(__FILE__) . 'wp/css/css.min.css')) ? plugins_url('opening-hours/wp/css/css.min.css') : plugins_url('opening-hours/wp/css/css.css'), array(), self::VERSION);
 		wp_enqueue_style('open_wp_css');
 		
 		if (is_file(plugin_dir_path(__FILE__) . 'wp/css/custom.css') && filesize(plugin_dir_path(__FILE__) . 'wp/css/custom.css') > 20)
 		{
-			wp_register_style('open_wp_custom_css', plugins_url('opening-hours/wp/css/custom.css'));
+			wp_register_style('open_wp_custom_css', plugins_url('opening-hours/wp/css/custom.css'), array(), self::VERSION);
 			wp_enqueue_style('open_wp_custom_css');
 		}
 	}
@@ -1835,7 +1837,7 @@ class we_are_open
 	{
 		// Load Javascript in the front-end
 
-		wp_register_script('open_wp_js', ($this->asset_mode('javascript') == 2 && is_file(plugin_dir_path(__FILE__) . 'wp/js/js.min.js')) ? plugins_url('opening-hours/wp/js/js.min.js') : plugins_url('opening-hours/wp/js/js.js'));
+		wp_register_script('open_wp_js', ($this->asset_mode('javascript') == 2 && is_file(plugin_dir_path(__FILE__) . 'wp/js/js.min.js')) ? plugins_url('opening-hours/wp/js/js.min.js') : plugins_url('opening-hours/wp/js/js.js'), array(), self::VERSION);
 		wp_localize_script('open_wp_js', 'we_are_open_wp_ajax', array('url' => admin_url('admin-ajax.php'), 'action' => 'we_are_open_wp_ajax'));
 		wp_enqueue_script('open_wp_js');
 	}
@@ -3949,6 +3951,12 @@ class we_are_open
 			extract($preferences, EXTR_OVERWRITE);
 		}
 
+		/* PHP only has English ordinal suffixes */
+		if (is_string($day_format) && !preg_match('/^en(?:_|$)/', get_locale()))
+		{
+			$day_format = preg_replace('/(?<!\\\\)\^?S/', '', $day_format);
+		}
+
 		$day = $data['day'];
 		$replace_day_name = (isset($days) && is_array($days) && count($days) == 7);
 		$labels = ($data['special'] && $data['label'] != NULL && (!isset($labels) || (isset($labels) && $labels)));
@@ -4631,7 +4639,8 @@ class we_are_open
 				$index = intval($index);
 				$parameters = array();
 				$content = NULL;
-				
+				$signed = FALSE;
+
 				if (strtolower($a['action']) == 'refresh')
 				{
 					if (is_bool($seconds_to_change_day) && !$seconds_to_change_day)
@@ -4676,18 +4685,20 @@ class we_are_open
 					if (isset($a['content']) && is_string($a['content']) && strlen($a['content']) > 1)
 					{
 						$content = wp_kses(wp_kses_stripslashes($a['content']), array('div' => array('id' => array(), 'class' => array(), 'style' => array()), 'section' => array('id' => array(), 'class' => array(), 'style' => array()), 'aside' => array('id' => array(), 'class' => array(), 'style' => array()), 'header' => array('id' => array(), 'class' => array(), 'style' => array()), 'footer' => array('id' => array(), 'class' => array(), 'style' => array()), 'span' => array('id' => array(), 'class' => array(), 'style' => array()), 'ul' => array('id' => array(), 'class' => array(), 'style' => array()), 'ol' => array('id' => array(), 'class' => array(), 'style' => array()), 'li' => array('id' => array(), 'class' => array(), 'style' => array()), 'h1' => array('id' => array(), 'class' => array(), 'style' => array()), 'h2' => array('id' => array(), 'class' => array(), 'style' => array()), 'h3' => array('id' => array(), 'class' => array(), 'style' => array()), 'h4' => array('id' => array(), 'class' => array(), 'style' => array()), 'h5' => array('id' => array(), 'class' => array(), 'style' => array()), 'h6' => array('id' => array(), 'class' => array(), 'style' => array()), 'p' => array('id' => array(), 'class' => array(), 'style' => array()), 'br' => array(), 'a' => array('id' => array(), 'class' => array(), 'href' => array(), 'target' => array(), 'rel' => array(), 'title' => array()), 'img' => array('id' => array(), 'class' => array(), 'src' => array(), 'alt' => array(), 'style' => array(), 'srcset' => array()), 'table' => array('id' => array(), 'class' => array(), 'style' => array()), 'tr' => array('id' => array(), 'class' => array(), 'rowspan' => array(), 'style' => array()), 'th' => array('id' => array(), 'class' => array(), 'colspan' => array(), 'style' => array()), 'td' => array('id' => array(), 'class' => array(), 'colspan' => array(), 'style' => array()), 'thead' => array(), 'tbody' => array(), 'tfoot' => array(), 'code' => array(), 'strong' => array(), 'b' => array(), 'em' => array(), 'i' => array(), 'abbr' => array('title' => array())));
-						$parameters['shortcodes'] = FALSE;
+						/* Only content signed when the page was rendered may run shortcodes */
+						$signed = (isset($a['signature']) && is_string($a['signature']) && hash_equals(wp_hash($a['content']), $a['signature']));
 
-						if (!isset($a['shortcodes']) && isset($parameters['shortcodes']))
+						if (!$signed)
 						{
-							unset($parameters['shortcodes']);
+							$parameters['shortcodes'] = FALSE;
 						}
 					}
-					
+
 					$ret['elements'][$index] = array(
 						'action' => 'refresh',
 						'parameters' => $parameters,
-						'content' => $content,
+						'content' => ($signed) ? $a['content'] : $content,
+						'signature' => ($signed) ? $a['signature'] : NULL,
 						'html' => $this->wp_display($parameters, $content),
 						'reload' => (array_key_exists('reload', $parameters) && isset($reload) && (is_bool($reload) && $reload || is_string($reload) && preg_match('/^(?:t(?:rue)?|y(?:es)?|1|on|show)$/i', $reload))),
 						'seconds_to_change' => $seconds_to_change_day
@@ -4783,6 +4794,24 @@ class we_are_open
 		return $atts;
 	}
 
+	private function locale_render($method, $arguments)
+	{
+		// Render a shortcode in its locale parameter's language, then restore the site's
+
+		$days = $this->days;
+		$day_formats = $this->day_formats;
+		$this->days = array();
+		$this->day_formats = array();
+		$this->locale_switched = TRUE;
+		$html = call_user_func_array(array($this, $method), $arguments);
+		$this->locale_switched = FALSE;
+		restore_previous_locale();
+		$this->days = $days;
+		$this->day_formats = $day_formats;
+
+		return $html;
+	}
+
 	public function wp_display($atts = NULL, $content = NULL, $shortcode = NULL)
 	{
 		// Display HTML from shortcodes
@@ -4820,6 +4849,7 @@ class we_are_open
 			'label_format' => NULL,
 			'labels' => NULL,
 			'labels_precedence' => NULL,
+			'locale' => NULL,
 			'midday' => NULL,
 			'midnight' => NULL,
 			'note_affixes' => NULL,
@@ -4906,6 +4936,11 @@ class we_are_open
 		if (!is_array($atts))
 		{
 			$atts = array();
+		}
+
+		if (!$this->locale_switched && array_key_exists('locale', $atts) && is_string($atts['locale']) && $atts['locale'] != NULL && switch_to_locale($atts['locale']))
+		{
+			return $this->locale_render(__FUNCTION__, func_get_args());
 		}
 	
 		if (array_key_exists(0, $atts) && in_array($atts[0], $types))
@@ -5268,6 +5303,7 @@ class we_are_open
 				}
 				
 				$update_data['content'] = $content;
+				$update_data['signature'] = wp_hash(strval($content));
 
 				$html = $this->wp_display_text($content, $time_preferences, FALSE);
 				
@@ -5540,6 +5576,7 @@ class we_are_open
 				}
 				
 				$update_data['content'] = $content;
+				$update_data['signature'] = wp_hash(strval($content));
 
 				$html = $this->wp_display_text($content, $time_preferences, FALSE);
 				
@@ -5653,6 +5690,7 @@ class we_are_open
 			'reload' => NULL,
 			'hide' => NULL,
 			'remove_html' => NULL,
+			'locale' => NULL,
 			'shortcodes' => NULL
 		);
 		$data = NULL;
@@ -5664,6 +5702,11 @@ class we_are_open
 		if (!is_array($atts))
 		{
 			$atts = array();
+		}
+
+		if (!$this->locale_switched && array_key_exists('locale', $atts) && is_string($atts['locale']) && $atts['locale'] != NULL && switch_to_locale($atts['locale']))
+		{
+			return $this->locale_render(__FUNCTION__, func_get_args());
 		}
 
 		foreach ($args as $k => $v)
@@ -5757,6 +5800,7 @@ class we_are_open
 			'empty' => NULL,
 			'hide' => NULL,
 			'id' => NULL,
+			'locale' => NULL,
 			'shortcodes' => NULL,
 			'start' => NULL,
 			'tag' => NULL,
@@ -5772,6 +5816,11 @@ class we_are_open
 		if (!is_array($atts))
 		{
 			$atts = array();
+		}
+
+		if (!$this->locale_switched && array_key_exists('locale', $atts) && is_string($atts['locale']) && $atts['locale'] != NULL && switch_to_locale($atts['locale']))
+		{
+			return $this->locale_render(__FUNCTION__, func_get_args());
 		}
 
 		foreach ($args as $k => $v)

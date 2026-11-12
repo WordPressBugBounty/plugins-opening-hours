@@ -20,6 +20,7 @@ class we_are_open_widget extends WP_Widget
 		$alias = NULL,
 		$prefix = NULL,
 		$reference = NULL,
+		$locale_switched = FALSE,
 		$week_start = NULL,
 		$current_timestamp = NULL,
 		$today_timestamp = NULL,
@@ -718,6 +719,12 @@ class we_are_open_widget extends WP_Widget
 			extract($preferences, EXTR_OVERWRITE);
 		}
 
+		/* PHP only has English ordinal suffixes */
+		if (is_string($day_format) && !preg_match('/^en(?:_|$)/', get_locale()))
+		{
+			$day_format = preg_replace('/(?<!\\\\)\^?S/', '', $day_format);
+		}
+
 		$day = $data['day'];
 		$replace_day_name = (isset($days) && is_array($days) && count($days) == 7);
 		$labels = ($data['special'] && $data['label'] != NULL && (!isset($labels) || (isset($labels) && $labels)));
@@ -1159,7 +1166,7 @@ class we_are_open_widget extends WP_Widget
 			return;
 		}
 		
-		wp_register_style($this->alias . '_admin_css', plugins_url('opening-hours/admin/css/css.css'));
+		wp_register_style($this->alias . '_admin_css', plugins_url('opening-hours/admin/css/css.css'), array(), we_are_open::VERSION);
 		wp_enqueue_style($this->alias . '_admin_css');
 	}
 	
@@ -1174,7 +1181,7 @@ class we_are_open_widget extends WP_Widget
 			return;
 		}
 		
-		wp_register_script('open_admin_js', plugins_url('opening-hours/admin/js/js.js'));
+		wp_register_script('open_admin_js', plugins_url('opening-hours/admin/js/js.js'), array(), we_are_open::VERSION);
 		wp_localize_script('open_admin_js', 'we_are_open_admin_ajax', array('url' => admin_url('admin-ajax.php'), 'action' => 'we_are_open_admin_ajax'));
 		wp_enqueue_script('open_admin_js');
 	}
@@ -1215,6 +1222,21 @@ class we_are_open_widget extends WP_Widget
 		$parameters = $this->parameters_filter($default_values);
 		$day_preferences = $parameters;
 		$time_preferences = $parameters;
+
+		if (!$this->locale_switched && isset($parameters['locale']) && is_string($parameters['locale']) && $parameters['locale'] != NULL && switch_to_locale($parameters['locale']))
+		{
+			$days = $this->days;
+			$day_formats = $this->day_formats;
+			$this->days = array();
+			$this->day_formats = array();
+			$this->locale_switched = TRUE;
+			$this->widget($args, $instance);
+			$this->locale_switched = FALSE;
+			restore_previous_locale();
+			$this->days = $days;
+			$this->day_formats = $day_formats;
+			return;
+		}
 
 		extract($args, EXTR_SKIP);
 		extract($instance, EXTR_SKIP);

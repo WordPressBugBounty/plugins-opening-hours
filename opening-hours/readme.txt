@@ -5,7 +5,7 @@ Donate link: https://paypal.me/designextreme
 Tags: opening hours, open hours, business hours, open times, opening times
 Requires at least: 5.3
 Tested up to: 7.1
-Stable tag: 2.8
+Stable tag: 2.9
 Requires PHP: 5.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -14,7 +14,33 @@ Opening hours for your business, a joy to manage and highly customizable. Condit
 
 == Description ==
 
-Control all aspects of your business’ opening hours with this very easy management tool with multiple display options and conditional text while open or closed with renewed content upon status changes. This plugin offers a high degree of customization and can be placed almost anywhere using a shortcode or widget.
+Show your business’ opening hours exactly as they stand, anywhere on your website: regular weekly hours, special opening hours for public holidays and temporary closures, kept in step with your *Google Business Profile* listing (formerly Google My Business) if you choose.
+
+We’re Open! lets you manage your hours in one place and display them as a table, running text, a list or a single line of conditional text such as “Open now until 6pm”. That text can refresh itself the moment you open or close, so visitors see your current status without reloading the page. Place it almost anywhere with a shortcode or widget.
+
+= Synchronized with your Google Business Profile =
+
+Connect your listing with a Google API key and Place ID: your regular and special opening hours are then copied from Google every day through the Places API (New). Change your hours on Google and your website follows, including days that run past midnight and businesses that never close. Prefer to manage them yourself? Everything can also be set by hand in the WordPress dashboard.
+
+= The right message at the right time =
+
+Conditional shortcodes show content only while you are open, only while you are closed or only when special opening hours apply. Combine them with replacement codes to write your own sentences, from a simple “We’re open” to “Closed until 9am”, which update automatically as your status changes.
+
+= Accurate, even on cached pages =
+
+Page caching can leave visitors looking at yesterday’s hours or an out-of-date status. Set your opening hours to refresh immediately and they are checked against the actual current time as soon as the page loads, so what visitors see is always up to date, whatever your caching serves.
+
+= Displayed the way your website needs =
+
+Choose a table, running text, lines, paragraphs or lists. Group days that share the same hours, such as Monday – Friday. Format every day, date and time to suit your language and style, down to the words used for midday and midnight. Day names follow your site’s language, right-to-left languages are supported and light styling with descriptive HTML classes leaves the design in your hands.
+
+= Helps search engines show your hours =
+
+Add Structured Data (Schema.org) to your pages so search engines and services can read your opening hours accurately, including special opening hours and temporary closures. It is a simple step that supports your local SEO.
+
+= Free, lightweight and actively maintained =
+
+There are no premium upgrades: every feature is included. The front end is light and can load minified files, while developers can adjust parameters, Structured Data and Google settings with filters. I update the plugin regularly. Suggestions from people using it continue to shape what it does.
 
 = Features: =
 
@@ -47,7 +73,7 @@ Control all aspects of your business’ opening hours with this very easy manage
 	* Automatic data refreshing or page reload occurring with a change of open or closed status
 	* Conditionally show HTML containing special opening hours – only when this is available
 *   **Conditional text** with variables (e.g. show text or HTML relevant to current open status)
-*   **Structured Data** ([Schema.org](http://schema.org)) support to give accurate information about opening hours to search engines and services such as Google Business Profile (formerly Google Business Profile) and it assists with SEO
+*   **Structured Data** ([Schema.org](http://schema.org)) support to give accurate information about opening hours to search engines and services such as Google Business Profile and it assists with SEO
 *   Populate and synchronize opening hours from Google Business Profile (Google API Key, Place ID, Google Billing Account are required)
 *   A comprehensive and *free* plugin with no upgrades for additional functionality
 
@@ -102,7 +128,7 @@ A common mistake is to set the time zone in WordPress using hours from GMT when 
 
 Enable **Structured Data**. It works very well to inform Google Business Profile of your complete opening hours, including special opening hours and temporary closures.
 
-Alternatively, you may wish to update your opening hours from Google Business Profile using the Places API (New). This method requires a Google API Key and Place ID (single location) and doesn’t consider special opening hours or temporary closures.
+Alternatively, you may wish to update your opening hours from Google Business Profile using the Places API (New). This method requires a Google API Key and Place ID (single location). It includes special opening hours but not temporary closures.
 
 = Can I use my own words for “closed”, “today”, “tomorrow”, “midday”, “midnight” or label the actual holidays? =
 
@@ -169,6 +195,13 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 8. Simple Widget to apply your opening hours to a sidebar or footer section
 
 == Changelog ==
+
+= 2.9 =
+
+* Fixed unauthenticated shortcode execution through the live update (Thanks to Leon Figueira, Patchstack)
+* Added a locale parameter to show opening hours in another language
+* Fixed cached style sheets and JavaScript after updates
+* Fixed English ordinal suffixes shown in other languages
 
 = 2.8 =
 
@@ -510,7 +543,7 @@ Sorry, this is not supported by this plugin with only one set of opening hours a
 
 * Fixed possible variable type warning for special opening hours and closure range
 * Fixed dates in parameters: start and end
-* Improved behaviour of parameters: regular and special
+* Improved behavior of parameters: regular and special
 * Improved behaviour of date ranges when dates don’t align with week start
 * Extended day range to a year minus a week for special opening hours
 

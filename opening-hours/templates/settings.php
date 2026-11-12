@@ -671,6 +671,16 @@ $placeholders = (isset($placeholders)) ? $placeholders : array();
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 					<td class="boolean"><span class="dashicons dashicons-no"></span></td>
 				</tr>
+				<tr id="parameter-locale">
+					<td class="parameter">locale</td>
+					<td class="description"><?php /* translators: %s: example of a WordPress locale code */
+						printf(esc_html__('Show day names, dates and the plugin’s own wording in another installed language, such as %s. Uses the site language when not set.', 'opening-hours'), '<span class="code">de_DE</span>'); ?></td>
+					<td class="accepted"><em><?php esc_html_e('Any installed WordPress language', 'opening-hours'); ?></em></td>
+					<td class="default"><span class="code">NULL</span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+					<td class="boolean"><span class="dashicons dashicons-yes"></span></td>
+				</tr>
 				<tr id="parameter-label-format">
 					<td class="parameter">label_format</td>
 					<td class="description"><?php

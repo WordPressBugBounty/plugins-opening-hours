@@ -196,6 +196,8 @@ const we_are_open = (action = 'init', index = null) => {
 							: {},
 					content:
 						typeof data.content == 'string' ? data.content : null,
+					signature:
+						typeof data.signature == 'string' ? data.signature : null,
 				};
 			}
 
@@ -361,6 +363,7 @@ const we_are_open = (action = 'init', index = null) => {
 												)
 											: null,
 									parameters: data.parameters,
+									signature: data.signature,
 									open_now: response.open_now,
 									reload: data.reload,
 								});
